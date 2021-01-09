@@ -9,80 +9,188 @@ import os.path;
 import requests;
 import subprocess;
 
-AtDesy = False;
+
 HOST = ''  # all nics
 PORT = 8889;      # Port to listen on (non-privileged ports are > 1023)
 
+AtDesy = False;
 # Thread;
 # The Protocol:
 # the sender transmits a json dictionary which has
-# "cmd:" ->
-# gettasks
+# "cmd" ->
 # querystatus
 # start
 # stop
+# toggle
 #
-# The server sends back the same json dictionary with some things appended:
-# "tasks:" - an array of tasks available
-# "taskstatus:" - a dictionary of tasks to status
-# you can add your own task: add a unique name in the list of tasks, and specify the
-# getOnScript, getOffScript. The script should return an exit-code: 0 means success.
-tasks = ["turn on wiener", "power to PwB", "check voltages1", "power to head", "check voltages2", "head operational", "check voltages3", "digtest1", "check voltages4"];
+# The server sends back the list of levels.
+#
+
 # task states can be not done, done, doing and undoing.
-if AtDesy:
-    tasks[0] = "check voltages0";
 
-def getOnScript(task):
-    if task == "turn on wiener":
-        return "./user_scripts/wiener/mainswitchON.sh";
-    if task == "power to PwB":
-        return "./user_scripts/wiener/pwb_UP.sh";
-    if task == "power to head":
-        return "./DESY/W3C3/user_scripts/POWERUP_000_unix.sh";
-    if task == "head operational":
-        return "./DESY/W3C3/user_scripts/DLS_FSI07_FromSysPowON_ToSeq_3T_PGAB_10Img_12ms_0802g_PLL120MHz_ADC25MHz.sh";
-    if task == "digtest1":
-        return "./DESY/W3C3/user_scripts/digTest1_RESET_DATA_SYNCH_STATUS_unix.sh";
-    if task == "check voltages0":
-        return "./user_scripts/wiener/checkcurrents.py -voltageszero";
-    if task == "check voltages1":
-        return "./user_scripts/wiener/checkcurrents.py -voltages -pwbon";
-    if task == "check voltages2" or task == "check voltages3" or task == "check voltages4":
-        return "./user_scripts/wiener/checkcurrents.py -voltages -headon";
-    return "errorunknowntask";
+# firstly lets load our config file
+levels = [
+    {
+      "description" : "turn on wiener",
+      "onscript"  : "./user_scripts/wiener/mainswitchON.sh",
+      "offscript" : "./user_scripts/wiener/mainswitchOFF.sh"
+    },
 
-def getOffScript(task):
-    if task == "turn on wiener":
-        return "./user_scripts/wiener/mainswitchOFF.sh";
-    if task == "power to PwB":
-        return "./user_scripts/wiener/pwb_DOWN.sh";
-    if task == "power to head":
-        return "./DESY/W3C3/user_scripts/POWERDOWN_000_unix.sh";
-    if task == "head operational":
-        return "./DESY/W3C3/user_scripts/DLS_FSI07_FromSeq0802g_ToSysPowON_unix.sh";
-    if task == "digtest1":
-        return "pwd";
-    if task == "check voltages0":
-        return "./user_scripts/wiener/checkcurrents.py -voltageszero";
-    if task == "check voltages1":
-        return "./user_scripts/wiener/checkcurrents.py -voltages -pwbon";
-    if task == "check voltages2" or task == "check voltages3" or task == "check voltages4":
-        return "./user_scripts/wiener/checkcurrents.py -voltages -headon";
-    return "errorUnknownTask";
+    { 
+      "description" : "power to PwB",
+      "onscript"  : "./user_scripts/wiener/pwb_UP.sh",
+      "offscript" : "./user_scripts/wiener/pwb_DOWN.sh"
+    },
+
+    { 
+      "description" : "check voltages1",
+      "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon",
+      "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon"
+    },
+
+    { 
+      "description" : "power to head",
+      "onscript"  : "./DESY/W3C3/user_scripts/POWERUP_000_unix.sh",
+      "offscript" : "./DESY/W3C3/user_scripts/POWERDOWN_000_unix.sh"
+    },
+
+    { 
+      "description" : "check voltages2",
+      "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+      "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+    },
+
+    { 
+      "description" : "head operational",
+      "onscript"  : "./DESY/W3C3/user_scripts/DLS_FSI07_FromSysPowON_ToSeq_3T_PGAB_10Img_12ms_0802g_PLL120MHz_ADC25MHz.sh",
+      "offscript" : "./DESY/W3C3/user_scripts/DLS_FSI07_FromSeq0802g_ToSysPowON_unix.sh"
+    },
+
+    { 
+      "description" : "check voltages3",
+      "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+      "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+      "actions"   : [
+            {
+              "description" : "TestMode1",
+              "onscript"  : "./DESY/W3C3/user_scripts/digTest1_RESET_DATA_SYNCH_STATUS_unix.sh"
+            },
+            {
+              "description" : "TestMode3",
+              "onscript"  : "./DESY/W3C3/user_scripts/digTest3_RESET_DATA_SYNCH_STATUS_unix.sh"
+            }
+      ]
+    }
+];
+
+def validateDoc(levels):
+    score = 0;
+    # iterate thru levels
+    lidx = 0;
+    descs = [];
+    for lv in levels:
+        lv["type"] = "level";
+        lv["level"] = lidx;
+        if(lv.has_key("state")):
+            print "uh oh this level has a state when it shouldnt";
+        lv["state"] = "not done";
+        score += 1;
+        if("description" in lv.keys() and "onscript" in lv.keys() and "offscript" in lv.keys()):
+            desc = lv.get("description");
+            if(5<len(desc) and desc not in descs):
+                descs.append(desc);
+                score -= 1;
+            actions = lv.get("actions");
+            aidx = 0;
+            for ac in actions or []:
+                    score += 1;
+                    ac["type"] = "action";
+                    ac["level"] = lidx;
+                    ac["aidx"] = aidx;
+                    if("description" in ac.keys() and "onscript" in ac.keys()):
+                        desc = ac.get("description");
+                        if(5<len(desc) and desc not in descs):
+                            descs.append(desc);
+                            score -= 1;
+                    aidx += 1;
+                    
+        lidx += 1;
+
+    if(lidx < 2):
+        score = 1;   
+
+    return score;
+
+def setEnableFlags():
+    global levels;
+    somethingRunning = False;
+    # warning alltasks needs to be a different list.
+    alltasks = list(levels);
+    for lv in levels:
+        if(lv.has_key("actions")):
+            alltasks.extend(lv.get("actions"));
+
+    for tk in alltasks:
+        # set all to disabled
+        tk["enable"] = False;
+        # python wont search a None string.
+        if(tk.get("state") and "doing" in tk.get("state")):
+            somethingRunning = True;
+
+    if(somethingRunning == False):
+        if(levels[0].get("state")=="not done"):
+            levels[0]["enable"] = True;
+        if(levels[-1].get("state")=="done"):
+            levels[-1]["enable"] = True;
+        # must have >=2 levels
+        for lidx in range(0,len(levels)-1):
+            if(levels[lidx].get("state") == "done" and levels[lidx+1].get("state") == "not done"):
+                levels[lidx]["enable"] = True;
+                levels[lidx+1]["enable"] = True;
+        for lv in levels:
+            if(lv.get("enable") == True and lv.get("state") == "done"):
+                for ac in lv.get("actions") or []:
+                    ac["enable"] = True;
+
+def getLevels():
+    global levels;
+    setEnableFlags();
+    return levels;
+
+def getLevelsShort():
+    levels = getLevels();
+    levels2 = [];
+    for lv in levels:
+        lv2 = dict(lv);
+        lv2.pop("onscript", None);
+        lv2.pop("offscript", None);
+        levels2.append(lv2);
+    return levels2;
+        
+
+# looks thru actions and levels for the description.
+def getTask(desc):
+    levelsA = getLevels();
+    for lv in levelsA:
+        if(lv.get("description") == desc):
+            return lv;
+        for ac in lv.get("actions") or []:
+            if(ac.get("description") == desc):
+                return ac;
+    return None;
 
 Go = True;
 
 class myServer:
     def __init__(self):
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
+        # this REUSEADDR means the socket is freed earlier
+        self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._sock.bind((HOST, PORT));
         self._sock.listen(1);
         self._sock.settimeout(0.2);
         # nb the socket prevents two servers running on the same system
-        self._taskstates = {};
         self._mythread = threading.Thread();
-        for task in tasks:
-            self._taskstates[task] = "not done";
 
     def __del__(self):
         print "closing server";
@@ -91,30 +199,30 @@ class myServer:
         self._sock.close();
 
     def doTask(self, task):
-        print "DOING TASK ", task;
-        script = getOnScript(task);
+        print "DOING TASK ", task.get("description");
+        script = task.get("onscript");
         if 0<=len(script):
             print "running ", script;
             rc = os.system(script);
             if rc:
-                print "task failed", task;
-                self._taskstates[task] = "not done";
+                print "task failed";
+                task["state"] = "not done";
             else:
-                print "done task: ", task;
-                self._taskstates[task] = "done";
+                print "done task ok";
+                task["state"] = "done";
 
     def undoTask(self, task):
-        print "UNDOING TASK ", task;
-        script = getOffScript(task);
+        print "UNDOING TASK ", task.get("description");
+        script = task.get("offscript");
         if 0<=len(script):
             print "running ", script;
             rc = os.system(script);
             if rc:
-                print "script failed", task;
-                self._taskstates[task] = "done";
+                print "script failed";
+                task["state"] = "done";
             else:
-                print "undone task: ", task;
-                self._taskstates[task] = "not done";
+                print "undone task ok";
+                task["state"] = "not done";
 
     def doOnce(self):
         global Go;
@@ -129,66 +237,59 @@ class myServer:
         try:
           #  print('Connected by', addr);
             data = conn.recv(1024);
-          #  print "got data from " , conn;
-          #  print data;
+           # print "got data from " , conn;
+          #  print "incoming message:", data;
 
             di = json.loads(data);
-            if di.has_key("cmd:"):
-                cmd = di["cmd:"];
-                if cmd=="gettasks":
-                 #   print "GETTING TASKS";
-                    di["tasklist:"] = tasks;
-                elif cmd=="querystatus":
-                    di["status:"] = self._taskstates;
-                elif cmd=="start" or cmd=="stop" or cmd=="toggle":    
-                    if di.has_key("task:") and di["task:"] in tasks:
-                        task = di["task:"];
-                        tidx = tasks.index(task);
-                        tstatus = self._taskstates[task];
 
-                        if(cmd=="toggle" and self._taskstates[task]=="done"):
+            if di.has_key("cmd"):
+                cmd = di["cmd"];
+
+                if cmd=="toggle" or cmd=="start" or cmd=="stop":
+                    if di.has_key("task") and getTask(di["task"]):
+                        task = getTask(di["task"]);
+
+                        if(cmd=="toggle" and task.get("state")=="done"):
                             cmd = "stop";
-                        if(cmd=="toggle" and self._taskstates[task]=="not done"):
+                        if(cmd=="toggle" and task.get("state")=="not done"):
                             cmd = "start";
 
-                        print "TASK ", tidx, task, cmd;
-                        # to do a task, two checks are made:
-                        # firstly that the task itself is in state done/notdone
-                        # secondly that the prev task is done, and the next task is not done.
-                        # The tasks form a chain and you can only alter the one at the end of the done chain.
-                        canDoTask = (tstatus == "not done");
-                        canUndoTask = (tstatus == "done");
+                    #    print "TASK ", cmd, task;
 
-                        if 0 < tidx:
-                            prevtask = tasks[tidx-1];
-                            canUndoTask &= (self._taskstates[prevtask] == "done");
-                            canDoTask &= (self._taskstates[prevtask] == "done");
-                        if tidx+1 < len(tasks):
-                            nexttask = tasks[tidx+1];
-                            canUndoTask &= (self._taskstates[nexttask] == "not done");
-                            canDoTask &= (self._taskstates[nexttask] == "not done");
+                        enabled = task.get("enable");
 
-                        if cmd=="start" and canDoTask:
-                            self._taskstates[task] = "doing";
+                        if cmd=="start" and enabled:
+                            task["state"] = "doing";
                             self._mythread = threading.Thread(target=self.doTask, args=(task,));
                             self._mythread.daemon = True; # thread dies when prog exits
                             self._mythread.start();
-                        if cmd=="stop" and canUndoTask:
-                            self._taskstates[task] = "undoing";
+                        if cmd=="stop" and enabled:
+                            task["state"] = "undoing";
                             self._mythread = threading.Thread(target=self.undoTask, args=(task,));
                             self._mythread.daemon = True; # thread dies when prog exits
                             self._mythread.start();
+
                 elif cmd=="shutdown":
                     Go = False;
                         
-            ji = json.dumps(di);
+
+            ji = json.dumps(getLevelsShort());
             conn.send(ji);
-        except:
+        except Exception as e:
+            print "exception", e;
             pass;
 
         conn.close();
 
-print "hello.\nchecking odin_server is started";
+print "hello.\nchecking config is ok";
+
+rc = validateDoc(levels);
+
+if(rc):
+    print("invalid config: you are missing fields or have duplicated a description");
+    exit(rc);
+
+print "checking odin_server is started";
 # need to check that odin_server is available. This is usually on localhost:8888
 response = requests.get("http://localhost:8888");
 if response.status_code != 200:
@@ -218,10 +319,10 @@ if rc!=0:
     exit(4);
 
 print "checks passed";
+
 serv = myServer();
 while Go:
     serv.doOnce();
 
 print "SHUTTING DOWN";
-
 
