@@ -9,6 +9,8 @@ from future.utils import raise_with_traceback
 import logging
 import binascii
 import socket
+import traceback;
+import copy;
 
 from contextlib import contextmanager
 from multiprocessing import Lock
@@ -117,6 +119,7 @@ class TxRx(object):
         self._mutex = Lock()
         self.sock = None
         self.connect(timeout)
+        self._previous_cmdmsg = None;
 
     def connect(self, timeout=2.0):
         if not self._connected:
@@ -164,7 +167,6 @@ class TxRx(object):
         """
         if self._connected:
             try:
-              #  txt = binascii.hexlify(msg);
                 self.log.debug("sending %s", binascii.hexlify(msg));
                 self.sock.sendall(msg)
             except socket.error as e:
@@ -217,6 +219,7 @@ class TxRx(object):
         self.log.debug(" ie response: %s", hexify(msg))
         return msg
 
+    # this should be considered private because it lacks the cmdreg_workaround.
     def send_recv(self, msg, expected_bytes = None):
         """Send `msg` and wait for receipt of `expected_bytes` in response or timeout
         
@@ -264,6 +267,9 @@ class TxRx(object):
         if not isinstance(message, TxMessage):
             raise TypeError("message must be of type TxMessage, not %s"%str(type(message)))
 
+        if message.message.startswith(b'\x02\xca'):
+            self.cmdreg_workaround(message.message);
+
         result = None
         if self._connected:
             with self._mutex:
@@ -290,6 +296,20 @@ class TxRx(object):
             self._connected = False
             raise raise_with_traceback(PercivalCommsError("Socket not connected"))
         return result
+
+    def cmdreg_workaround(self, msg):
+        """
+        This is a nasty hack. The cmd register acts not on a write, but on a change
+        in the command, so to get your command processed it must be different. So
+        we send a null command if the last command (word send to 0x02ca) is the same.
+        """
+        if self._previous_cmdmsg == None or msg == self._previous_cmdmsg:
+            self.log.warning("sending null cmd to clear the cmd-reg");
+            # this message is actually wrong in the None case!
+            self.log.debug( "duplicated msg is 0x{}".format(binascii.hexlify(msg)) );
+            self.send_recv( bytes(b"\x02\xca\x00\x00\x00\x00\x00\x00") );
+
+        self._previous_cmdmsg = copy.copy(msg);
 
     def clean(self):
         """Shutdown and close the socket safely

@@ -212,10 +212,8 @@ class ControlChannel(Channel):
                                              self._channel_ini.Channel_name,
                                              value,
                                              self._reg_control_settings.fields.channel_range_max)
-        # we need to remove these no_op commands.
-        self.cmd_no_operation()
+
         self.cmd_control_set_value(value)
-        self.cmd_no_operation()
         self.cmd_set_and_get_value()
         start_time = time.time()
         retries = 0
