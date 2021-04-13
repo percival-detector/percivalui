@@ -8,12 +8,14 @@ import os;
 import os.path;
 import requests;
 import subprocess;
+import queryUPS;
 
 
 HOST = ''  # all nics
 PORT = 8889;      # Port to listen on (non-privileged ports are > 1023)
 
-AtDesy = False;
+g_AtDesy = False;
+g_upsOk = True;
 # Thread;
 # The Protocol:
 # the sender transmits a json dictionary which has
@@ -28,8 +30,8 @@ AtDesy = False;
 
 # task states can be not done, done, doing and undoing.
 
-# firstly lets load our config file
-levels = [
+# firstly lets load our config:
+g_levels = [
     {
       "description" : "turn on wiener",
       "onscript"  : "./user_scripts/wiener/mainswitchON.sh",
@@ -121,8 +123,7 @@ def validateDoc(levels):
 
     return score;
 
-def setEnableFlags():
-    global levels;
+def setEnableFlags(levels):
     somethingRunning = False;
     # warning alltasks needs to be a different list.
     alltasks = list(levels);
@@ -152,10 +153,11 @@ def setEnableFlags():
                 for ac in lv.get("actions") or []:
                     ac["enable"] = True;
 
+# this returns a ref to the global levels object, with enableflags updated.
 def getLevels():
-    global levels;
-    setEnableFlags();
-    return levels;
+    global g_levels;
+    setEnableFlags(g_levels);
+    return g_levels;
 
 def getLevelsShort():
     levels = getLevels();
@@ -179,7 +181,11 @@ def getTask(desc):
                 return ac;
     return None;
 
-Go = True;
+# this is a function to test the UPS and returns true if it has mains power.
+def upsOk():
+    return g_AtDesy or queryUPS.checkUPS(); 
+
+g_Go = True;
 
 class myServer:
     def __init__(self):
@@ -224,8 +230,53 @@ class myServer:
                 print "undone task ok";
                 task["state"] = "not done";
 
-    def doOnce(self):
-        global Go;
+    # this version of doMsg will move down the levels undoing the tasks,
+    # and it will tell any connections that it is autoshutdown
+    def doMsgShutdown(self):
+        global g_Go;
+
+        lvs = getLevels();
+
+        if len(lvs) == 0 or lvs[0].get("state")=="not done":
+            g_Go = False;
+        for task in lvs:
+            if(task.get("enable") and task.get("state")=="done"):
+                   if self._mythread.is_alive():
+                      print "assert failure thread is alive when it shouldnt";
+                      exit(1);
+                   print "autoshutdown undoing ", task.get("description");
+                   if "check" in task["description"]:
+                      # we skip the checks.
+                      task["state"] = "not done";
+                   else:
+                       ## I do not like having this state change here.
+                       # can we put it in the function too?
+                       task["state"] = "undoing";
+                       ## todo we should check _mythread is vacant; it should be.
+                       self._mythread = threading.Thread(target=self.undoTask, args=(task,));
+                       self._mythread.daemon = True; # thread dies when prog exits
+                       self._mythread.start();
+
+        # when this goes into autoShutdown all messages are returned to sender,
+        # and commands are automatically executed until it reaches off.
+        try:
+            conn, addr = self._sock.accept();
+        except:
+            return;
+
+      #  print('Connected by', addr);
+        data = conn.recv(1024);
+
+       # di = json.loads(data);
+
+        ji_sh = [{"shutdownPerc" : True}];
+        ji = json.dumps(ji_sh);
+        conn.send(ji);
+        conn.close();
+
+
+    def doMsg(self):
+        global g_Go;
         # what is crucial is that only one client can connect at any time, and that client
         # can not alter the state in an unsafe manner. Safe movements are moving from one
         # state to the next/previous only.
@@ -269,8 +320,8 @@ class myServer:
                             self._mythread.daemon = True; # thread dies when prog exits
                             self._mythread.start();
 
-                elif cmd=="shutdown":
-                    Go = False;
+                elif cmd=="exit":
+                    g_Go = False;
                         
 
             ji = json.dumps(getLevelsShort());
@@ -283,7 +334,7 @@ class myServer:
 
 print "hello.\nchecking config is ok";
 
-rc = validateDoc(levels);
+rc = validateDoc(g_levels);
 
 if(rc):
     print("invalid config: you are missing fields or have duplicated a description");
@@ -296,12 +347,12 @@ if response.status_code != 200:
     exit(1);
 
 print "check cur dir is percivalui";
-if os.path.basename(os.getcwd())!="percivalui":
+if False and os.path.basename(os.getcwd())!="percivalui":
     print "fail";
     exit(2);
 
 wnr = subprocess.check_output("user_scripts/wiener/querymainswitch.sh");
-if AtDesy:
+if g_AtDesy:
    print "check wiener is ON";
    if "on" not in wnr:
         print "error: wiener is off; you need to load the carrier board firmware";
@@ -312,6 +363,11 @@ else:
         print "error: wiener is on";
         exit(3);
 
+    print "check UPS is reachable and has mains power";
+    if upsOk()==False:
+        print "fail";
+        exit(4);
+
 print "check venv contains percivalui";
 rc = os.system("pip show percivalui");
 if rc!=0:
@@ -321,8 +377,16 @@ if rc!=0:
 print "checks passed";
 
 serv = myServer();
-while Go:
-    serv.doOnce();
+while g_Go:
+    if g_upsOk and upsOk() == False:
+        g_upsOk = False;
+        print "UPS HAS NO POWER: automatic shutdown has begun; please wait.";
 
-print "SHUTTING DOWN";
+    if g_upsOk:
+        serv.doMsg();
+    else:
+        serv.doMsgShutdown();
+        
+
+print "Exiting server.py";
 

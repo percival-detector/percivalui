@@ -4,6 +4,8 @@ import socket;
 import sys;
 import json;
 
+# I am inclined to move all this into buttons.py and/or use zmq.
+
 HOST = '172.23.17.54'  # ws450 at Diamond. This is the pc you run server.py on.
 PORT = 8889;      # Port to listen on (non-privileged ports are > 1023)
 

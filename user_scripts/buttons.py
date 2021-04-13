@@ -6,9 +6,10 @@ import sys;
 from Tkinter import *;
 import socketfns;
 
+# we should have exit-server instead
 if len(sys.argv)==2 and sys.argv[1]=="--shutdown-server":
     print "sending shutdown message to server";
-    socketfns.sendMsg("shutdown", None);
+    socketfns.sendMsg("exit", None);
     exit(0);
 
 master = Tk();
@@ -70,6 +71,9 @@ def updateStatus():
     print "update status", count;
     count += 1;
     levels = socketfns.getStatus();
+    if len(levels)==1 and levels[0].has_key("shutdownPerc"):
+        print "AUTOSHUTDOWN RUNNING";
+        exit(0);
     updateCanvas(levels);
     updateButtons(levels);
     master.after(1000, updateStatus);
