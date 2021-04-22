@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # -*- coding: utf-8 -*-
 """
 Descramble and visualize small scrambled dataset (seq Mod)
@@ -93,6 +95,7 @@ def percDebug_plot_interactive_wCMA_2(data_GnCrsFn,data_CDSavg,data_CDSCMAavg, m
 #dflt_mainFolder='/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010234/scratch_bl/'
 #
 dflt_mainFolder='/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010254/raw/'
+#dflt_mainFolder='/home/ulw43618/morespace/test/percyNewHead011121/coveroff'
 #dflt_mainFolder='/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010254/scratch_bl/'
 #
 if dflt_mainFolder[-1]!='/': dflt_mainFolder+='/'
@@ -101,19 +104,20 @@ dflt_suffix_fl1='002.h5'
 #dflt_img2proc_str= "0:9" # using the sensible matlab convention; "all",":","*" means all
 dflt_img2proc_str= ":" # using the sensible matlab convention; "all",":","*" means all
 #
-dflt_swapSmplRstFlag= True
+dflt_swapSmplRstFlag= False;
 dflt_seqModFlag= False # this actually mean: SeqMod image taken with a stdMod mezzfirm, so that only hal image is relevand data
 dflt_refColH0_21_Flag = False # True if refcol data are streamed out as H0<21> data.
 dflt_cleanMemFlag= True # this actually mean: save descrambled image (DLSraw standard)
 dflt_verboseFlag= True
+dflt_wantDescramble = False;
 #
-dflt_ADCcorrFlag=True
+dflt_ADCcorrFlag=False
 ADCcorrFolder= '/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010234/shared/CalibParamToUse/BSI04/BSI04_Tm20/BSI04_Tm20_dmuxSELsw_H0,H1_ADCcor/'
 if ADCcorrFolder[-1]!='/': ADCcorrFolder+='/'
 dflt_ADUcorr_file= ADCcorrFolder+'BSI04_Tminus20_dmuxSELsw_2019.11.20_ADCcor.h5'
 
 #
-dflt_pedSubtractFlag=True
+dflt_pedSubtractFlag=False
 #dflt_pedestal_CDSavg= dflt_mainFolder+'aux_CDS_avg.h5'
 #dflt_pedestal_CDSavg= '/gpfs/cfel/fsds/labs/percival/2019/calibration/20191122_000_BSI04_PTC/processed/BSI04_Tm20_drk/avg_std/'+'2019.11.25.19.50.41_BSI04_Tm20_dmuxSELsw_biasBSI04_02_3TGn0PGABBB_1kdrk_CDS_avg.h5'
 #dflt_pedestal_CDSavg= '/gpfs/cfel/fsds/labs/percival/2019/calibration/20191122_000_BSI04_PTC/processed/BSI04_Tm20_drk/avg_std/'+'2019.11.28.16.13.40_BSI04_Tm20_dmuxSELsw_biasBSI04_03_3TGn0_PGA666_1kdrk_CDS_avg.h5'
@@ -351,6 +355,36 @@ def descrambleSome(scrmblSmpl,scrmblRst,
         APy3_GENfuns.printcol("descrambling ended at {0}".format(APy3_GENfuns.whatTimeIsIt()),'green')
         APy3_GENfuns.printcol("scripts took {0} sec to descramble images".format(dscmblTime-startTime),'green')
     return dscrmbld_GnCrsFn
+
+def NOTdescrambleSome(scrmblSmpl,scrmblRst,
+                   swapSmplRstFlag,seqModFlag, refColH1_0_Flag, 
+                   cleanMemFlag, verboseFlag):
+
+    startTime=time.time()
+    (NImg, aux_NRow, aux_NCol) = scrmblSmpl.shape
+
+    if swapSmplRstFlag:
+        aux_scrmblSmpl= numpy.copy(scrmblRst)
+        aux_scrmblRst = numpy.copy(scrmblSmpl)
+        #
+        scrmblSmpl = numpy.copy(aux_scrmblSmpl)
+        scrmblRst= numpy.copy(aux_scrmblRst)
+        del aux_scrmblSmpl; del aux_scrmblRst
+
+
+    #%% add RefCol
+    scrmblSmpl_wRefCol= numpy.ones((NImg,NRow,NCol), dtype='uint16') * ERRDLSraw
+    scrmblRst_wRefCol=  numpy.ones((NImg,NRow,NCol), dtype='uint16') * ERRDLSraw    
+    scrmblSmpl_wRefCol[:,:,32:]= numpy.copy(scrmblSmpl[:,:,:])
+    scrmblRst_wRefCol[:,:,32:]=  numpy.copy(scrmblRst[:,:,:])
+    del scrmblSmpl; del scrmblRst
+    dscrmbld_GnCrsFn= APy3_P2Mfuns.convert_DLSraw_2_GnCrsFn(scrmblSmpl_wRefCol, scrmblRst_wRefCol, APy3_P2Mfuns.ERRDLSraw, APy3_P2Mfuns.ERRint16)
+    #
+    # mask RefCol
+    dscrmbld_GnCrsFn[:,:,:,:32,:]=APy3_P2Mfuns.ERRint16
+    #
+    return dscrmbld_GnCrsFn
+
 #
 def ADCcorr_local(dscrmbld_GnCrsFn,
                   ADCparam_Smpl_crs_slope,ADCparam_Smpl_crs_offset,ADCparam_Smpl_fn_slope,ADCparam_Smpl_fn_offset,
@@ -378,7 +412,7 @@ if interactiveFlag:
     GUIwin_arguments+= ['swap Smpl/Rst images? [Y/N]'];    GUIwin_arguments+= [str(dflt_swapSmplRstFlag)]
     GUIwin_arguments+= ['Seq with std Mezz_Firm? [Y/N]'];  GUIwin_arguments+= [str(dflt_seqModFlag)]
     GUIwin_arguments+= ['refCol in H0<21>? [Y/N]'];         GUIwin_arguments+= [str(dflt_refColH0_21_Flag)]
-
+    GUIwin_arguments+= ['Descramble? [Y/N]'];              GUIwin_arguments+= [str(dflt_wantDescramble)]
     GUIwin_arguments+= ['ADC correction? [Y/N]'];          GUIwin_arguments+= [str(dflt_ADCcorrFlag)]
     GUIwin_arguments+= ['ADCcor (path and) file'];         GUIwin_arguments+= [dflt_ADUcorr_file]
 
@@ -406,6 +440,8 @@ if interactiveFlag:
     seqModFlag= APy3_GENfuns.isitYes(dataFromUser[i_param]); i_param+=1
     refColH0_21_Flag= APy3_GENfuns.isitYes(dataFromUser[i_param]); i_param+=1
     #
+    wantDescramble = APy3_GENfuns.isitYes(dataFromUser[i_param]); i_param+=1
+    #
     ADCcorrFlag= APy3_GENfuns.isitYes(dataFromUser[i_param]); i_param+=1
     ADUcorr_file= dataFromUser[i_param]; i_param+=1
     #
@@ -432,6 +468,7 @@ else:
     cleanMemFlag= dflt_cleanMemFlag
     verboseFlag= dflt_verboseFlag
     #
+    wantDescramble = dflt_wantDescramble;
     ADCcorrFlag= dflt_ADCcorrFlag
     ADUcorr_file= dflt_ADUcorr_file
     #
@@ -453,10 +490,17 @@ else:
                            suffix_fl0, suffix_fl1,
                            verboseFlag)
 #
-data_GnCrsFn= descrambleSome(scrmblSmpl,scrmblRst,
+
+
+if(wantDescramble):
+  data_GnCrsFn = descrambleSome(scrmblSmpl,scrmblRst,
                    swapSmplRstFlag,seqModFlag, refColH0_21_Flag, 
-                   cleanMemFlag, verboseFlag)
-#
+                   cleanMemFlag, verboseFlag);
+else:
+  data_GnCrsFn = NOTdescrambleSome(scrmblSmpl,scrmblRst,
+                   swapSmplRstFlag,seqModFlag, refColH0_21_Flag, 
+                   cleanMemFlag, verboseFlag);
+
 if ADCcorrFlag:
     if verboseFlag: APy3_GENfuns.printcol("ADC-correction", 'blue')
     if APy3_GENfuns.notFound(ADUcorr_file): APy3_GENfuns.printErr('not found: '+ADUcorr_file)
