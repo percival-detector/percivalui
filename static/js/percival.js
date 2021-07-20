@@ -1060,7 +1060,7 @@ function flash_element(element)
 function led_html(value, colour, width)
 {
   var html_text = "<img width=" + width + "px src=img/";
-  if (value == 0){
+  if (Boolean(value)==false){
     html_text += "led-off";
   } else {
     html_text +=  colour + "-led-on";

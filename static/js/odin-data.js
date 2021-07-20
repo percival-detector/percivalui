@@ -77,11 +77,23 @@ function read_fp_status()
 function populate_fp_table(fp_index, fp)
 {
     $('#' + fp_index + '-shared-mem').html(led_html(fp['shared_memory']['configured'], 'green', 20));
+    // assume that it has an hdf adapter loaded, else throw and terminate.
     $('#' + fp_index + '-hdf-processes').html(fp['hdf']['processes']);
     $('#' + fp_index + '-hdf-rank').html(fp['hdf']['rank']);
     $('#' + fp_index + '-hdf-written').html(fp['hdf']['frames_written'] + " / " + fp['hdf']['frames_max']);
     $('#' + fp_index + '-hdf-file-path').html(fp['hdf']['file_name']);
     $('#' + fp_index + '-writing').html(led_html(fp['hdf']['writing'], 'green', 20));
+
+    if ("calib" in fp)
+    {
+      $('#' + fp_index + '-calib-constantsfile').html(led_html(fp['calib']['constantsfile'], 'green', 20));
+      $('#' + fp_index + '-calib-cmaavg').html(led_html(0<=fp['calib']['cmaavg'], 'green', 20));
+      $('#' + fp_index + '-calib-darkframe').html(led_html(fp['calib']['darkframe'], 'green', 20));
+    }
+    else
+    {
+      // if someone unloads the calib plugin during run, the leds will stay on. But this is unlikely.
+    }
 }
 
 function empty_fp_table(fp_index)
@@ -92,6 +104,10 @@ function empty_fp_table(fp_index)
     $('#' + fp_index + '-hdf-written').html('');
     $('#' + fp_index + '-hdf-file-path').html('');
     $('#' + fp_index + '-writing').html('');
+
+    $('#' + fp_index + '-calib-constantsfile').html('');
+    $('#' + fp_index + '-calib-cmaavg').html('');
+    $('#' + fp_index + '-calib-darkframe').html('');
 }
 
 function send_fp_command(command, data)
