@@ -64,8 +64,8 @@ g_levels = [
 
     { 
       "description" : "head operational",
-      "onscript"  : "./DESY/W3C3/user_scripts/DLS_FSI07_FromSysPowON_ToSeq_3T_PGAB_10Img_12ms_0802g_PLL120MHz_ADC25MHz.sh",
-      "offscript" : "./DESY/W3C3/user_scripts/DLS_FSI07_FromSeq0802g_ToSysPowON_unix.sh"
+      "onscript"  : "./DESY/W3C3/user_scripts/DESY_FSI01_FromSysPowON_ToSeq_3G_PGAB_10Img_12ms_0802h3_PLL120MHz_ADC25MHz.sh",
+      "offscript" : "./DESY/W3C3/user_scripts/DESY_FSI01_FromSeq0802h3_ToSysPowON_unix.sh"
     },
 
     { 
