@@ -3,7 +3,7 @@ Created on 5 Dec 2014
 
 @author: Ulrik Pedersen
 '''
-from __future__ import unicode_literals, absolute_import
+
 from builtins import bytes, range
 import unittest, logging
 from percival.carrier import registers, txrx, const
@@ -44,13 +44,13 @@ class TestHeaderInfoMap(unittest.TestCase):
         self.assertTrue(hasattr(self.dut, "eeprom_address"))
         self.assertTrue(hasattr(self.dut, "monitoring_channels_count"))
         self.assertTrue(hasattr(self.dut, "control_channels_count"))
-        self.assertEquals(self.dut["eeprom_address"], registers.MapField("eeprom_address", 0, 8, 16))
-        self.assertEquals(self.dut["monitoring_channels_count"], registers.MapField("monitoring_channels_count", 0, 8, 8))
-        self.assertEquals(self.dut["control_channels_count"], registers.MapField("control_channels_count", 0, 8, 0))
+        self.assertEqual(self.dut["eeprom_address"], registers.MapField("eeprom_address", 0, 8, 16))
+        self.assertEqual(self.dut["monitoring_channels_count"], registers.MapField("monitoring_channels_count", 0, 8, 8))
+        self.assertEqual(self.dut["control_channels_count"], registers.MapField("control_channels_count", 0, 8, 0))
         with self.assertRaises(AttributeError):
             self.dut.no_parameter_with_this_name
         self.assertTrue(hasattr(self.dut, "num_words"))
-        self.assertEquals(list(self.dut.map_fields).sort(), ["control_channels_count",
+        self.assertEqual(list(self.dut.map_fields).sort(), ["control_channels_count",
                                                              "monitoring_channels_count",
                                                              "eeprom_address"].sort())
 
@@ -129,7 +129,7 @@ class TestCommandMap(unittest.TestCase):
 
     def testInitialMapFieldValue(self):
         self.assertIs(self.dut.device_index, None, "device_index should be initialised to None")
-        self.assertTrue("device_index" in self.dut._mem_map.keys(), "No device index in: %s"%str(self.dut._mem_map.keys()))
+        self.assertTrue("device_index" in list(self.dut._mem_map.keys()), "No device index in: %s"%str(list(self.dut._mem_map.keys())))
         self.dut.device_index = 10
         self.assertIs(self.dut.device_index, 10, "device_index should now be set to 10, not %s"%str(self.dut.device_index))
 
@@ -140,7 +140,7 @@ class TestEchoWordMap(unittest.TestCase):
 
     def testInitialMapFieldValue(self):
         self.assertIs(self.dut.read_value, None, "read_value should be initialised to None")
-        self.assertTrue("read_value" in self.dut._mem_map.keys(), "No read_value in: %s"%str(self.dut._mem_map.keys()))
+        self.assertTrue("read_value" in list(self.dut._mem_map.keys()), "No read_value in: %s"%str(list(self.dut._mem_map.keys())))
         self.dut.read_value = 10
         self.assertIs(self.dut.read_value, 10, "read_value should now be set to 10, not %s"%str(self.dut.read_value))
 
@@ -151,7 +151,7 @@ class TestReadValueMap(unittest.TestCase):
 
     def testInitialMapFieldValue(self):
         self.assertIs(self.dut.sample_number, None, "sample_number should be initialised to None")
-        self.assertTrue("sample_number" in self.dut._mem_map.keys(), "No sample_number in: %s"%str(self.dut._mem_map.keys()))
+        self.assertTrue("sample_number" in list(self.dut._mem_map.keys()), "No sample_number in: %s"%str(list(self.dut._mem_map.keys())))
         self.dut.sample_number = 10
         self.assertIs(self.dut.sample_number, 10, "sample_number should now be set to 10, not %s"%str(self.dut.sample_number))
 

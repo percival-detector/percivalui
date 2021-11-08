@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import threading;
 import socket;
@@ -93,11 +93,11 @@ def validateDoc(levels):
     for lv in levels:
         lv["type"] = "level";
         lv["level"] = lidx;
-        if(lv.has_key("state")):
-            print "uh oh this level has a state when it shouldnt";
+        if("state" in lv):
+            print("uh oh this level has a state when it shouldnt");
         lv["state"] = "not done";
         score += 1;
-        if("description" in lv.keys() and "onscript" in lv.keys() and "offscript" in lv.keys()):
+        if("description" in list(lv.keys()) and "onscript" in list(lv.keys()) and "offscript" in list(lv.keys())):
             desc = lv.get("description");
             if(5<len(desc) and desc not in descs):
                 descs.append(desc);
@@ -109,7 +109,7 @@ def validateDoc(levels):
                     ac["type"] = "action";
                     ac["level"] = lidx;
                     ac["aidx"] = aidx;
-                    if("description" in ac.keys() and "onscript" in ac.keys()):
+                    if("description" in list(ac.keys()) and "onscript" in list(ac.keys())):
                         desc = ac.get("description");
                         if(5<len(desc) and desc not in descs):
                             descs.append(desc);
@@ -128,7 +128,7 @@ def setEnableFlags(levels):
     # warning alltasks needs to be a different list.
     alltasks = list(levels);
     for lv in levels:
-        if(lv.has_key("actions")):
+        if("actions" in lv):
             alltasks.extend(lv.get("actions"));
 
     for tk in alltasks:
@@ -199,35 +199,35 @@ class myServer:
         self._mythread = threading.Thread();
 
     def __del__(self):
-        print "closing server";
+        print("closing server");
         if self._mythread and self._mythread.isAlive():
             self._mythread.join();
         self._sock.close();
 
     def doTask(self, task):
-        print "DOING TASK ", task.get("description");
+        print("DOING TASK ", task.get("description"));
         script = task.get("onscript");
         if 0<=len(script):
-            print "running ", script;
+            print("running ", script);
             rc = os.system(script);
             if rc:
-                print "task failed";
+                print("task failed");
                 task["state"] = "not done";
             else:
-                print "done task ok";
+                print("done task ok");
                 task["state"] = "done";
 
     def undoTask(self, task):
-        print "UNDOING TASK ", task.get("description");
+        print("UNDOING TASK ", task.get("description"));
         script = task.get("offscript");
         if 0<=len(script):
-            print "running ", script;
+            print("running ", script);
             rc = os.system(script);
             if rc:
-                print "script failed";
+                print("script failed");
                 task["state"] = "done";
             else:
-                print "undone task ok";
+                print("undone task ok");
                 task["state"] = "not done";
 
     # this version of doMsg will move down the levels undoing the tasks,
@@ -242,9 +242,9 @@ class myServer:
         for task in lvs:
             if(task.get("enable") and task.get("state")=="done"):
                    if self._mythread.is_alive():
-                      print "assert failure thread is alive when it shouldnt";
+                      print("assert failure thread is alive when it shouldnt");
                       exit(1);
-                   print "autoshutdown undoing ", task.get("description");
+                   print("autoshutdown undoing ", task.get("description"));
                    if "check" in task["description"]:
                       # we skip the checks.
                       task["state"] = "not done";
@@ -271,7 +271,7 @@ class myServer:
 
         ji_sh = [{"shutdownPerc" : True}];
         ji = json.dumps(ji_sh);
-        conn.send(ji);
+        conn.send(ji.encode());
         conn.close();
 
 
@@ -291,13 +291,13 @@ class myServer:
            # print "got data from " , conn;
           #  print "incoming message:", data;
 
-            di = json.loads(data);
+            di = json.loads(data.decode());
 
-            if di.has_key("cmd"):
+            if "cmd" in di:
                 cmd = di["cmd"];
 
                 if cmd=="toggle" or cmd=="start" or cmd=="stop":
-                    if di.has_key("task") and getTask(di["task"]):
+                    if "task" in di and getTask(di["task"]):
                         task = getTask(di["task"]);
 
                         if(cmd=="toggle" and task.get("state")=="done"):
@@ -325,14 +325,14 @@ class myServer:
                         
 
             ji = json.dumps(getLevelsShort());
-            conn.send(ji);
+            conn.send(ji.encode());
         except Exception as e:
-            print "exception", e;
+            print("exception", e);
             pass;
 
         conn.close();
 
-print "hello.\nchecking config is ok";
+print("hello.\nchecking config is ok");
 
 rc = validateDoc(g_levels);
 
@@ -340,47 +340,48 @@ if(rc):
     print("invalid config: you are missing fields or have duplicated a description");
     exit(rc);
 
-print "checking odin_server is started";
+print("checking odin_server is started");
 # need to check that odin_server is available. This is usually on localhost:8888
 response = requests.get("http://localhost:8888");
 if response.status_code != 200:
     exit(1);
 
-print "check cur dir is percivalui";
+print("check cur dir is percivalui");
 if False and os.path.basename(os.getcwd())!="percivalui":
-    print "fail";
+    print("fail");
     exit(2);
 
 wnr = subprocess.check_output("user_scripts/wiener/querymainswitch.sh");
+wnr = wnr.decode();
 if g_AtDesy:
-   print "check wiener is ON";
+   print("check wiener is ON");
    if "on" not in wnr:
-        print "error: wiener is off; you need to load the carrier board firmware";
+        print("error: wiener is off; you need to load the carrier board firmware");
         exit(4);
 else:
-    print "check wiener is OFF";
+    print("check wiener is OFF");
     if "off" not in wnr:
-        print "error: wiener is on";
+        print("error: wiener is on");
         exit(3);
 
-    print "check UPS is reachable and has mains power";
+    print("check UPS is reachable and has mains power");
     if upsOk()==False:
-        print "fail";
+        print("fail");
         exit(4);
 
-print "check venv contains percivalui";
+print("check venv contains percivalui");
 rc = os.system("pip show percivalui");
 if rc!=0:
-    print "error can't find percivalui in python venv";
+    print("error can't find percivalui in python venv");
     exit(4);
 
-print "checks passed";
+print("checks passed");
 
 serv = myServer();
 while g_Go:
     if g_upsOk and upsOk() == False:
         g_upsOk = False;
-        print "UPS HAS NO POWER: automatic shutdown has begun; please wait.";
+        print("UPS HAS NO POWER: automatic shutdown has begun; please wait.");
 
     if g_upsOk:
         serv.doMsg();
@@ -388,5 +389,5 @@ while g_Go:
         serv.doMsgShutdown();
         
 
-print "Exiting server.py";
+print("Exiting server.py");
 

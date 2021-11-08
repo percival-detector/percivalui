@@ -8,7 +8,7 @@ are stored within this class.  There are two subclasses available, the
 ControlChannel and the MonitoringChannel.  It is possible to set the value
 of a ControlChannel and to get the value of a MonitoringChannel.
 """
-from __future__ import print_function
+
 
 import time
 import logging

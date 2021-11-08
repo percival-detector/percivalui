@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import socket;
 import sys;
@@ -27,14 +27,14 @@ def sendMsg(command, task):
 
 
     jis = json.dumps(ji);
-    s.send(jis);
+    s.send(jis.encode());
     ji = {};
     back = s.recv(2048);
     s.close();
 
     if back:
      #   print "returned", back;
-        ji = json.loads(back);
+        ji = json.loads(back.decode());
 
     return ji;
 

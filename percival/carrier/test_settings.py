@@ -3,7 +3,7 @@ Created on 13 June 2016
 
 @author: gnx91527
 '''
-from __future__ import unicode_literals, absolute_import
+
 
 import unittest, sys, logging
 from mock import MagicMock

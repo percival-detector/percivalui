@@ -10,7 +10,7 @@ interface.
 The interface classes rely on the python :mod:`abc` module to support Abstract Base
 Classes
 """
-from __future__ import unicode_literals, absolute_import
+
 from future.utils import with_metaclass
 import logging
 

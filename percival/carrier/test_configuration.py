@@ -19,7 +19,7 @@ class TestConfiguration(unittest.TestCase):
         os.environ["PERCIVAL_CONFIG_DIR"] = str("/tmp")
         fn = find_file("testfile.ini")
         # Verify the file is found
-        self.assertEquals(fn, "/tmp/testfile.ini")
+        self.assertEqual(fn, "/tmp/testfile.ini")
 
 
 class TestChannelParameters(unittest.TestCase):
@@ -182,25 +182,25 @@ Total_channels_count = 33\n\
     def test_board_parameters(self):
         bp = BoardParameters("/tmp/BoardCARRIER.ini")
         bp.load_ini()
-        self.assertEquals(bp.board_name, '\"PercivalAdapter V2.0 (S/N: 000002)\"')
-        self.assertEquals(bp.board_type, BoardTypes.carrier)
-        self.assertEquals(bp.board_revision, 0)
-        self.assertEquals(bp.control_channels_count, 14)
-        self.assertEquals(bp.monitoring_channels_count, 19)
+        self.assertEqual(bp.board_name, '\"PercivalAdapter V2.0 (S/N: 000002)\"')
+        self.assertEqual(bp.board_type, BoardTypes.carrier)
+        self.assertEqual(bp.board_revision, 0)
+        self.assertEqual(bp.control_channels_count, 14)
+        self.assertEqual(bp.monitoring_channels_count, 19)
 
     def test_board_exceptions(self):
         bp = BoardParameters("/tmp/BoardNONE.ini")
         bp.load_ini()
         with self.assertRaises(RuntimeError):
-            self.assertEquals(bp.board_name, '\"PercivalAdapter V2.0 (S/N: 000002)\"')
+            self.assertEqual(bp.board_name, '\"PercivalAdapter V2.0 (S/N: 000002)\"')
         with self.assertRaises(RuntimeError):
-            self.assertEquals(bp.board_type, BoardTypes.carrier)
+            self.assertEqual(bp.board_type, BoardTypes.carrier)
         with self.assertRaises(RuntimeError):
-            self.assertEquals(bp.board_revision, 0)
+            self.assertEqual(bp.board_revision, 0)
         with self.assertRaises(RuntimeError):
-            self.assertEquals(bp.control_channels_count, 14)
+            self.assertEqual(bp.control_channels_count, 14)
         with self.assertRaises(RuntimeError):
-            self.assertEquals(bp.monitoring_channels_count, 19)
+            self.assertEqual(bp.monitoring_channels_count, 19)
 
 
 class TestControlParameters(unittest.TestCase):
@@ -235,51 +235,51 @@ channel_settings_file = \"config/Channel parameters.ini\"\n\
     def test_control_parameters(self):
         pp = ControlParameters("/tmp/Percival.ini")
         pp.load_ini()
-        self.assertEquals(pp.carrier_ip, '127.0.0.1')
-        self.assertEquals(pp.system_settings_file, 'config/SystemSettings.ini')
-        self.assertEquals(pp.chip_readout_settings_file, 'config/ChipReadoutSettings.ini')
-        self.assertEquals(pp.clock_settings_file, 'config/ClockSettings.ini')
-        self.assertEquals(pp.sensor_configuration_file, 'config/SensorConfiguration.ini')
-        self.assertEquals(pp.sensor_calibration_file, 'config/SensorCalibration.ini')
-        self.assertEquals(pp.sensor_debug_file, 'config/SensorDebug.ini')
-        self.assertEquals(pp.board_bottom_settings_file, 'config/Board BOTTOM.ini')
-        self.assertEquals(pp.board_carrier_settings_file, 'config/Board CARRIER.ini')
-        self.assertEquals(pp.board_left_settings_file, 'config/Board LEFT.ini')
-        self.assertEquals(pp.board_plugin_settings_file, 'config/Board PLUGIN.ini')
-        self.assertEquals(pp.channel_settings_file, 'config/Channel parameters.ini')
+        self.assertEqual(pp.carrier_ip, '127.0.0.1')
+        self.assertEqual(pp.system_settings_file, 'config/SystemSettings.ini')
+        self.assertEqual(pp.chip_readout_settings_file, 'config/ChipReadoutSettings.ini')
+        self.assertEqual(pp.clock_settings_file, 'config/ClockSettings.ini')
+        self.assertEqual(pp.sensor_configuration_file, 'config/SensorConfiguration.ini')
+        self.assertEqual(pp.sensor_calibration_file, 'config/SensorCalibration.ini')
+        self.assertEqual(pp.sensor_debug_file, 'config/SensorDebug.ini')
+        self.assertEqual(pp.board_bottom_settings_file, 'config/Board BOTTOM.ini')
+        self.assertEqual(pp.board_carrier_settings_file, 'config/Board CARRIER.ini')
+        self.assertEqual(pp.board_left_settings_file, 'config/Board LEFT.ini')
+        self.assertEqual(pp.board_plugin_settings_file, 'config/Board PLUGIN.ini')
+        self.assertEqual(pp.channel_settings_file, 'config/Channel parameters.ini')
 
     def test_control_exceptions(self):
         pp = ControlParameters("/tmp/PercivalNONE.ini")
         pp.load_ini()
         with self.assertRaises(RuntimeError):
-            self.assertEquals(pp.carrier_ip, '127.0.0.1')
+            self.assertEqual(pp.carrier_ip, '127.0.0.1')
 
 
 class TestSensorConfigurationParameters(unittest.TestCase):
     def setUp(self):
-        self._ini_description = u"[General]\n" \
-                                u"Cols<H1>=5\n" \
-                                u"Cols<H0>=4\n" \
-                                u"Cols<G>=3\n" \
-                                u"\n" \
-                                u"[H1]\n" \
-                                u"Col<0>=5\n" \
-                                u"Col<1>=4\n" \
-                                u"Col<2>=3\n" \
-                                u"Col<3>=2\n" \
-                                u"Col<4>=1\n" \
-                                u"\n" \
-                                u"[H0]\n" \
-                                u"Col<0>=1\n" \
-                                u"Col<1>=2\n" \
-                                u"Col<2>=3\n" \
-                                u"Col<3>=4\n" \
-                                u"\n" \
-                                u"[G]\n" \
-                                u"Col<0>=3\n" \
-                                u"Col<1>=2\n" \
-                                u"Col<2>=1\n" \
-                                u"\n"
+        self._ini_description = "[General]\n" \
+                                "Cols<H1>=5\n" \
+                                "Cols<H0>=4\n" \
+                                "Cols<G>=3\n" \
+                                "\n" \
+                                "[H1]\n" \
+                                "Col<0>=5\n" \
+                                "Col<1>=4\n" \
+                                "Col<2>=3\n" \
+                                "Col<3>=2\n" \
+                                "Col<4>=1\n" \
+                                "\n" \
+                                "[H0]\n" \
+                                "Col<0>=1\n" \
+                                "Col<1>=2\n" \
+                                "Col<2>=3\n" \
+                                "Col<3>=4\n" \
+                                "\n" \
+                                "[G]\n" \
+                                "Col<0>=3\n" \
+                                "Col<1>=2\n" \
+                                "Col<2>=1\n" \
+                                "\n"
 
     def test_configuration_parameters(self):
         cp = SensorConfigurationParameters(self._ini_description)
@@ -291,66 +291,66 @@ class TestSensorConfigurationParameters(unittest.TestCase):
 
 class TestSensorCalibrationParameters(unittest.TestCase):
     def setUp(self):
-        self._ini_description = u"[General]\n" \
-                                u"Cols<H1>=3\n" \
-                                u"Cols<H0>=2\n" \
-                                u"Cols<G>=1\n" \
-                                u"target_signals=4\n" \
-                                u"\n" \
-                                u"[H1]\n" \
-                                u"RightCal<0>Col<0>=1\n" \
-                                u"LeftCal<0>Col<0>=2\n" \
-                                u"RightCal<1>Col<0>=3\n" \
-                                u"LeftCal<1>Col<0>=4\n" \
-                                u"RightCal<2>Col<0>=5\n" \
-                                u"LeftCal<2>Col<0>=6\n" \
-                                u"RightCal<3>Col<0>=7\n" \
-                                u"LeftCal<3>Col<0>=8\n" \
-                                u"RightCal<0>Col<1>=9\n" \
-                                u"LeftCal<0>Col<1>=10\n" \
-                                u"RightCal<1>Col<1>=11\n" \
-                                u"LeftCal<1>Col<1>=12\n" \
-                                u"RightCal<2>Col<1>=13\n" \
-                                u"LeftCal<2>Col<1>=14\n" \
-                                u"RightCal<3>Col<1>=15\n" \
-                                u"LeftCal<3>Col<1>=16\n" \
-                                u"RightCal<0>Col<2>=17\n" \
-                                u"LeftCal<0>Col<2>=18\n" \
-                                u"RightCal<1>Col<2>=19\n" \
-                                u"LeftCal<1>Col<2>=20\n" \
-                                u"RightCal<2>Col<2>=21\n" \
-                                u"LeftCal<2>Col<2>=22\n" \
-                                u"RightCal<3>Col<2>=23\n" \
-                                u"LeftCal<3>Col<2>=24\n" \
-                                u"\n" \
-                                u"[H0]\n" \
-                                u"RightCal<0>Col<0>=25\n" \
-                                u"LeftCal<0>Col<0>=26\n" \
-                                u"RightCal<1>Col<0>=27\n" \
-                                u"LeftCal<1>Col<0>=28\n" \
-                                u"RightCal<2>Col<0>=29\n" \
-                                u"LeftCal<2>Col<0>=30\n" \
-                                u"RightCal<3>Col<0>=31\n" \
-                                u"LeftCal<3>Col<0>=32\n" \
-                                u"RightCal<0>Col<1>=33\n" \
-                                u"LeftCal<0>Col<1>=34\n" \
-                                u"RightCal<1>Col<1>=35\n" \
-                                u"LeftCal<1>Col<1>=36\n" \
-                                u"RightCal<2>Col<1>=37\n" \
-                                u"LeftCal<2>Col<1>=38\n" \
-                                u"RightCal<3>Col<1>=39\n" \
-                                u"LeftCal<3>Col<1>=40\n" \
-                                u"\n" \
-                                u"[G]\n" \
-                                u"RightCal<0>Col<0>=41\n" \
-                                u"LeftCal<0>Col<0>=42\n" \
-                                u"RightCal<1>Col<0>=43\n" \
-                                u"LeftCal<1>Col<0>=44\n" \
-                                u"RightCal<2>Col<0>=45\n" \
-                                u"LeftCal<2>Col<0>=46\n" \
-                                u"RightCal<3>Col<0>=47\n" \
-                                u"LeftCal<3>Col<0>=48\n" \
-                                u"\n"
+        self._ini_description = "[General]\n" \
+                                "Cols<H1>=3\n" \
+                                "Cols<H0>=2\n" \
+                                "Cols<G>=1\n" \
+                                "target_signals=4\n" \
+                                "\n" \
+                                "[H1]\n" \
+                                "RightCal<0>Col<0>=1\n" \
+                                "LeftCal<0>Col<0>=2\n" \
+                                "RightCal<1>Col<0>=3\n" \
+                                "LeftCal<1>Col<0>=4\n" \
+                                "RightCal<2>Col<0>=5\n" \
+                                "LeftCal<2>Col<0>=6\n" \
+                                "RightCal<3>Col<0>=7\n" \
+                                "LeftCal<3>Col<0>=8\n" \
+                                "RightCal<0>Col<1>=9\n" \
+                                "LeftCal<0>Col<1>=10\n" \
+                                "RightCal<1>Col<1>=11\n" \
+                                "LeftCal<1>Col<1>=12\n" \
+                                "RightCal<2>Col<1>=13\n" \
+                                "LeftCal<2>Col<1>=14\n" \
+                                "RightCal<3>Col<1>=15\n" \
+                                "LeftCal<3>Col<1>=16\n" \
+                                "RightCal<0>Col<2>=17\n" \
+                                "LeftCal<0>Col<2>=18\n" \
+                                "RightCal<1>Col<2>=19\n" \
+                                "LeftCal<1>Col<2>=20\n" \
+                                "RightCal<2>Col<2>=21\n" \
+                                "LeftCal<2>Col<2>=22\n" \
+                                "RightCal<3>Col<2>=23\n" \
+                                "LeftCal<3>Col<2>=24\n" \
+                                "\n" \
+                                "[H0]\n" \
+                                "RightCal<0>Col<0>=25\n" \
+                                "LeftCal<0>Col<0>=26\n" \
+                                "RightCal<1>Col<0>=27\n" \
+                                "LeftCal<1>Col<0>=28\n" \
+                                "RightCal<2>Col<0>=29\n" \
+                                "LeftCal<2>Col<0>=30\n" \
+                                "RightCal<3>Col<0>=31\n" \
+                                "LeftCal<3>Col<0>=32\n" \
+                                "RightCal<0>Col<1>=33\n" \
+                                "LeftCal<0>Col<1>=34\n" \
+                                "RightCal<1>Col<1>=35\n" \
+                                "LeftCal<1>Col<1>=36\n" \
+                                "RightCal<2>Col<1>=37\n" \
+                                "LeftCal<2>Col<1>=38\n" \
+                                "RightCal<3>Col<1>=39\n" \
+                                "LeftCal<3>Col<1>=40\n" \
+                                "\n" \
+                                "[G]\n" \
+                                "RightCal<0>Col<0>=41\n" \
+                                "LeftCal<0>Col<0>=42\n" \
+                                "RightCal<1>Col<0>=43\n" \
+                                "LeftCal<1>Col<0>=44\n" \
+                                "RightCal<2>Col<0>=45\n" \
+                                "LeftCal<2>Col<0>=46\n" \
+                                "RightCal<3>Col<0>=47\n" \
+                                "LeftCal<3>Col<0>=48\n" \
+                                "\n"
 
     def test_configuration_parameters(self):
         cp = SensorCalibrationParameters(self._ini_description)
@@ -387,10 +387,10 @@ class TestSensorCalibrationParameters(unittest.TestCase):
 
 class TestSensorDebugParameters(unittest.TestCase):
     def setUp(self):
-        self._ini_description = u"[Debug]\n"\
-                                u"debug_CLKin = 1\n"\
-                                u"debug_adcCPN = 0\n"\
-                                u"\n";
+        self._ini_description = "[Debug]\n"\
+                                "debug_CLKin = 1\n"\
+                                "debug_adcCPN = 0\n"\
+                                "\n";
 
     def test_debug_parameters(self):
         cp = SensorDebugParameters(self._ini_description)

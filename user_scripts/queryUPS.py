@@ -31,9 +31,9 @@ def checkUPS():
 
 if __name__ == "__main__":
     if checkUPS():
-        print "UPS is ok";
+        print("UPS is ok");
     else:
-        print "UPS IS UNPOWERED OR DISCONNECTED";  
+        print("UPS IS UNPOWERED OR DISCONNECTED");  
     
 
 

@@ -3,12 +3,12 @@
 import json;
 import socket;
 import sys;
-from Tkinter import *;
+from tkinter import *;
 import socketfns;
 
 # we should have exit-server instead
 if len(sys.argv)==2 and sys.argv[1]=="--shutdown-server":
-    print "sending shutdown message to server";
+    print("sending shutdown message to server");
     socketfns.sendMsg("exit", None);
     exit(0);
 
@@ -24,7 +24,7 @@ def btnCallback(tk):
     # be careful with tk here: it may not be concurrent.
     # this button callback should also disable the button so it doesn't
     # get pressed twice; we may as well disable all the buttons then.
-    for but in desc2but.values():
+    for but in list(desc2but.values()):
         but.configure(state=DISABLED);
 
     if(tk.get("type")=="level"):
@@ -68,11 +68,11 @@ def updateStatus():
     global count;
     # updateStatus and button callbacks won't be called simultaneously;
     # master seems to be single-threaded, but it will queue functions to call
-    print "update status", count;
+    print("update status", count);
     count += 1;
     levels = socketfns.getStatus();
-    if len(levels)==1 and levels[0].has_key("shutdownPerc"):
-        print "AUTOSHUTDOWN RUNNING";
+    if len(levels)==1 and "shutdownPerc" in levels[0]:
+        print("AUTOSHUTDOWN RUNNING");
         exit(0);
     updateCanvas(levels);
     updateButtons(levels);

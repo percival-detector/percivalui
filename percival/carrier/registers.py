@@ -4,7 +4,7 @@ Definitions of the Carrier Board UART control registers
 Update this whenever there are any firmware/documentation changes to register map definitions in the UART blocks.
 """
 
-from __future__ import unicode_literals, absolute_import
+
 
 from future.utils import with_metaclass, raise_with_traceback
 from builtins import range  # pylint: disable=W0622
@@ -21,14 +21,14 @@ logger = logging.getLogger(__name__)
 class RegisterMap(object):
     """Mixin to be used by classes that implement the `IRegisterMap` interface"""
     def __getattr__(self, name):
-        if name in self._mem_map.keys():
+        if name in list(self._mem_map.keys()):
             return self._mem_map[name].value
         else:
             raise_with_traceback(AttributeError("No attribute: %s"%name))
 
     def __setattr__(self, name, value):
         #logger.debug(str(self._mem_map))
-        if name not in self._mem_map.keys():
+        if name not in list(self._mem_map.keys()):
             return object.__setattr__(self, name, value)
         else:
             self._mem_map[name].value = value
@@ -41,7 +41,7 @@ class RegisterMap(object):
     def parse_map(self, words):
         if len(words) != self.num_words:
             raise_with_traceback(IndexError("Map must contain %d words. Got only %d" % (self.num_words, len(words))))
-        map_fields = [f for (k, f) in sorted(self._mem_map.items(),
+        map_fields = [f for (k, f) in sorted(list(self._mem_map.items()),
                       key=lambda key_field: key_field[1].word_index, reverse=True)]
         for map_field in map_fields:
             map_field.extract_field_value(words)
@@ -53,7 +53,7 @@ class RegisterMap(object):
     def generate_map(self):
         words = list(range(self.num_words))
         logger.debug("map: %s", str(self._mem_map))
-        for (key, field) in self._mem_map.items():  # pylint: disable=W0612
+        for (key, field) in list(self._mem_map.items()):  # pylint: disable=W0612
             logger.debug("field: %s", str(field))
             field.insert_field_value(words)
             logger.debug("generate_map: words: %s", str(words))
@@ -61,7 +61,7 @@ class RegisterMap(object):
 
     @property
     def map_fields(self):
-        return self._mem_map.keys()
+        return list(self._mem_map.keys())
 
     @property
     def mem_map(self):
@@ -69,7 +69,7 @@ class RegisterMap(object):
 
     def __str__(self):
         map_str = ""
-        map_fields = [f for (k, f) in sorted(self._mem_map.items(),
+        map_fields = [f for (k, f) in sorted(list(self._mem_map.items()),
                       key=lambda key_field: key_field[1].word_index, reverse=True)]
         for map_field in map_fields:
             map_str += str(map_field) + ", "
@@ -962,7 +962,7 @@ def get_register_block(addr):
     :return: Return the address block if found or None if addr is out of range
     :rtype: :obj:`percival.carrier.const.UARTBlock`
     """
-    register_blocks = CarrierUARTRegisters.keys()
+    register_blocks = list(CarrierUARTRegisters.keys())
     for register_block in register_blocks:
         if register_block.start_address <= \
            addr < \

@@ -12,7 +12,7 @@ TODO: This assumes the buffer has already been filled with values.  This
 class could instead of taking the number of words, take the actual words and
 fill the buffer itself.
 '''
-from __future__ import print_function
+
 from percival.carrier.registers import SensorDACMap
 from percival.carrier.errors import PercivalControlDeviceError
 
@@ -126,7 +126,7 @@ class Sensor(object):
 
     def parse_debug_flag(self, flag):
         value = 0
-        if isinstance(flag, str) or isinstance(flag, unicode):
+        if isinstance(flag, str) or isinstance(flag, str):
             if 'false' in flag.lower():
                 flag = 0
             elif 'true' in flag.lower():
