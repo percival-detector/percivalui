@@ -5,7 +5,7 @@ Created on 25 Jan 2018
 
 Script for controlling the HAMEG power supply
 '''
-from __future__ import print_function
+
 import time
 import argparse
 import socket

@@ -11,7 +11,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-from __future__ import unicode_literals
+
 import sys, os
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -41,8 +41,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'PercivalUI'
-copyright = u'2014, Ulrik Kofoed Pedersen, Diamond Light Source'
+project = 'PercivalUI'
+copyright = '2014, Ulrik Kofoed Pedersen, Diamond Light Source'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -188,8 +188,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'PercivalUI.tex', u'PercivalUI Documentation',
-   u'Ulrik Kofoed Pedersen', 'manual'),
+  ('index', 'PercivalUI.tex', 'PercivalUI Documentation',
+   'Ulrik Kofoed Pedersen', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -218,8 +218,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'percivalui', u'PercivalUI Documentation',
-     [u'Ulrik Kofoed Pedersen'], 1)
+    ('index', 'percivalui', 'PercivalUI Documentation',
+     ['Ulrik Kofoed Pedersen'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -232,8 +232,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'PercivalUI', u'PercivalUI Documentation',
-   u'Ulrik Kofoed Pedersen', 'PercivalUI', 'Python user interface for the Percival detector.',
+  ('index', 'PercivalUI', 'PercivalUI Documentation',
+   'Ulrik Kofoed Pedersen', 'PercivalUI', 'Python user interface for the Percival detector.',
    'Miscellaneous'),
 ]
 

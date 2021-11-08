@@ -4,7 +4,7 @@ Created on 17 July 2017
 @author: gnx91527
 '''
 
-from __future__ import unicode_literals, absolute_import
+
 
 import unittest, sys, logging
 from mock import MagicMock, call

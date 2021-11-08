@@ -3,7 +3,7 @@ Created on 20 May 2016
 
 @author: Alan Greer
 """
-from __future__ import print_function
+
 import os
 import logging
 import threading
@@ -15,7 +15,7 @@ import sys
 import traceback
 is_py2 = sys.version[0] == '2'
 if is_py2:
-    import Queue as queue
+    import queue as queue
 else:
     import queue as queue
 
@@ -1285,7 +1285,7 @@ class PercivalDetector(object):
         elif parameter == "commands":
             reply = {}
             reply["commands"] = []
-            for name, tmp in const.SystemCmd.__members__.items():
+            for name, tmp in list(const.SystemCmd.__members__.items()):
                 reply["commands"].append(name)
 
         elif parameter == "system_values":

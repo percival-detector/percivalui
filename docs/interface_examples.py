@@ -1,4 +1,4 @@
-from __future__ import unicode_literals, print_function
+
 try:
     from pkg_resources import require
     require('numpy')

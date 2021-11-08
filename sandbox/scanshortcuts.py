@@ -4,7 +4,7 @@ Created on 13 May 2015
 @author: Ulrik Pedersen
 '''
 
-from __future__ import print_function
+
 from builtins import range  # pylint: disable=W0622
 import os
 
@@ -15,7 +15,7 @@ from percival.carrier.const import *
 
 board_ip_address = os.getenv("PERCIVAL_CARRIER_IP")
 
-scanrange = range(READBACK_HEADER_SETTINGS_LEFT.start_address, READBACK_MONITORING_SETTINGS_PLUGIN.start_address+1, 1)
+scanrange = list(range(READBACK_HEADER_SETTINGS_LEFT.start_address, READBACK_MONITORING_SETTINGS_PLUGIN.start_address+1, 1))
 
 def main():
     log.info("Scanning shortcuts...")

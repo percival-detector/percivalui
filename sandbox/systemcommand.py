@@ -3,7 +3,7 @@ Created on 17 May 2016
 
 @author: gnx91527
 '''
-from __future__ import print_function
+
 
 import sys
 import argparse
@@ -15,7 +15,7 @@ from percival.carrier.txrx import TxRxContext
 from percival.carrier.system import SystemCommand
 from percival.detector.detector import PercivalParameters
 
-system_commands = "\n\t".join([name for name, tmp in const.SystemCmd.__members__.items()])
+system_commands = "\n\t".join([name for name, tmp in list(const.SystemCmd.__members__.items())])
 
 
 def options():

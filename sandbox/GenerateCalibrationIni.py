@@ -3,7 +3,7 @@ Created on 24 July 2017
 
 @author: Alan Greer
 '''
-from __future__ import print_function
+
 from builtins import range  # pylint: disable=W0622
 from percival.log import log
 

@@ -9,7 +9,7 @@ An instance is initialised with a percival.carrier.txrx.TxRx object and
 also the target board (const.BoardTypes).  The class can then be used to
 read the values from the hardware.
 """
-from __future__ import print_function
+
 
 import logging
 from percival.carrier.registers import UARTRegister, BoardValueRegisters

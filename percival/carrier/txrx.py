@@ -1,7 +1,7 @@
 """
 Communications module for the Percival Carrier Board XPort interface.
 """
-from __future__ import unicode_literals, absolute_import
+
 from builtins import bytes  # pylint: disable=W0622
 from future.utils import raise_with_traceback
 

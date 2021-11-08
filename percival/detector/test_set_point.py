@@ -20,7 +20,7 @@ class TestSetPointControl(unittest.TestCase):
         ini.get_name = MagicMock()
         ini.get_name.side_effect = sp_names
         self._spc.load_ini(ini)
-        self.assertEqual(self._spc.set_points, sp_dict.keys())
+        self.assertEqual(self._spc.set_points, list(sp_dict.keys()))
         self.assertEqual(self._spc.get_description("sp_name_1"), "Test Desc 1")
         ini.get_description.assert_called_once_with("sp1")
 

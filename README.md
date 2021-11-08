@@ -13,15 +13,19 @@ The percivalui project allow users and detector engineers to control the Perciva
 
 ## Dependencies ##
 
-This package is developed with Python 2.7, but with future upgrade to Python 3 in mind. Every git Push is tested using [travis-ci](https://travis-ci.org/percival-detector/percivalui) with Python 3.4.
+This package is developed with Python 3.7.
+Every git Push is tested using [travis-ci](https://travis-ci.org/percival-detector/percivalui) with Python 3.4.
 
 System dependencies:
-* Python (2.7)
+* Python (3.7)
 * pip - python package manager
 * HDF5 libraries (development package)
 * ZeroMQ (development package)
 * InfluxDB - time series database
 * Grafana - analytics and monitoring
+* odin-control - 1.1.0 is python3 compatible
+* odin-data - 1.6.0 is python3 compatible
+* pySerial - for connection with uninterruptible power supply (optional).
 
 Building with setuptools will attempt to use pip to download and install dependencies locally first. The python dependencies are listed in requirements.txt
 
@@ -29,7 +33,7 @@ Building with setuptools will attempt to use pip to download and install depende
 
 ### Installing InfluxDB ###
 
-Full instructions for installing InfluxDB can be found [here](https://portal.influxdata.com/downloads).  It is recommended that the database be installed as a package for your specific OS.  To install on CentOS the following steps are appropriate:
+Instructions for installing InfluxDB can be found [here](https://portal.influxdata.com/downloads).  It is recommended that the database be installed as a package for your specific OS.  To install on CentOS the following steps are appropriate:
 
     cd ~
     mkdir -p packages
@@ -71,8 +75,8 @@ and it is recommended to setup a virtualenv first:
 	cd percivalui
 	
 	# Setup your virtual python environment and activate it
-	virtualenv --no-site-packages -p /path/to/python2.7 venv27
-	source venv27/bin/activate
+	virtualenv --no-site-packages -p /path/to/python3.7 venv3
+	source venv3/bin/activate
 	
 	# Point to your HDF5 installation if it is not in the system path
 	export HDF5_DIR=/path/to/your/hdf5/installation
@@ -81,7 +85,7 @@ and it is recommended to setup a virtualenv first:
 	pip install -r requirements.txt
 	
 	# Run the unittests to ensure everything is setup in the environment
-	# there should be no failures/errors reported (tested on Ubuntu Trusty, Precise and RHEL6)
+	# (tested on RHEL7)
 	python setup.py nosetests
 	
 	# Optionally build the documentation
@@ -93,16 +97,16 @@ recommended to install it into a virtual environment in development mode:
     cd percivalui
     
 	# activate your virtual python environment 
-	source venv27/bin/activate
+	source venv3/bin/activate
     
     python setup.py develop
 
-Updating the sources when the repository has new changes/fixes is then trivial:
+Updating the percivalui code is like this:
 
     cd percivalui
     
 	# activate your virtual python environment 
-	source venv27/bin/activate
+	source venv3/bin/activate
     
     # Clean up before updating
     python setup.py develop --uninstall
@@ -175,7 +179,7 @@ Once installation is complete running the Odin server requires only the setting 
     cd percivalui
 
 	# activate your virtual python environment
-	source venv27/bin/activate
+	source venv3/bin/activate
 
 	# Execute the Odin server
 	odin_server --config=percival_test.cfg

@@ -7,7 +7,7 @@ A class to provide set-point scanning capability for a Percival group of channel
 to be defined along with a number of steps and delay times and executes the required scan for the specified
 control channels.
 """
-from __future__ import print_function
+
 
 from datetime import datetime
 import logging
@@ -74,7 +74,7 @@ class SetPointControl(object):
 
     @property
     def set_points(self):
-        return self._name2name.keys()
+        return list(self._name2name.keys())
 
     def get_description(self, set_point):
         return self._set_point_ini.get_description(self._name2name[set_point])

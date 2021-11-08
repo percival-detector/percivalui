@@ -10,7 +10,7 @@ loop on many bias values: set filename, set new bias, wait 7sec, acquire 10 img,
 '''
 
 
-from __future__ import print_function
+
 
 import sys
 import argparse
@@ -23,7 +23,7 @@ from percival.carrier import const
 from percival.scripts.util import DAQClient
 from percival.scripts.util import PercivalClient
 
-system_commands = "\n\t".join([name for name, tmp in const.SystemCmd.__members__.items()])
+system_commands = "\n\t".join([name for name, tmp in list(const.SystemCmd.__members__.items())])
 
 SCRIPT_NAME = "tool_ADC_test.py"
 

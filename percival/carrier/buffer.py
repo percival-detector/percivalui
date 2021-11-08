@@ -14,7 +14,7 @@ TODO: This assumes the buffer has already been filled with values.  This
 class could instead of taking the number of words, take the actual words and
 fill the buffer itself.
 '''
-from __future__ import print_function
+
 
 import logging
 

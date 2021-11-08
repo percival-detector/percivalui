@@ -3,7 +3,7 @@ Created on 2 Dec 2014
 
 @author: up45
 '''
-from __future__ import print_function
+
 import os
 import socket
 

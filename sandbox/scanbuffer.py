@@ -4,7 +4,7 @@ Created on 15 July 2016
 @author: Alan Greer
 """
 
-from __future__ import print_function
+
 import os
 
 from percival.log import log

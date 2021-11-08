@@ -22,7 +22,7 @@ Latovlfw example:
 python tool_PTC_acquisitions_v2.py -w 10 -n 50 -t "12:1:200" -p "BSI04_Tm20_dmuxSELHi_biasBSI04_04_3G_PGABBB_OD2.0_" -s "_50lgh" -d "/ramdisk/cfel/fsds/labs/percival/2019/calibration/20190826_000_temp_data/scratch/"
 
 '''
-from __future__ import print_function
+
 
 import sys
 import argparse
@@ -35,7 +35,7 @@ from percival.carrier import const
 from percival.scripts.util import DAQClient
 from percival.scripts.util import PercivalClient
 
-system_commands = "\n\t".join([name for name, tmp in const.SystemCmd.__members__.items()])
+system_commands = "\n\t".join([name for name, tmp in list(const.SystemCmd.__members__.items())])
 
 SCRIPT_NAME = "tool_PTC_aquisitions_v2.py"
 
@@ -169,7 +169,7 @@ def main():
     print("{0}Img each".format(int(args.nimages)))
     print("will save as: {0}{1}XXXms{2}".format(out_folder,out_prefix,out_suffix))
     print("will take approx {0}minutes to end".format(numpy.sum(twait)/60))
-    raw_input('Press enter to continue: ')
+    input('Press enter to continue: ')
     print("-- -- -- --")
 
     parse_response(dc.set_frames(int(args.nimages)))
