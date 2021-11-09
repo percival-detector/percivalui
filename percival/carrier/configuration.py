@@ -366,7 +366,6 @@ class BoardParameters(object):
     """
     def __init__(self, ini_file):
         self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
-        self.log.setLevel(logging.DEBUG)
         self._ini_filename = find_file(ini_file)
         self.conf = None
 
