@@ -488,15 +488,15 @@ class SystemSettingsMap(RegisterMap):
                          "SAMPLING_S0_phase_n_factor":
                              MapField("SAMPLING_S0_phase_n_factor",                            8,   6,  0),
                          "SAMPLING_SR_phase_number_of_repeats":
-                             MapField("SAMPLING_SR_phase_number_of_repeats",                   9,   16, 24),
+                             MapField("SAMPLING_SR_phase_number_of_repeats",                   9,   6, 24),
                          "SAMPLING_S3_phase_number_of_repeats":
-                             MapField("SAMPLING_S3_phase_number_of_repeats",                   9,   16, 18),
+                             MapField("SAMPLING_S3_phase_number_of_repeats",                   9,   6, 18),
                          "SAMPLING_S2_phase_number_of_repeats":
-                             MapField("SAMPLING_S2_phase_number_of_repeats",                   9,   16, 12),
+                             MapField("SAMPLING_S2_phase_number_of_repeats",                   9,   6, 12),
                          "SAMPLING_S1_phase_number_of_repeats":
-                             MapField("SAMPLING_S1_phase_number_of_repeats",                   9,   16, 6),
+                             MapField("SAMPLING_S1_phase_number_of_repeats",                   9,   6, 6),
                          "SAMPLING_S0_phase_number_of_repeats":
-                             MapField("SAMPLING_S0_phase_number_of_repeats",                   9,   16, 0),
+                             MapField("SAMPLING_S0_phase_number_of_repeats",                   9,   6, 0),
                          "ADVANCED_dmuxSEL_EXT_options":
                              MapField("ADVANCED_dmuxSEL_EXT_options",                          10,  2,  18),
                          "ADVANCED_SC_EXT_options":

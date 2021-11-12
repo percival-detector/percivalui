@@ -569,7 +569,7 @@ class PercivalDetector(object):
                     self._db.log_point(time_now, 'Detector', point)
             except:
                 pass
-            time.sleep(0.25)
+            time.sleep(2.0)
 
     def cleanup(self):
         self._run_status_loop = False
