@@ -128,7 +128,7 @@ class myServer:
 
         try:
           #  print('Connected by', addr);
-            data = conn.recv(1024);
+            data = conn.recv(1024).decode();
           #  print "got data from " , conn;
           #  print data;
 
@@ -181,7 +181,7 @@ class myServer:
                 elif cmd=="shutdown":
                     Go = False;
                         
-            ji = json.dumps(di);
+            ji = json.dumps(di).encode();
             conn.send(ji);
         except:
             pass;
@@ -199,7 +199,7 @@ if os.path.basename(os.getcwd())!="percivalui":
     print("fail");
     exit(2);
 
-wnr = subprocess.check_output("user_scripts/wiener/querymainswitch.sh");
+wnr = subprocess.check_output("user_scripts/wiener/querymainswitch.sh").decode();
 if AtDesy:
    print("check wiener is ON");
    if "on" not in wnr:

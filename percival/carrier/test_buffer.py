@@ -120,7 +120,7 @@ class TestBuffer(unittest.TestCase):
             msg[1] = offset & 0x00ff;
             msg[5] = i;
             
-            extra = (i/64)*2; # there are 2 command messages after every batch
+            extra = (i//64)*2; # there are 2 command messages after every batch
 
             self.assertEqual(calls[i+extra], call(TxMessage(msg,
                                                   num_response_msg=1,
@@ -182,7 +182,7 @@ class TestBuffer(unittest.TestCase):
             msg[4] = (i & 0xff00) >> 8;
             msg[5] = i & 0x00ff;
             
-            extra = (i/36)*2; # there are 2 command messages after every batch
+            extra = (i//36)*2; # there are 2 command messages after every batch
 
             self.assertEqual(calls[i+extra], call(TxMessage(msg,
                                                   num_response_msg=1,

@@ -1,5 +1,5 @@
 # The code has been tested with the versions written with py3, and we make the requirement >= to aid compatibility
-# python is not clear whether a version is 2 or 3 so we hope the versions listed give us py3.
+# python is not clear whether a module on pypi is py2 or py3 so we hope the versions listed give us py3.
 
 wheel==0.36.1
 numpy==1.20.1
@@ -14,5 +14,7 @@ nose==1.3.6
 coverage==6.1
 sphinx==4.1.1
 mock==4.0.1
+# these are for the buttongui
 pyserial==3.4
+requests==2.26
 

@@ -24,9 +24,9 @@ def sendMsg(command, task):
     ji["cmd:"] = command;
 
     jis = json.dumps(ji);
-    s.send(jis);
+    s.send(jis.encode());
     ji = {};
-    back = s.recv(512);
+    back = s.recv(512).decode();
     s.close();
 
     if back:

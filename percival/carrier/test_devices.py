@@ -143,12 +143,12 @@ class TestDeviceFamilyEnum(unittest.TestCase):
         data.read_value = 200;
         ltc2309.update(data)
 
-        self.assertAlmostEqual(ltc2309.value, (200-20)/4 *2)
+        self.assertAlmostEqual(ltc2309.value, (200-20)/4.0 *2)
         self.assertEqual(ltc2309.unit, "V")
 
         dct = ltc2309.status
         self.assertEqual(dct["device"], "LTC2309")
-        self.assertAlmostEqual(dct["value"], (200-20)/4 *2)
+        self.assertAlmostEqual(dct["value"], (200-20)/4.0 *2)
         self.assertAlmostEqual(dct["raw_value"], 200.0)
         self.assertAlmostEqual(dct["sample_number"], 7.0)
         self.assertEqual(dct["low_threshold"], 1)
