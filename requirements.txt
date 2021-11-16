@@ -4,8 +4,8 @@ numpy==1.12.0
 h5py>=2.9
 #-e git+git://github.com/h5py/h5py.git@2.6.0#egg=h5py
 enum34==1.1.6
--e git+git://github.com/percival-detector/odin-control.git#egg=odin
--e "git+git://github.com/percival-detector/odin-data.git#egg=odin-data&subdirectory=tools/python"
+-e git+git://github.com/percival-detector/odin-control.git@833d018#egg=odin
+-e "git+git://github.com/percival-detector/odin-data.git@826f6b3#egg=odin-data&subdirectory=tools/python"
 influxdb==4.1.0
 xlrd
 nose>=1.3
