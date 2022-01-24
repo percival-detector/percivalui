@@ -56,7 +56,7 @@ setup(
     packages=find_packages(exclude=['docs', 'sandbox', 'tests*']),
 
     # run-time dependencies here. These will be installed by pip when the project is installed.
-    install_requires=['numpy>=1.12.0', 'h5py>=2.6.0', 'future>=0.15.2', 'enum34>=1.1.6'],
+    install_requires=[],
 
 
     # Additional groups of dependencies (e.g. development dependencies). 
