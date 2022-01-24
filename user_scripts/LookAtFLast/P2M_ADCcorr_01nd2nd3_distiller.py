@@ -15,12 +15,14 @@ exec(open("./P2M_ADCcorr_01nd2nd3_distiller.py").read())
 
 #%% imports and useful constants
 from APy3_auxINIT import *
+import time;
 #
 #iGn=APy3_P2Mfuns.iGn; iCrs=APy3_P2Mfuns.iCrs; iFn=APy3_P2Mfuns.iFn; NGnCrsFn==APy3_P2Mfuns.NGnCrsFn # 0 1 2 3
 #iSmpl=APy3_P2Mfuns.iSmpl; iRst=APy3_P2Mfuns.iRst; NSmplRst=APy3_P2Mfuns.NSmplRst # 0 1 2
 #
 NRow= APy3_P2Mfuns.NRow
-NCol= APy3_P2Mfuns.NCol
+NCol= APy3_P2Mfuns.NCol;
+NCol = 1408;
 #
 ERRint16=APy3_P2Mfuns.ERRint16 #-256 # negative value usable to track Gn/Crs/Fn from missing pack 
 ERRBlw=APy3_P2Mfuns.ERRBlw #-0.1
@@ -33,14 +35,14 @@ def write_ADCcor_h5(fileNamePath,
                     ADCparam_Rst_crs_slope, ADCparam_Rst_crs_offset,  ADCparam_Rst_fn_slope, ADCparam_Rst_fn_offset
                     ):
     my5hfile= h5py.File(fileNamePath, 'w')
-    my5hfile.create_dataset('sample/coarse/slope/',  data=ADCparam_Smpl_crs_slope) #
-    my5hfile.create_dataset('sample/coarse/offset/', data=ADCparam_Smpl_crs_offset) #
-    my5hfile.create_dataset('sample/fine/slope/',   data=ADCparam_Smpl_fn_slope) #
-    my5hfile.create_dataset('sample/fine/offset/',  data=ADCparam_Smpl_fn_offset) #
-    my5hfile.create_dataset('reset/coarse/slope/',   data=ADCparam_Rst_crs_slope) #
-    my5hfile.create_dataset('reset/coarse/offset/',  data=ADCparam_Rst_crs_offset) #
-    my5hfile.create_dataset('reset/fine/slope/',    data=ADCparam_Rst_fn_slope) #
-    my5hfile.create_dataset('reset/fine/offset/',   data=ADCparam_Rst_fn_offset) #
+    my5hfile.create_dataset('sample/coarse/slope',  data=ADCparam_Smpl_crs_slope) #
+    my5hfile.create_dataset('sample/coarse/offset', data=ADCparam_Smpl_crs_offset) #
+    my5hfile.create_dataset('sample/fine/slope',   data=ADCparam_Smpl_fn_slope) #
+    my5hfile.create_dataset('sample/fine/offset',  data=ADCparam_Smpl_fn_offset) #
+    my5hfile.create_dataset('reset/coarse/slope',   data=ADCparam_Rst_crs_slope) #
+    my5hfile.create_dataset('reset/coarse/offset',  data=ADCparam_Rst_crs_offset) #
+    my5hfile.create_dataset('reset/fine/slope',    data=ADCparam_Rst_fn_slope) #
+    my5hfile.create_dataset('reset/fine/offset',   data=ADCparam_Rst_fn_offset) #
     my5hfile.close()
 
 def plot_2x2D(array1,array2, logScaleFlag, label_x,label_y, label_title1,label_title2, invertx_flag):
@@ -105,32 +107,32 @@ dflt_outFileprefix= 'TEST_BSI04_Tminus20_dmuxSELsw_2019.11.20'
 #
 #'''
 ########################################### BSI04_Tminus20_dmuxSELHi ######################################################
-dflt_folder_data2process= '/gpfs/cfel/fsds/labs/percival/2019/calibration/20191119_000_BSI04_ADCcorr/processed/v2_biasBSI04_02/BSI04_Tm20_dmuxSELHi_ADCramps/DLSraw/'
+dflt_folder_data2process= '/dls/detectors/Percival/captures/'
 if dflt_folder_data2process[-1]!='/': dflt_folder_data2process+='/'
-dflt_indexFileName='2019.11.20_dmuxSELHi_all_600x10_meta.dat'
+dflt_indexFileName='crs-scan_meta.dat'
 dflt_inputFileSuffix='.h5'
-dflt_Row2proc='0:1483' # means: [all]
-dflt_Cols2proc='32:1439' # means: [all]  
+dflt_Row2proc=':' # means: [all]
+dflt_Cols2proc=':' # means: [all]  
 #
 #dflt_Row2proc='350:356' # 
 #dflt_Cols2proc='320:321' #
  
 #
 dflt_Img2proc='2:9'#
-dflt_fit_crsRange='5:25'
+dflt_fit_crsRange='1:30'
 dflt_fit_minNpoints=4
 dflt_fit_minR2=0.9
 #dflt_fit_minR2=0.85 # because dmuxSELsw
-dflt_outFolder= dflt_folder_data2process+'../'+'ADCParam_FLastScripts/' 
-dflt_outFileprefix= 'BSI04_Tminus20_dmuxSELHi_2019.11.20_'
+dflt_outFolder= dflt_folder_data2process+'/results/' 
+dflt_outFileprefix= 'haha'
 #'''
 #
-dflt_saveFlag= 'Y'; #dflt_saveFlag= 'N'
+dflt_saveFlag= 'Y'; dflt_saveFlag= 'N';
 #
 dflt_highMemFlag='Y' 
-dflt_verboseFlag='Y'
+dflt_verboseFlag='N'
 #
-dflt_showFlag='Y'; dflt_showFlag='N'
+dflt_showFlag='Y';  dflt_showFlag='N'
 # ---
 #
 #%% pack arguments for GUI window
@@ -248,6 +250,7 @@ CollList=indexFileList[:,1]
 NColl= len(CollList)
 if (verboseFlag): APy3_GENfuns.printcol('{0} collections detailed in the index file'.format(len(CollList)),'green')
 #
+
 dataSmpl2proc= numpy.zeros((NColl,NImg2procxFile,NRow,NCol,NGnCrsFn),dtype='int16') 
 dataRst2proc=  numpy.zeros((NColl,NImg2procxFile,NRow,NCol,NGnCrsFn),dtype='int16')
 Id_allData= numpy.zeros((NColl,NImg2procxFile)) 
@@ -288,6 +291,7 @@ for thisRow in Rows2proc:
     for thisCol in Cols2proc:
         # Smpl
         # elab crs
+
         validCrsMsk= (dataSmpl2proc[:,thisRow,thisCol,iCrs]>=fit_crsRange[0])&(dataSmpl2proc[:,thisRow,thisCol,iCrs]<=fit_crsRange[-1])
         xCrs2fit= Id_allData[validCrsMsk]
         yCrs2fit= dataSmpl2proc[validCrsMsk,thisRow,thisCol,iCrs]
@@ -348,6 +352,7 @@ for thisRow in Rows2proc:
             SmplCrs_slope[thisRow,thisCol]=numpy.NaN;SmplCrs_offset[thisRow,thisCol]=numpy.NaN;SmplCrs_R2[thisRow,thisCol]=numpy.NaN
             SmplFn_slope[thisRow,thisCol]=numpy.NaN;SmplFn_offset[thisRow,thisCol]=numpy.NaN;SmplFn_R2[thisRow,thisCol]=numpy.NaN  
             if (verboseFlag): APy3_GENfuns.printcol('pix=({0},{1}),Smpl: not enough points to properly crs-fit'.format(thisRow,thisCol),'orange') 
+      #      if (verboseFlag): APy3_GENfuns.printcol('You have {0} and you need {1}'.format(len(xCrs2fit), fit_minNpoints), "red") 
         # ---
         #
         #%% show if needed

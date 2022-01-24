@@ -85,6 +85,16 @@ class PercivalClient(object):
         }
         return self.send_command('cmd_system_command', command_id, arguments, wait=wait)
 
+    def set_system_setting(self, setting, value, command_id="python_script", wait=True):
+        arguments = {
+            'setting': setting,
+            'value': value
+        };
+        return self.send_command('cmd_system_setting',
+                                 command_id,
+                                 arguments,
+                                 wait=wait)
+
     def apply_setpoint(self, set_point, command_id="python_script", wait=True):
         arguments = {
             'setpoint': set_point

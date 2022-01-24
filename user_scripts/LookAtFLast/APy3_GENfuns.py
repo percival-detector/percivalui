@@ -376,7 +376,7 @@ def write_csv(filenamepath, data):
 def read_tst(filenamepath):
     ''' read text from tab-separated-texts file '''
     #my_data= numpy.genfromtxt(filenamepath, delimiter= '\t', dtype='string')
-    my_data= numpy.genfromtxt(filenamepath, delimiter= '\t', dtype=str)
+    my_data= numpy.genfromtxt(filenamepath, dtype=str)
     return my_data
 #
 def write_tst(filenamepath, data):
