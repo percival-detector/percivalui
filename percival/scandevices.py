@@ -3,7 +3,7 @@ Created on 19 May 2015
 
 @author: Ulrik Pedersen
 """
-from __future__ import print_function
+
 
 import os, time
 import argparse
@@ -58,8 +58,8 @@ class ReadMonitors(object):
         """
         response = self._txrx.send_recv_message(self._cmd_msg)
         read_maps = generate_register_maps(response)
-        result = dict(zip(self._channel_data.keys(), read_maps))
-        for name, value in result.items():
+        result = dict(list(zip(list(self._channel_data.keys()), read_maps)))
+        for name, value in list(result.items()):
             self._channel_data[name].append(value)
         return result
 
@@ -75,7 +75,7 @@ class ReadMonitors(object):
         :return: dictionary of dictionaries of numpy arrays
         """
         result = {}
-        for channel_name, channel_data in self._channel_data.items():
+        for channel_name, channel_data in list(self._channel_data.items()):
             fields = channel_data[0].map_fields
             channel = {}
             for read_value_field in fields:
@@ -100,10 +100,10 @@ def store_monitor_data(args, data_dict):
     with h5py.File(filename, 'w') as f:
         f.attrs["range"] = bytes(args.range)
         f.attrs["channel"] = bytes(args.channel)
-        for channel_name, channel_fields in data_dict.items():
+        for channel_name, channel_fields in list(data_dict.items()):
             #log.debug("=========== Creating group %s ============", channel_name)
             group = f.create_group(channel_name)
-            for field_name, data_array in channel_fields.items():
+            for field_name, data_array in list(channel_fields.items()):
                 # log.debug("--- Writing %s data: %s ", field_name, data_array)
                 group.create_dataset(field_name, data=data_array)
 
@@ -152,7 +152,7 @@ def main():
         tstamp = time.time()
 
         # Create the list of scan points from the users range arg
-        scan_range = range(*args.range)
+        scan_range = list(range(*args.range))
         # Ensure that the last point of the range is always included in the list
         # even if the last step is not a full step size.
         if args.range[1] > scan_range[-1]:
@@ -180,7 +180,7 @@ def main():
             tstamp = time.time()
             adcs = {}
             [adcs.update(rm.read_monitors_devices()) for rm in readmons]
-            log.info("Read carrier monitoring channels: %s", adcs.keys())
+            log.info("Read carrier monitoring channels: %s", list(adcs.keys()))
 
         #log.info(adcs)
 

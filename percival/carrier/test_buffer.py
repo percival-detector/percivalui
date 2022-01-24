@@ -4,7 +4,7 @@ Created on 17 July 2017
 @author: gnx91527
 '''
 
-from __future__ import unicode_literals, absolute_import
+
 
 import unittest, sys, logging
 from mock import MagicMock, call
@@ -81,7 +81,7 @@ class TestBuffer(unittest.TestCase):
         # Sensor Config command
         #
         # Generate the words required to submit a sensor config command
-        words = range(0,144)
+        words = list(range(0,144))
         std_reply = (0xFFFF, 0xABBABAC1)
         sensor_reply = (0xFFF3, 0xABBA3333)
         # Create the returned expected responses for the config command
@@ -120,7 +120,7 @@ class TestBuffer(unittest.TestCase):
             msg[1] = offset & 0x00ff;
             msg[5] = i;
             
-            extra = (i/64)*2; # there are 2 command messages after every batch
+            extra = (i//64)*2; # there are 2 command messages after every batch
 
             self.assertEqual(calls[i+extra], call(TxMessage(msg,
                                                   num_response_msg=1,
@@ -153,7 +153,7 @@ class TestBuffer(unittest.TestCase):
         # Sensor calibration command: see the doco; 90x tranfers of 36 words each.
         #
         # Generate the words required to submit a sensor config command
-        words = range(0,3240)
+        words = list(range(0,3240))
         std_reply = (0xFFFF, 0xABBABAC1)
         sensor_reply = (0xFFF3, 0xABBA3333)
         # Create the returned expected responses for the config command
@@ -182,7 +182,7 @@ class TestBuffer(unittest.TestCase):
             msg[4] = (i & 0xff00) >> 8;
             msg[5] = i & 0x00ff;
             
-            extra = (i/36)*2; # there are 2 command messages after every batch
+            extra = (i//36)*2; # there are 2 command messages after every batch
 
             self.assertEqual(calls[i+extra], call(TxMessage(msg,
                                                   num_response_msg=1,

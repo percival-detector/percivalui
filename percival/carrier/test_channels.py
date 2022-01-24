@@ -3,7 +3,7 @@ Created on 8 May 2015
 
 @author: up45
 '''
-from __future__ import unicode_literals, absolute_import
+
 
 import unittest, sys, logging
 from mock import MagicMock, call
@@ -161,7 +161,7 @@ class TestChannels(unittest.TestCase):
         mntrChannel = MonitoringChannel(self.txrx, self.channel_ini, self.settings)
         self.txrx.send_recv_message.reset_mock()
         value = mntrChannel.get_value()
-        self.assertEquals(value.read_value, 0x13);
+        self.assertEqual(value.read_value, 0x13);
 
         # Setup the mock to return i2c error
         self.txrx.send_recv_message = MagicMock() #return_value=[(0x03EE, 0x01000023), (0x03EE, 0x02000023)])

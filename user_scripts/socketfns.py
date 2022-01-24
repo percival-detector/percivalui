@@ -24,9 +24,9 @@ def sendMsg(command, task):
     ji["cmd:"] = command;
 
     jis = json.dumps(ji);
-    s.send(jis);
+    s.send(jis.encode());
     ji = {};
-    back = s.recv(512);
+    back = s.recv(512).decode();
     s.close();
 
     if back:
@@ -36,7 +36,7 @@ def sendMsg(command, task):
 
 def getActions():
     dd = sendMsg("gettasks", None);
-    if dd.has_key("tasklist:"):
+    if "tasklist:" in dd:
         return dd["tasklist:"];
     else:
         return [];
@@ -52,7 +52,7 @@ def togTask(task):
 
 def getStatus():
     dd = sendMsg("querystatus", None);
-    if dd.has_key("status:"):
+    if "status:" in dd:
         return dd["status:"];
     else:
         return {};

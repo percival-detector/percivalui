@@ -3,7 +3,7 @@ Created on 2 August 2017
 
 @author: Alan Greer
 '''
-from __future__ import print_function
+
 import argparse
 import os
 

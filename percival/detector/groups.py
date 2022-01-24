@@ -6,7 +6,7 @@ Created on 24 May 2017
 A class representation for a Percival group of channels.  This class provides
 the ability to set values for a group of channels with a single set command.
 """
-from __future__ import print_function
+
 
 import logging
 
@@ -34,7 +34,7 @@ class Group(object):
 
     @property
     def group_names(self):
-        return self._groups.keys()
+        return list(self._groups.keys())
 
     def get_description(self, group):
         return self._groups[group]["description"]

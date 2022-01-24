@@ -6,7 +6,7 @@ Created on 8 June 2017
 A class representation for a Percival command.  This class provides
 an easy way to parse, query and log the command.
 """
-from __future__ import print_function
+
 
 from enum import Enum, unique
 from tornado import escape

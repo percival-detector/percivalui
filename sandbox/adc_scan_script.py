@@ -3,7 +3,7 @@ Created on 17 May 2016
 
 @author: gnx91527
 '''
-from __future__ import print_function
+
 
 import sys
 import argparse
@@ -14,7 +14,7 @@ from percival.log import log
 from percival.carrier import const
 from percival.scripts.util import PercivalClient
 
-system_commands = "\n\t".join([name for name, tmp in const.SystemCmd.__members__.items()])
+system_commands = "\n\t".join([name for name, tmp in list(const.SystemCmd.__members__.items())])
 
 
 def options():
@@ -45,7 +45,7 @@ def main():
     pc = PercivalClient(args.address)
 
     # Create the list of scan points from the users range arg
-    scan_range = range(*args.range)
+    scan_range = list(range(*args.range))
     # Ensure that the last point of the range is always included in the list
     # even if the last step is not a full step size.
     if args.range[1] > scan_range[-1]:

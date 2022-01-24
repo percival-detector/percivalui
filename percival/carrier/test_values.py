@@ -1,4 +1,4 @@
-from __future__ import unicode_literals, absolute_import
+
 
 import unittest, logging
 from mock import MagicMock, call
@@ -20,7 +20,7 @@ class TestBoardValuesClass(unittest.TestCase):
         # Test reading values from carrier board
         self.value = BoardValues(self.txrx, const.BoardTypes.carrier)
         self.value.read_values()
-        print self.txrx.send_recv_message.mock_calls;
+        print(self.txrx.send_recv_message.mock_calls);
         self.txrx.send_recv_message.assert_called_once_with(
             TxMessage(bytes("\x03\x83\x00\x00\x00\x00", encoding="latin-1"), num_response_msg=4, expect_eom=False))
 

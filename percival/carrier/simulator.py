@@ -3,7 +3,7 @@ Created on 12 May 2016
 
 @author: gnx91527
 """
-from __future__ import print_function
+
 
 import socket
 import numpy as np
@@ -66,7 +66,7 @@ class Simulator(object):
                                   (READBACK_READ_ECHO_WORD.entries *
                                    READBACK_READ_ECHO_WORD.words_per_entry),
                                   dtype=np.uint32)
-        self.eoms = range(0x0000, READBACK_WRITE_BUFFER.start_address)
+        self.eoms = list(range(0x0000, READBACK_WRITE_BUFFER.start_address))
         self.shortcuts = {READBACK_HEADER_SETTINGS_LEFT.start_address:
                               ShortcutRegister(HEADER_SETTINGS_LEFT.start_address,
                                                HEADER_SETTINGS_LEFT.entries *

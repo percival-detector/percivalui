@@ -8,7 +8,7 @@ A class representation for a Percival system command.
 An instance is initialised with a percival.carrier.txrx.TxRx object and
 commands can be sent using the send_command method.
 """
-from __future__ import print_function
+
 
 import logging
 from percival.carrier import const
@@ -219,7 +219,7 @@ class SystemSettings(object):
             self._log.info("Full description of ini %s", map)
             # First replace any true or false with 1 or 0
             for item in map:
-                if isinstance(map[item], str) or isinstance(map[item], unicode):
+                if isinstance(map[item], str) or isinstance(map[item], str):
                     if 'false' in map[item].lower():
                         map[item] = 0
                     elif 'true' in map[item].lower():
@@ -288,7 +288,7 @@ class SystemSettings(object):
 
     def set_value(self, setting, value):
         # First replace any true or false with 1 or 0
-        if isinstance(value, str) or isinstance(value, unicode):
+        if isinstance(value, str) or isinstance(value, str):
             if 'false' in value.lower():
                 value = 0
             elif 'true' in value.lower():
@@ -307,7 +307,7 @@ class SystemSettings(object):
     def set_values(self, section, params):
         # First replace any true or false with 1 or 0
         for item in params:
-            if isinstance(params[item], str) or isinstance(params[item], unicode):
+            if isinstance(params[item], str) or isinstance(params[item], str):
                 if 'false' in params[item].lower():
                     params[item] = 0
                 elif 'true' in params[item].lower():
@@ -411,7 +411,7 @@ class ClockSettings(object):
             self._log.info("Full description of ini %s", map)
             # First replace any true or false with 1 or 0
             for item in map:
-                if isinstance(map[item], str) or isinstance(map[item], unicode):
+                if isinstance(map[item], str) or isinstance(map[item], str):
                     if 'false' in map[item].lower():
                         map[item] = 0
                     elif 'true' in map[item].lower():

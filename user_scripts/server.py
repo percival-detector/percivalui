@@ -85,35 +85,35 @@ class myServer:
             self._taskstates[task] = "not done";
 
     def __del__(self):
-        print "closing server";
+        print("closing server");
         if self._mythread and self._mythread.isAlive():
             self._mythread.join();
         self._sock.close();
 
     def doTask(self, task):
-        print "DOING TASK ", task;
+        print("DOING TASK ", task);
         script = getOnScript(task);
         if 0<=len(script):
-            print "running ", script;
+            print("running ", script);
             rc = os.system(script);
             if rc:
-                print "task failed", task;
+                print("task failed", task);
                 self._taskstates[task] = "not done";
             else:
-                print "done task: ", task;
+                print("done task: ", task);
                 self._taskstates[task] = "done";
 
     def undoTask(self, task):
-        print "UNDOING TASK ", task;
+        print("UNDOING TASK ", task);
         script = getOffScript(task);
         if 0<=len(script):
-            print "running ", script;
+            print("running ", script);
             rc = os.system(script);
             if rc:
-                print "script failed", task;
+                print("script failed", task);
                 self._taskstates[task] = "done";
             else:
-                print "undone task: ", task;
+                print("undone task: ", task);
                 self._taskstates[task] = "not done";
 
     def doOnce(self):
@@ -128,12 +128,12 @@ class myServer:
 
         try:
           #  print('Connected by', addr);
-            data = conn.recv(1024);
+            data = conn.recv(1024).decode();
           #  print "got data from " , conn;
           #  print data;
 
             di = json.loads(data);
-            if di.has_key("cmd:"):
+            if "cmd:" in di:
                 cmd = di["cmd:"];
                 if cmd=="gettasks":
                  #   print "GETTING TASKS";
@@ -141,7 +141,7 @@ class myServer:
                 elif cmd=="querystatus":
                     di["status:"] = self._taskstates;
                 elif cmd=="start" or cmd=="stop" or cmd=="toggle":    
-                    if di.has_key("task:") and di["task:"] in tasks:
+                    if "task:" in di and di["task:"] in tasks:
                         task = di["task:"];
                         tidx = tasks.index(task);
                         tstatus = self._taskstates[task];
@@ -151,7 +151,7 @@ class myServer:
                         if(cmd=="toggle" and self._taskstates[task]=="not done"):
                             cmd = "start";
 
-                        print "TASK ", tidx, task, cmd;
+                        print("TASK ", tidx, task, cmd);
                         # to do a task, two checks are made:
                         # firstly that the task itself is in state done/notdone
                         # secondly that the prev task is done, and the next task is not done.
@@ -181,47 +181,47 @@ class myServer:
                 elif cmd=="shutdown":
                     Go = False;
                         
-            ji = json.dumps(di);
+            ji = json.dumps(di).encode();
             conn.send(ji);
         except:
             pass;
 
         conn.close();
 
-print "hello.\nchecking odin_server is started";
+print("hello.\nchecking odin_server is started");
 # need to check that odin_server is available. This is usually on localhost:8888
 response = requests.get("http://localhost:8888");
 if response.status_code != 200:
     exit(1);
 
-print "check cur dir is percivalui";
+print("check cur dir is percivalui");
 if os.path.basename(os.getcwd())!="percivalui":
-    print "fail";
+    print("fail");
     exit(2);
 
-wnr = subprocess.check_output("user_scripts/wiener/querymainswitch.sh");
+wnr = subprocess.check_output("user_scripts/wiener/querymainswitch.sh").decode();
 if AtDesy:
-   print "check wiener is ON";
+   print("check wiener is ON");
    if "on" not in wnr:
-        print "error: wiener is off; you need to load the carrier board firmware";
+        print("error: wiener is off; you need to load the carrier board firmware");
         exit(4);
 else:
-    print "check wiener is OFF";
+    print("check wiener is OFF");
     if "off" not in wnr:
-        print "error: wiener is on";
+        print("error: wiener is on");
         exit(3);
 
-print "check venv contains percivalui";
+print("check venv contains percivalui");
 rc = os.system("pip show percivalui");
 if rc!=0:
-    print "error can't find percivalui in python venv";
+    print("error can't find percivalui in python venv");
     exit(4);
 
-print "checks passed";
+print("checks passed");
 serv = myServer();
 while Go:
     serv.doOnce();
 
-print "SHUTTING DOWN";
+print("SHUTTING DOWN");
 
 

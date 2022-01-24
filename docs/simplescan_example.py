@@ -24,7 +24,7 @@ import datetime
 pcvl = PercivalUI()
 
 # Do a rough scan (steps of 8) through a 12 bit DAC subrange
-DAC_scan_values = range(128, 512, 8)
+DAC_scan_values = list(range(128, 512, 8))
 
 nframes_per_step = 10
 nframes_total = nframes_per_step * len(DAC_scan_values)

@@ -3,7 +3,7 @@ Created on 20 May 2016
 
 @author: Alan Greer
 """
-from __future__ import print_function
+
 
 import argparse
 import os
@@ -51,8 +51,8 @@ def main():
                     log.exception("no response (message: %s)", cmd_msg)
 
         # Now read back and check we are matching
-        scanrange = range(const.READBACK_HEADER_SETTINGS_LEFT.start_address,
-                          const.READBACK_MONITORING_SETTINGS_PLUGIN.start_address + 1, 1)
+        scanrange = list(range(const.READBACK_HEADER_SETTINGS_LEFT.start_address,
+                          const.READBACK_MONITORING_SETTINGS_PLUGIN.start_address + 1, 1))
         expected_bytes = None
         for addr in scanrange:
             msg = encode_message(addr, 0x00000000)

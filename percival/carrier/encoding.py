@@ -1,7 +1,7 @@
 """
 Encode and decode Carrier Board Xport messages
 """
-from __future__ import unicode_literals, absolute_import
+
 from builtins import bytes  # pylint: disable=W0622
 try:
     import itertools.izip as zip  # pylint: disable=W0622
@@ -52,7 +52,7 @@ def encode_multi_message(start_addr, words):
     :returns: list
     """ 
     logger.debug("%s", ([start_addr, words]))
-    addresses = range(start_addr, start_addr + len(words))
+    addresses = list(range(start_addr, start_addr + len(words)))
     encoded_msg = []
     assert len(addresses) == len(words)
     for addr, word in zip(*[addresses, words]):

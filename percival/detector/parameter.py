@@ -5,7 +5,7 @@ for notifications (callbacks) on change of data values.
 
 The implementation is thread safe by using python threading locks.
 """
-from __future__ import unicode_literals, absolute_import
+
 import logging
 
 from functools import wraps

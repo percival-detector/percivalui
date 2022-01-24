@@ -3,7 +3,7 @@ Created on 8 May 2015
 
 @author: Ulrik Pedersen
 """
-from __future__ import unicode_literals, absolute_import
+
 from percival.carrier.const import DeviceFamily, DeviceCmd, DeviceFunction
 
 import logging
@@ -15,7 +15,7 @@ class DeviceFeatures(object):
     
     This represent the documented table "Supported DEVICE_CMD vs device family"
     """
-    def __init__(self, device_family_id, function, description=u"", commands=None):
+    def __init__(self, device_family_id, function, description="", commands=None):
         """
             :param device_family_id: The component family ID
             :type  device_family_id: :obj:`percival.carrier.const.DeviceFamily`

@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
 import json;
-import socket;
 import sys;
-from Tkinter import *
+from tkinter import *
 import socketfns;
 
 if len(sys.argv)==2 and sys.argv[1]=="--shutdown-server":
-    print "sending shutdown message to server";
+    print("sending shutdown message to server");
     socketfns.sendMsg("shutdown", None);
     exit(0);
 
@@ -24,7 +23,7 @@ def btnCallback(buttxt):
         but.configure(state=DISABLED);
 
     if buttxt in actions:
-        print "toggling action ", actions.index(buttxt);
+        print("toggling action ", actions.index(buttxt));
         socketfns.togTask(buttxt);
 
 
@@ -58,7 +57,7 @@ def updateButtons(status):
 def updateStatus():
     # updateStatus and button callbacks won't be called simultaneously;
     # master seems to be single-threaded, but it will queue functions to call
-    print "update status";
+    print("update status");
     status = socketfns.getStatus();
     updateCanvas(status);
     updateButtons(status);

@@ -14,7 +14,7 @@ Update this whenever there are any firmware/documentation changes regarding:
  * Firmware version: :obj:`FIRMWARE_VERSION`
 """
 
-from __future__ import unicode_literals, absolute_import
+
 
 from enum import Enum, unique
 

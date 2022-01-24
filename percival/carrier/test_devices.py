@@ -3,7 +3,7 @@ Created on 8 May 2015
 
 @author: up45
 '''
-from __future__ import unicode_literals, absolute_import
+
 
 import unittest
 from mock import MagicMock, call
@@ -21,13 +21,13 @@ class TestDeviceFamilyEnum(unittest.TestCase):
     def TestFunctions(self):
         self.assertIs(DeviceFamilyFeatures[self.digipot].function, const.DeviceFunction.control)
         self.assertIs(DeviceFamilyFeatures[self.digipot].device_family_id, const.DeviceFamily.AD5242)
-        self.assertEquals(DeviceFamilyFeatures[self.digipot].description, "Digital potentiometer")
+        self.assertEqual(DeviceFamilyFeatures[self.digipot].description, "Digital potentiometer")
         self.assertIs(DeviceFamilyFeatures[self.dac].function, const.DeviceFunction.control)
         self.assertIs(DeviceFamilyFeatures[self.dac].device_family_id, const.DeviceFamily.AD5629)
-        self.assertEquals(DeviceFamilyFeatures[self.dac].description, "DAC for control")
+        self.assertEqual(DeviceFamilyFeatures[self.dac].description, "DAC for control")
         self.assertIs(DeviceFamilyFeatures[self.adc].function, const.DeviceFunction.monitoring)
         self.assertIs(DeviceFamilyFeatures[self.adc].device_family_id, const.DeviceFamily.LTC2497)
-        self.assertEquals(DeviceFamilyFeatures[self.adc].description, "ADC for monitoring")
+        self.assertEqual(DeviceFamilyFeatures[self.adc].description, "ADC for monitoring")
 
     def TestDeviceID(self):
         self.assertIs(self.digipot.value, 0)
@@ -143,12 +143,12 @@ class TestDeviceFamilyEnum(unittest.TestCase):
         data.read_value = 200;
         ltc2309.update(data)
 
-        self.assertAlmostEqual(ltc2309.value, (200-20)/4 *2)
+        self.assertAlmostEqual(ltc2309.value, (200-20)/4.0 *2)
         self.assertEqual(ltc2309.unit, "V")
 
         dct = ltc2309.status
         self.assertEqual(dct["device"], "LTC2309")
-        self.assertAlmostEqual(dct["value"], (200-20)/4 *2)
+        self.assertAlmostEqual(dct["value"], (200-20)/4.0 *2)
         self.assertAlmostEqual(dct["raw_value"], 200.0)
         self.assertAlmostEqual(dct["sample_number"], 7.0)
         self.assertEqual(dct["low_threshold"], 1)

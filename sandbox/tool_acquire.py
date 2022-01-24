@@ -8,7 +8,7 @@ python tool_acquire.py -w 0.1 -p "Example_2019.07.16_xxx" -n 10 -t 1200000
 set filename, wait 1sec, acquire 100 img, wait 1sec
 
 '''
-from __future__ import print_function
+
 
 import sys
 import argparse
@@ -21,7 +21,7 @@ from percival.carrier import const
 from percival.scripts.util import DAQClient
 from percival.scripts.util import PercivalClient
 
-system_commands = "\n\t".join([name for name, tmp in const.SystemCmd.__members__.items()])
+system_commands = "\n\t".join([name for name, tmp in list(const.SystemCmd.__members__.items())])
 
 SCRIPT_NAME = "tool_PTC_aquisitions.py"
 
