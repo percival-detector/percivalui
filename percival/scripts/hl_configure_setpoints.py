@@ -17,7 +17,7 @@ def options():
     parser = argparse.ArgumentParser()
     parser.add_argument("-a", "--address", action="store", default="127.0.0.1:8888",
                         help="Odin server address (default 127.0.0.1:8888)")
-    parser.add_argument("-i", "--input", required=True, action='store', help="Input spreadsheet to parse")
+    parser.add_argument("-i", "--input", nargs="+", required=True, action='store', help="Input spreadsheets to parse")
     wait_help = "Wait for the command to complete (default true)"
     parser.add_argument("-w", "--wait", action="store", default="true", help=wait_help)
     parser.add_argument("--textdump", action="store_true", help="send to stdout instead of odin")
@@ -29,10 +29,12 @@ def main():
     args = options()
     log.info(args)
 
-    workbook = xlrd.open_workbook(args.input)
+    ini_str = "";
+    sgg = SetpointGroupGenerator()
+    for xls in args.input:
+      workbook = xlrd.open_workbook(xls)
+      ini_str += sgg.generate_ini(workbook)
 
-    sgg = SetpointGroupGenerator(workbook)
-    ini_str = sgg.generate_ini()
     if args.textdump:
         print (ini_str);
     else:

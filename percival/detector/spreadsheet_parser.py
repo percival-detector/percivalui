@@ -117,24 +117,23 @@ class MonitorGroupGenerator(object):
 
 
 class SetpointGroupGenerator(object):
-    def __init__(self, workbook):
-        self._workbook = workbook
+    def __init__(self):
+        self._group_no = 0;
 
-    def generate_ini(self):
+    def generate_ini(self, workbook):
         ini_str = ""
-        if "setpoint_groups" in self._workbook.sheet_names():
-            parser = WorksheetParser(self._workbook.sheet_by_name("setpoint_groups"))
+        if "setpoint_groups" in workbook.sheet_names():
+            parser = WorksheetParser(workbook.sheet_by_name("setpoint_groups"))
             groups = parser.parse(['Setpoint_ID', 'Description'])
 
             # Now produce an ini file with the group information stored
-            group_no = 0
             for group in groups:
-                ini_str += "[Setpoint_Group<{:04d}>]\n".format(group_no)
+                ini_str += "[Setpoint_Group<{:04d}>]\n".format(self._group_no)
                 ini_str += "Setpoint_name = \"{}\"\n".format(group['Setpoint_ID'])
                 ini_str += "Setpoint_description = \"{}\"\n".format(group['Description'])
                 for channel in group["channels"]:
                     ini_str += "{} = {}\n".format(channel, group["channels"][channel])
 
                 ini_str += "\n"
-                group_no += 1
+                self._group_no += 1
         return ini_str
