@@ -28,9 +28,7 @@ class SetPointControl(object):
         """
         self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self._detector = detector
-        self._set_point_ini = None
-        # this is a lookup of strings: setpointname 2 setpointExcelName which is the key in the ini functions
-        self._name2name = {}
+        self._set_point_params = None
         self._executing = False
         self._scanning = False
         self._start_scan = threading.Event()
@@ -45,13 +43,8 @@ class SetPointControl(object):
         self._error = None
         self._log.info("SetPointControl object created")
 
-    # this takes a SetpointGroupParameters object
-    def load_ini(self, set_point_ini):
-        if set_point_ini:
-            self._log.info("Ini loaded for setpoints: %s", set_point_ini)
-            self._set_point_ini = set_point_ini
-            for section in self._set_point_ini.sections:
-                self._name2name[self._set_point_ini.get_name(section)] = section
+    def set_params(self, params):
+        self._set_point_params = params;
 
     def start_scan_loop(self):
         if not self._executing:
@@ -74,16 +67,16 @@ class SetPointControl(object):
 
     @property
     def set_points(self):
-        return list(self._name2name.keys())
+        return self._set_point_params.get_all_setpoints();
 
     def get_description(self, set_point):
-        return self._set_point_ini.get_description(self._name2name[set_point])
+        return self._set_point_params.get_description(set_point)
 
     def apply_set_point(self, set_point, device_list=None):
         self._log.info("Apply set point called with: %s", set_point)
         self._log.info("Set point names: %s", self.set_points)
         if set_point in self.set_points:
-            sps = self._set_point_ini.get_setpoints(self._name2name[set_point])
+            sps = self._set_point_params.get_setpoint(set_point)
             self._log.info("Set points: %s", sps)
             # If device_list is left as default then apply all values in the set_point
             if not device_list:
@@ -111,7 +104,7 @@ class SetPointControl(object):
         dev2setpoints = {}
         for set_point in set_points:
             if set_point in self.set_points:
-                sps = self._set_point_ini.get_setpoints(self._name2name[set_point])
+                sps = self._set_point_params.get_setpoint(set_point)
                 # If device_list is left as default then append all values in the set_point
                 if not device_list:
                     for dv in sps:
@@ -172,7 +165,7 @@ class SetPointControl(object):
         self._log.info("!!! Safety scan initiated to setpoint %s !!!", set_point)
         dev2setpoints = {}
         if set_point in self.set_points:
-            sps = self._set_point_ini.get_setpoints(self._name2name[set_point])
+            sps = self._set_point_params.get_setpoint(set_point)
             # If device_list is left as default then append all values in the set_point
             if not device_list:
                 for dv in sps:

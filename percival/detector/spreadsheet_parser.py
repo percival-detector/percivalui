@@ -117,24 +117,30 @@ class MonitorGroupGenerator(object):
 
 
 class SetpointGroupGenerator(object):
-    def __init__(self, workbook):
-        self._workbook = workbook
+    def __init__(self):
+        pass;
 
-    def generate_ini(self):
+    def generate_ini(self, workbook):
         ini_str = ""
-        if "setpoint_groups" in self._workbook.sheet_names():
-            parser = WorksheetParser(self._workbook.sheet_by_name("setpoint_groups"))
+        if "setpoint_groups" in workbook.sheet_names():
+            parser = WorksheetParser(workbook.sheet_by_name("setpoint_groups"))
             groups = parser.parse(['Setpoint_ID', 'Description'])
 
             # Now produce an ini file with the group information stored
-            group_no = 0
+            allsps = [];
             for group in groups:
-                ini_str += "[Setpoint_Group<{:04d}>]\n".format(group_no)
-                ini_str += "Setpoint_name = \"{}\"\n".format(group['Setpoint_ID'])
-                ini_str += "Setpoint_description = \"{}\"\n".format(group['Description'])
-                for channel in group["channels"]:
-                    ini_str += "{} = {}\n".format(channel, group["channels"][channel])
+                setpoint_id = group['Setpoint_ID'];
+                if setpoint_id and setpoint_id not in allsps:
+                  ini_str += "[Setpoint_Group<{0}>]\n".format(setpoint_id)
+                  ini_str += "Setpoint_name = \"{}\"\n".format(setpoint_id)
+                  ini_str += "Setpoint_description = \"{}\"\n".format(group['Description'])
+                  for channel in group["channels"]:
+                      ini_str += "{} = {}\n".format(channel, group["channels"][channel])
 
-                ini_str += "\n"
-                group_no += 1
+                  ini_str += "\n"
+                  allsps.append(setpoint_id);
+                else:
+                  # check for duplicate and null setpoint_ids in a single spreadsheet
+                  raise RuntimeError("Bad setpoint: {0}".format(setpoint_id));
+
         return ini_str

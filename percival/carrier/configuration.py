@@ -666,35 +666,56 @@ class SetpointGroupParameters(object):
     """
     Loads groups of controls description from an INI file.
     """
-    def __init__(self, ini_file):
+    def __init__(self):
         self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
-        self._ini_filename = None
-        self._ini_buffer = None
-        try:
-            self._ini_filename = find_file(ini_file)
-        except:
-            # If we catch any kind of exception here then treat the parameter as the configuration
-            self._ini_buffer = ini_file;
 
-    def load_ini(self):
+        self.conf = ConfigParser(dict_type=OrderedDict)
+        self.conf.optionxform = str; # this makes the option names case-sensitive
+
+        self.setpoint2section = {};
+
+    def load_ini(self, ini_file):
         """
         Loads and parses the data from INI file. The data is stored internally in the object and can be retrieved
-        through the property methods
+        through the property methods. Data from a previous load is kept, or silently overwritten.
         """
-        self.conf = ConfigParser(dict_type=OrderedDict)
-        self.conf.optionxform = str
-        if self._ini_filename:
-            self.conf.read(self._ini_filename)
-            self.log.debug("Read Setpoint Groups INI file: %s", self._ini_filename)
+
+        _ini_filename = None
+        _ini_buffer = None
+
+        try:
+            _ini_filename = find_file(ini_file)
+        except:
+            # If we catch any kind of exception here then treat the parameter as the configuration
+            _ini_buffer = ini_file;
+
+        if _ini_filename:
+            self.conf.read(_ini_filename)
+            self.log.debug("Read Setpoint Groups INI file: %s", _ini_filename)
         else:
-            self.conf.read_string(self._ini_buffer)
-            self.log.debug("Read Setpoint Groups INI string %s", self._ini_buffer)
+            self.conf.read_string(_ini_buffer)
+            self.log.debug("Read Setpoint Groups INI string %s", _ini_buffer)
         self.log.info("    sections: %s", self.conf.sections())
+
+        for sect in self.conf.sections():
+          name = self.get_name(sect);
+          self.setpoint2section[name] = sect;
+
+        # check section and setpoint-name are tied. pretty pointless.
+        if len(self.conf.sections()) != len(self.setpoint2section.keys()) :
+          raise RuntimeError("setpoint names need to be unique");
+
+        
+
+    def clear_ini(self):
+      self.conf.clear();
+      self.setpoint2section.clear();
 
     @property
     def sections(self):
         return self.conf.sections()
 
+    # private
     def get_name(self, section):
         name = ""
         for item in self.conf.items(section):
@@ -703,16 +724,20 @@ class SetpointGroupParameters(object):
                 break
         return name
 
-    def get_description(self, section):
-        desc = ""
+    def get_all_setpoints(self):
+        return list(self.setpoint2section.keys());
+
+    def get_description(self, setpointname):
+        section = self.setpoint2section[setpointname];
+        desc = "";
         for item in self.conf.items(section):
             if "Setpoint_description" in item[0]:
                 desc = item[1].replace('"', '')
                 break
         return desc
 
-    # this needs renaming eg get_devices2values
-    def get_setpoints(self, section):
+    def get_setpoint(self, setpointname):
+        section = self.setpoint2section[setpointname];
         sps = {}
         for item in self.conf.items(section):
             if "Setpoint_description" not in item and "Setpoint_name" not in item:
