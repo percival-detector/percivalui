@@ -11,9 +11,8 @@ import logging
 import os
 import errno
 import re
-from io import StringIO
 from collections import OrderedDict
-from configparser import SafeConfigParser
+from configparser import ConfigParser
 from percival.carrier.const import BoardTypes
 
 
@@ -201,7 +200,7 @@ class ChannelParameters(object):
         """
         self._control_channels = None
         self._monitoring_channels = None
-        self.conf = SafeConfigParser(dict_type=OrderedDict)
+        self.conf = ConfigParser(dict_type=OrderedDict)
         self.conf.read(self._ini_filename)
         self.log.debug("Read Board Parameters INI file %s:", self._ini_filename)
         self.log.debug("    sections: %s", self.conf.sections())
@@ -373,7 +372,7 @@ class BoardParameters(object):
         """
         Loads and parses the data from INI file.
         """
-        self.conf = SafeConfigParser(dict_type=OrderedDict)
+        self.conf = ConfigParser(dict_type=OrderedDict)
         self.conf.read(self._ini_filename)
 
         self.log.debug("Read Board Parameters INI file %s:", self._ini_filename)
@@ -444,7 +443,7 @@ class ControlParameters(object):
         Loads and parses the data from INI file. The data is stored internally in the object and can be retrieved
         through the property methods
         """
-        self.conf = SafeConfigParser(dict_type=OrderedDict)
+        self.conf = ConfigParser(dict_type=OrderedDict)
         self.conf.read(self._ini_filename)
         self.log.debug("Read Percival control ini file %s:", self._ini_filename)
         self.log.debug("    sections: %s", self.conf.sections())
@@ -536,7 +535,7 @@ class ControlParameters(object):
 #        Loads and parses the data from INI file. The data is stored internally in the object and can be retrieved
 #        through the property methods
 #        """
-#        self.conf = SafeConfigParser(dict_type=OrderedDict)
+#        self.conf = ConfigParser(dict_type=OrderedDict)
 #        self.conf.read(self._ini_filename)
 #        self.log.debug("Read Buffer Transfer Parameters INI file %s:", self._ini_filename)
 #        self.log.debug("    sections: %s", self.conf.sections())
@@ -618,21 +617,21 @@ class ChannelGroupParameters(object):
             self._ini_filename = find_file(ini_file)
         except:
             # If we catch any kind of exception here then treat the parameter as the configuration
-            self._ini_buffer = StringIO(str(ini_file))
+            self._ini_buffer = ini_file
 
     def load_ini(self):
         """
         Loads and parses the data from INI file. The data is stored internally in the object and can be retrieved
         through the property methods
         """
-        self.conf = SafeConfigParser(dict_type=OrderedDict)
+        self.conf = ConfigParser(dict_type=OrderedDict)
         self.conf.optionxform = str
         if self._ini_filename:
             self.conf.read(self._ini_filename)
             self.log.debug("Read Channel Groups INI file %s:", self._ini_filename)
         else:
-            self.conf.readfp(self._ini_buffer)
-            self.log.info("Read Channel Groups INI object %s", self._ini_buffer)
+            self.conf.read_string(self._ini_buffer)
+            self.log.debug("Read Channel Groups INI string %s", self._ini_buffer)
         self.log.debug("    sections: %s", self.conf.sections())
 
     @property
@@ -675,21 +674,21 @@ class SetpointGroupParameters(object):
             self._ini_filename = find_file(ini_file)
         except:
             # If we catch any kind of exception here then treat the parameter as the configuration
-            self._ini_buffer = StringIO(str(ini_file))
+            self._ini_buffer = ini_file;
 
     def load_ini(self):
         """
         Loads and parses the data from INI file. The data is stored internally in the object and can be retrieved
         through the property methods
         """
-        self.conf = SafeConfigParser(dict_type=OrderedDict)
+        self.conf = ConfigParser(dict_type=OrderedDict)
         self.conf.optionxform = str
         if self._ini_filename:
             self.conf.read(self._ini_filename)
-            self.log.info("Read Setpoint Groups INI file: %s", self._ini_filename)
+            self.log.debug("Read Setpoint Groups INI file: %s", self._ini_filename)
         else:
-            self.conf.readfp(self._ini_buffer)
-            self.log.info("Read Setpoint Groups INI object %s", self._ini_buffer)
+            self.conf.read_string(self._ini_buffer)
+            self.log.debug("Read Setpoint Groups INI string %s", self._ini_buffer)
         self.log.info("    sections: %s", self.conf.sections())
 
     @property
@@ -734,7 +733,7 @@ class SystemSettingsParameters(object):
             self._ini_filename = find_file(ini_file)
         except:
             # If we catch any kind of exception here then treat the parameter as the configuration
-            self._ini_buffer = StringIO(str(ini_file))
+            self._ini_buffer = ini_file
 
     def load_ini(self):
         """
@@ -742,14 +741,14 @@ class SystemSettingsParameters(object):
         through the property methods
         For the system settings all parameter names <section>_<name>
         """
-        self._conf = SafeConfigParser(dict_type=OrderedDict)
+        self._conf = ConfigParser(dict_type=OrderedDict)
         self._conf.optionxform = str
         if self._ini_filename:
             self._conf.read(self._ini_filename)
-            self.log.info("Read System Settings INI file: %s", self._ini_filename)
+            self.log.debug("Read System Settings INI file: %s", self._ini_filename)
         else:
-            self._conf.readfp(self._ini_buffer)
-            self.log.info("Read System Settings INI object %s", self._ini_buffer)
+            self._conf.read_string(self._ini_buffer)
+            self.log.debug("Read System Settings INI string %s", self._ini_buffer)
         self.log.info("    sections: %s", self._conf.sections())
 
     @property
@@ -777,7 +776,7 @@ class ChipReadoutSettingsParameters(object):
             self._ini_filename = find_file(ini_file)
         except:
             # If we catch any kind of exception here then treat the parameter as the configuration
-            self._ini_buffer = StringIO(str(ini_file))
+            self._ini_buffer = ini_file
 
     def load_ini(self):
         """
@@ -785,14 +784,14 @@ class ChipReadoutSettingsParameters(object):
         through the property methods
         For the system settings all parameter names <section>_<name>
         """
-        self._conf = SafeConfigParser(dict_type=OrderedDict)
+        self._conf = ConfigParser(dict_type=OrderedDict)
         self._conf.optionxform = str
         if self._ini_filename:
             self._conf.read(self._ini_filename)
-            self.log.info("Read Chip Readout Settings INI file: %s", self._ini_filename)
+            self.log.debug("Read Chip Readout Settings INI file: %s", self._ini_filename)
         else:
-            self._conf.readfp(self._ini_buffer)
-            self.log.info("Read Chip Readout Settings INI object %s", self._ini_buffer)
+            self._conf.read_string(self._ini_buffer)
+            self.log.debug("Read Chip Readout Settings INI string %s", self._ini_buffer)
         self.log.info("    sections: %s", self._conf.sections())
 
     @property
@@ -820,7 +819,7 @@ class ClockSettingsParameters(object):
             self._ini_filename = find_file(ini_file)
         except:
             # If we catch any kind of exception here then treat the parameter as the configuration
-            self._ini_buffer = StringIO(str(ini_file))
+            self._ini_buffer = ini_file
 
     def load_ini(self):
         """
@@ -828,14 +827,14 @@ class ClockSettingsParameters(object):
         through the property methods
         For the system settings all parameter names <section>_<name>
         """
-        self._conf = SafeConfigParser(dict_type=OrderedDict)
+        self._conf = ConfigParser(dict_type=OrderedDict)
         self._conf.optionxform = str
         if self._ini_filename:
             self._conf.read(self._ini_filename)
-            self.log.info("Read Clock Settings INI file: %s", self._ini_filename)
+            self.log.debug("Read Clock Settings INI file: %s", self._ini_filename)
         else:
-            self._conf.readfp(self._ini_buffer)
-            self.log.info("Read Clock Settings INI object %s", self._ini_buffer)
+            self._conf.read_string(self._ini_buffer)
+            self.log.debug("Read Clock Settings INI string %s", self._ini_buffer)
         self.log.info("    sections: %s", self._conf.sections())
 
     @property
@@ -863,7 +862,7 @@ class SensorDACParameters(object):
             self._ini_filename = find_file(ini_file)
         except:
             # If we catch any kind of exception here then treat the parameter as the configuration
-            self._ini_buffer = StringIO(str(ini_file))
+            self._ini_buffer = ini_file
 
     def load_ini(self):
         """
@@ -871,14 +870,14 @@ class SensorDACParameters(object):
         through the property methods
         For the system settings all parameter names <section>_<name>
         """
-        self._conf = SafeConfigParser(dict_type=OrderedDict)
+        self._conf = ConfigParser(dict_type=OrderedDict)
         self._conf.optionxform = str
         if self._ini_filename:
             self._conf.read(self._ini_filename)
-            self.log.info("Read Sensor DAC INI file: %s", self._ini_filename)
+            self.log.debug("Read Sensor DAC INI file: %s", self._ini_filename)
         else:
-            self._conf.readfp(self._ini_buffer)
-            self.log.info("Read Sensor DAC INI object %s", self._ini_buffer)
+            self._conf.read_string(self._ini_buffer)
+            self.log.debug("Read Sensor DAC INI string %s", self._ini_buffer)
         self.log.info("    sections: %s", self._conf.sections())
 
     @property
@@ -903,7 +902,7 @@ class SensorConfigurationParameters(object):
             self._ini_filename = find_file(ini_file)
         except:
             # If we catch any kind of exception here then treat the parameter as the configuration
-            self._ini_buffer = StringIO(str(ini_file))
+            self._ini_buffer = ini_file
 
     def load_ini(self):
         """
@@ -911,14 +910,14 @@ class SensorConfigurationParameters(object):
         through the property methods
         For the system settings all parameter names <section>_<name>
         """
-        self._conf = SafeConfigParser(dict_type=OrderedDict)
+        self._conf = ConfigParser(dict_type=OrderedDict)
         self._conf.optionxform = str
         if self._ini_filename:
             self._conf.read(self._ini_filename)
-            self.log.info("Read Sensor Configuration Settings INI file: %s", self._ini_filename)
+            self.log.debug("Read Sensor Configuration Settings INI file: %s", self._ini_filename)
         else:
-            self._conf.readfp(self._ini_buffer)
-            self.log.info("Read Sensor Configuration Settings INI object %s", self._ini_buffer)
+            self._conf.read_string(self._ini_buffer)
+            self.log.debug("Read Sensor Configuration Settings INI string %s", self._ini_buffer)
         self.log.info("    sections: %s", self._conf.sections())
 
     @property
@@ -954,7 +953,7 @@ class SensorCalibrationParameters(object):
             self._ini_filename = find_file(ini_file)
         except:
             # If we catch any kind of exception here then treat the parameter as the configuration
-            self._ini_buffer = StringIO(str(ini_file))
+            self._ini_buffer = ini_file
 
     def load_ini(self):
         """
@@ -962,14 +961,14 @@ class SensorCalibrationParameters(object):
         through the property methods
         For the system settings all parameter names <section>_<name>
         """
-        self._conf = SafeConfigParser(dict_type=OrderedDict)
+        self._conf = ConfigParser(dict_type=OrderedDict)
         self._conf.optionxform = str
         if self._ini_filename:
             self._conf.read(self._ini_filename)
-            self.log.info("Read Sensor Configuration Settings INI file: %s", self._ini_filename)
+            self.log.debug("Read Sensor Configuration Settings INI file: %s", self._ini_filename)
         else:
-            self._conf.readfp(self._ini_buffer)
-            self.log.info("Read Sensor Configuration Settings INI object %s", self._ini_buffer)
+            self._conf.read_string(self._ini_buffer)
+            self.log.debug("Read Sensor Configuration Settings INI string %s", self._ini_buffer)
         self.log.info("    sections: %s", self._conf.sections())
 
     @property
@@ -1017,7 +1016,7 @@ class SensorDebugParameters(object):
             self._ini_filename = find_file(ini_file)
         except:
             # If we catch any kind of exception here then treat the parameter as the configuration
-            self._ini_buffer = StringIO(str(ini_file))
+            self._ini_buffer = ini_file
 
     def load_ini(self):
         """
@@ -1025,14 +1024,14 @@ class SensorDebugParameters(object):
         through the property methods
         For the system settings all parameter names <section>_<name>
         """
-        self._conf = SafeConfigParser(dict_type=OrderedDict)
+        self._conf = ConfigParser(dict_type=OrderedDict)
         self._conf.optionxform = str
         if self._ini_filename:
             self._conf.read(self._ini_filename)
-            self.log.info("Read Sensor Debug Settings INI file: %s", self._ini_filename)
+            self.log.debug("Read Sensor Debug Settings INI file: %s", self._ini_filename)
         else:
-            self._conf.readfp(self._ini_buffer)
-            self.log.info("Read Sensor Debug Settings INI object %s", self._ini_buffer)
+            self._conf.read_string(self._ini_buffer)
+            self.log.debug("Read Sensor Debug Settings INI string %s", self._ini_buffer)
         self.log.info("    sections: %s", self._conf.sections())
 
     @property
