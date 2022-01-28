@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Created on 12 May 2016
 
@@ -10,6 +11,7 @@ import numpy as np
 from threading import Thread
 import math
 import time
+import argparse;
 
 import signal
 from datetime import datetime
@@ -23,6 +25,7 @@ import binascii;
 board_ip_port = 10002
 
 log = logger("percival.carrier.simulator");
+g_show_status = True;
 
 def bytes_to_str(byte_list):
     return "".join([chr(b) for b in byte_list])
@@ -243,12 +246,16 @@ class Simulator(object):
                 chunk = bytes(chunk, encoding=DATA_ENCODING)
             data = decode_message(chunk)
             for (a, w) in data:
-                log.info("Message %05d received: (0x%04X) 0x%08X", count, a, w)
+                if a == 0x0385:
+                  if g_show_status:
+                    log.info("Message %05d received: (0x%04X) 0x%08X", count, a, w);
+                else:
+                  log.info("Message %05d received: (0x%04X) 0x%08X", count, a, w)
                 count += 1;
                 # Save the message to the register
                 self.registers[a] = w
                 if a in self.shortcuts:
-                    log.info("Shortcut found: (0x%04X)", a)
+                    log.debug("Shortcut found: (0x%04X)", a)
                     reg, length = self.shortcuts[a].getshortcut()
                     msg = bytes()
                     for creg in range(reg, reg+length):
@@ -335,8 +342,18 @@ class Simulator(object):
 
         log.info("Client has disconnected")
 
+def options():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--no-showstatus", dest="showstatus", default=True, action='store_false', help="no show 0x0385 status messages arriving")
+
+    args = parser.parse_args()
+    return args
+
 
 def main():
+    global g_show_status;
+    args = options();
+    g_show_status = args.showstatus;
     sim = Simulator()
     sim.start(forever=True, blocking=True)
     #sim.shutdown()

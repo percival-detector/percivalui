@@ -87,7 +87,7 @@ class PercivalParameters(object):
         self._sensor_dac_params = None
         self._control_group_params = None
         self._monitor_group_params = None
-        self._setpoint_group_params = None
+        self._setpoint_group_params = SetpointGroupParameters();
 
     def load_ini(self):
         """
@@ -213,9 +213,8 @@ class PercivalParameters(object):
         self._monitor_group_params.load_ini()
 
     def load_setpoint_group_ini(self, filename):
-        # Create the ini object from either filename or string
-        self._setpoint_group_params = SetpointGroupParameters(filename)
-        self._setpoint_group_params.load_ini()
+        # Extend the ini object from either filename or string
+        self._setpoint_group_params.load_ini(filename)
 
     @property
     def carrier_ip(self):
@@ -585,7 +584,7 @@ class PercivalDetector(object):
         self._system_settings.load_ini(self._percival_params.system_settings_params)
         self._chip_readout_settings.load_ini(self._percival_params.chip_readout_settings_params)
         self._clock_settings.load_ini(self._percival_params.clock_settings_params)
-        self._setpoint_control.load_ini(self._percival_params.setpoint_params)
+        self._setpoint_control.set_params(self._percival_params.setpoint_params)
 
     def setup_control(self):
         """
@@ -849,7 +848,7 @@ class PercivalDetector(object):
     def load_setpoints(self, setpoint_ini):
         self._log.debug("Loading set-points with config: %s", setpoint_ini)
         self._percival_params.load_setpoint_group_ini(setpoint_ini)
-        self._setpoint_control.load_ini(self._percival_params.setpoint_params)
+        self._setpoint_control.set_params(self._percival_params.setpoint_params)
 
     def queue_command(self, command):
         # Special command case is an abort of a scan
