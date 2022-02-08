@@ -20,7 +20,7 @@ def options():
     parser.add_argument("-i", "--input", nargs="+", required=True, action='store', help="Input spreadsheets to parse")
     wait_help = "Wait for the command to complete (default true)"
     parser.add_argument("-w", "--wait", action="store", default="true", help=wait_help)
-    parser.add_argument("--textdump", action="store_true", help="send to stdout instead of odin")
+    parser.add_argument("--textdump", help="list setpoint to stdout (setpoint_id or 'all')")
     args = parser.parse_args()
     return args
 
@@ -34,10 +34,24 @@ def main():
     for xls in args.input:
       workbook = xlrd.open_workbook(xls)
       ini_str += sgg.generate_ini(workbook)
-      ini_str += "\n";
 
     if args.textdump:
-        print (ini_str);
+        setpoint_we_want = args.textdump;
+        if setpoint_we_want == "all":
+          print (ini_str);
+        else:
+          # this is a bit hacky. but I'm not changing the spreadsheetparser
+          lines = ini_str.splitlines(False);
+          key = "Setpoint_name = \"{}\"".format(setpoint_we_want);
+          on = False;
+          for l in lines:
+            if l == key:
+              on = True;
+            if on:
+              print (l)
+              if l == "":
+                on = False;
+
     else:
         pc = PercivalClient(args.address)
         result = pc.send_configuration('setpoints',
