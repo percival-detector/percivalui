@@ -1,0 +1,273 @@
+
+{
+"snake1" : 
+
+  [
+      {
+        "description" : "stage0",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh onstage0",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh offstage0"
+      },
+
+      { 
+        "description" : "stage1",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh onstage1",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh offstage1"
+      },
+
+      { 
+        "description" : "stage2",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      { 
+        "description" : "sn1 stage3",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      { 
+        "description" : "sn1 stage4",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      { 
+        "description" : "stage5",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      { 
+        "description" : "stage6",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      {
+        "description" : "sn1 stage7",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      {
+        "description" : "action",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "action" : "True"
+      }
+
+  ],
+
+"snake2" : 
+
+  [
+      {
+        "description" : "stage0",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh onstage0",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh offstage0"
+      },
+
+      { 
+        "description" : "stage1",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh onstage1",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh offstage1"
+      },
+
+      { 
+        "description" : "stage2",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      { 
+        "description" : "sn2 stage3",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      { 
+        "description" : "sn2 stage4",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      { 
+        "description" : "stage5",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      { 
+        "description" : "stage6",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      {
+        "description" : "sn2 stage7",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      {
+        "description" : "action",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "action" : "True"
+      }
+
+  ],
+
+"snake3" : 
+
+  [
+      {
+        "description" : "stage0",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh onstage0",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh offstage0"
+      },
+
+      { 
+        "description" : "stage1",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh onstage1",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh offstage1"
+      },
+
+      { 
+        "description" : "stage2",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      { 
+        "description" : "sn3 stage3",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      { 
+        "description" : "sn3 stage4",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      {
+        "description" : "action",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "action" : "True"
+      }
+
+  ],
+
+"snake4" : 
+
+  [
+      {
+        "description" : "stage0",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh onstage0",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh offstage0"
+      },
+
+      { 
+        "description" : "stage1",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh onstage1",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh offstage1"
+      },
+
+      { 
+        "description" : "stage2",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      {
+        "description" : "sn4 st3 action",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh actioning",
+        "action" : "True"
+      },
+
+      { 
+        "description" : "sn4 stage4",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      { 
+        "description" : "stage5",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      { 
+        "description" : "stage6",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      {
+        "description" : "sn4 stage7",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      }
+
+  ],
+
+"snake5" : 
+
+  [
+      {
+        "description" : "stage0",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh onstage0",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh offstage0"
+      },
+
+      { 
+        "description" : "stage1",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh onstage1",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh offstage1"
+      },
+
+      { 
+        "description" : "stage2",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      {
+        "description" : "sn5 st3 action",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh actioning",
+        "action" : "True"
+      }
+  ],
+
+"snake6" : 
+
+  [
+      {
+        "description" : "stage0",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh onstage0",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh offstage0"
+      },
+
+      { 
+        "description" : "stage1",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh onstage1",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh offstage1"
+      },
+
+      { 
+        "description" : "stage2",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      },
+
+      { 
+        "description" : "sn6 stage3",
+        "onscript"  : "./user_scripts/bguiv2/sleep.sh",
+        "offscript" : "./user_scripts/bguiv2/sleep.sh"
+      }
+  ]
+
+
+}
+

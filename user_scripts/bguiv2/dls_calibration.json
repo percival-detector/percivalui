@@ -1,0 +1,430 @@
+
+{
+
+"snake_standard" : 
+
+  [
+      {
+        "description" : "turn on wiener",
+        "onscript"  : "./user_scripts/wiener/mainswitchON.sh",
+        "offscript" : "./user_scripts/wiener/mainswitchOFF.sh"
+      },
+
+      { 
+        "description" : "power to PwB",
+        "onscript"  : "./user_scripts/wiener/pwb_UP.sh",
+        "offscript" : "./user_scripts/wiener/pwb_DOWN.sh"
+      },
+
+      { 
+        "description" : "check voltages1",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon"
+      },
+
+      { 
+        "description" : "power to head",
+        "onscript"  : "./DESY/W3C3/user_scripts/POWERUP_000_unix.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/POWERDOWN_000_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages2",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      },
+
+      { 
+        "description" : "head operational fsi01 3GHML",
+        "onscript"  : "./DESY/W3C3/user_scripts/DESY_FSI01_FromSysPowON_ToSeq_3G_PGAB_10Img_12ms_0802h3_PLL120MHz_ADC25MHz.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/DESY_FSI01_FromSeq0802h3_ToSysPowON_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages3",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      },
+
+      {
+        "description" : "Capture to fri",
+        "onscript"  : "./user_scripts/tool_acquire_timestamp.py -o /dls/detectors/Percival/captures/friday",
+        "action" : "True"
+      }
+
+  ],
+
+
+"snake_newbiases" : 
+
+  [
+      {
+        "description" : "turn on wiener",
+        "onscript"  : "./user_scripts/wiener/mainswitchON.sh",
+        "offscript" : "./user_scripts/wiener/mainswitchOFF.sh"
+      },
+
+      { 
+        "description" : "power to PwB",
+        "onscript"  : "./user_scripts/wiener/pwb_UP.sh",
+        "offscript" : "./user_scripts/wiener/pwb_DOWN.sh"
+      },
+
+      { 
+        "description" : "check voltages1",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon"
+      },
+
+      { 
+        "description" : "power to head",
+        "onscript"  : "./DESY/W3C3/user_scripts/POWERUP_000_unix.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/POWERDOWN_000_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages2",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      },
+
+      { 
+        "description" : "head operational (FSI10 3GHML)",
+        "onscript"  : "./DESY/W3C3/user_scripts/DLS_FSI10_FromSysPowON_ToSeq_3G_PGAB_10Img_12ms_PLL120MHz_ADC25MHz.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/DLS_FSI10_FromSeq_ToSysPowON_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages3",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      },
+
+      {
+        "description" : "Capture",
+        "onscript"  : "./user_scripts/tool_acquire_timestamp.py -o /dls/detectors/Percival/captures",
+        "action" : "True"
+      }
+
+  ],
+
+"snake_reset" : 
+
+  [
+      {
+        "description" : "turn on wiener",
+        "onscript"  : "./user_scripts/wiener/mainswitchON.sh",
+        "offscript" : "./user_scripts/wiener/mainswitchOFF.sh"
+      },
+
+      { 
+        "description" : "power to PwB",
+        "onscript"  : "./user_scripts/wiener/pwb_UP.sh",
+        "offscript" : "./user_scripts/wiener/pwb_DOWN.sh"
+      },
+
+      { 
+        "description" : "check voltages1",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon"
+      },
+
+      { 
+        "description" : "power to head",
+        "onscript"  : "./DESY/W3C3/user_scripts/POWERUP_000_unix.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/POWERDOWN_000_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages2",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      },
+
+      { 
+        "description" : "FSI01 into VRST",
+        "onscript"  : "./DESY/W3C3/user_scripts/DESY_FSI01_FromSysPowON_ToSeq_VRST_10Img_12ms_0802g_PLL120MHz_ADC25MHz.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/DESY_FSI01_FromSeq0802g_ToSysPowON_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages3",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      }
+
+  ],
+
+"snake_reset_fsi10" : 
+
+  [
+      {
+        "description" : "turn on wiener",
+        "onscript"  : "./user_scripts/wiener/mainswitchON.sh",
+        "offscript" : "./user_scripts/wiener/mainswitchOFF.sh"
+      },
+
+      { 
+        "description" : "power to PwB",
+        "onscript"  : "./user_scripts/wiener/pwb_UP.sh",
+        "offscript" : "./user_scripts/wiener/pwb_DOWN.sh"
+      },
+
+      { 
+        "description" : "check voltages1",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon"
+      },
+
+      { 
+        "description" : "power to head",
+        "onscript"  : "./DESY/W3C3/user_scripts/POWERUP_000_unix.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/POWERDOWN_000_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages2",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      },
+
+      { 
+        "description" : "FSI10 into VRST",
+        "onscript"  : "./DESY/W3C3/user_scripts/DLS_FSI10_FromSysPowON_ToSeq_VRST.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/DLS_FSI10_FromSeq_ToSysPowON_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages3",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      }
+
+  ],
+
+"snake_FixGnHi" : 
+
+  [
+      {
+        "description" : "turn on wiener",
+        "onscript"  : "./user_scripts/wiener/mainswitchON.sh",
+        "offscript" : "./user_scripts/wiener/mainswitchOFF.sh"
+      },
+
+      { 
+        "description" : "power to PwB",
+        "onscript"  : "./user_scripts/wiener/pwb_UP.sh",
+        "offscript" : "./user_scripts/wiener/pwb_DOWN.sh"
+      },
+
+      { 
+        "description" : "check voltages1",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon"
+      },
+
+      { 
+        "description" : "power to head",
+        "onscript"  : "./DESY/W3C3/user_scripts/POWERUP_000_unix.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/POWERDOWN_000_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages2",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      },
+
+      { 
+        "description" : "FSI10 into (3T_PGAB) FixGnHi",
+        "onscript"  : "./DESY/W3C3/user_scripts/FromSysPowON_ToSeq_FixGnHi_10Img_12ms_PLL120MHz_ADC25MHz.sh --setpoint FSI10_FixGnHi",
+        "offscript" : "./DESY/W3C3/user_scripts/FromSeq_ToSysPowON.sh --setpoint FSI10_FixGnHi"
+      },
+
+      { 
+        "description" : "check voltages3",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      },
+
+      { 
+        "description" : "head into 3of7",
+        "onscript"  : "./DESY/W3C3/user_scripts/NOdmxSELHigh_RESET_DATA_SYNCH_STATUS_unix.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/RESET_DATA_SYNCH_STATUS_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages4",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      }
+
+  ],
+
+"snake_ToSeq_FixGnAll" : 
+
+  [
+      {
+        "description" : "turn on wiener",
+        "onscript"  : "./user_scripts/wiener/mainswitchON.sh",
+        "offscript" : "./user_scripts/wiener/mainswitchOFF.sh"
+      },
+
+      { 
+        "description" : "power to PwB",
+        "onscript"  : "./user_scripts/wiener/pwb_UP.sh",
+        "offscript" : "./user_scripts/wiener/pwb_DOWN.sh"
+      },
+
+      { 
+        "description" : "check voltages1",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon"
+      },
+
+      { 
+        "description" : "power to head",
+        "onscript"  : "./DESY/W3C3/user_scripts/POWERUP_000_unix.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/POWERDOWN_000_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages2",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      },
+
+      { 
+        "description" : "FSI10 into FixGnAll",
+        "onscript"  : "./DESY/W3C3/user_scripts/FromSysPowON_ToSeq_3G_PGA6BB_10Img_12ms_PLL120MHz_ADC25MHz_Synchr_Untrig.sh --setpoint FSI10_FixGnAll",
+        "offscript" : "./DESY/W3C3/user_scripts/FromSeq_ToSysPowON.sh --setpoint FSI10_FixGnAll"
+      },
+
+      { 
+        "description" : "check voltages3",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      }
+
+  ],
+
+"snake_ToSeq_3Ghml" : 
+
+  [
+      {
+        "description" : "turn on wiener",
+        "onscript"  : "./user_scripts/wiener/mainswitchON.sh",
+        "offscript" : "./user_scripts/wiener/mainswitchOFF.sh"
+      },
+
+      { 
+        "description" : "power to PwB",
+        "onscript"  : "./user_scripts/wiener/pwb_UP.sh",
+        "offscript" : "./user_scripts/wiener/pwb_DOWN.sh"
+      },
+
+      { 
+        "description" : "check voltages1",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon"
+      },
+
+      { 
+        "description" : "power to head",
+        "onscript"  : "./DESY/W3C3/user_scripts/POWERUP_000_unix.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/POWERDOWN_000_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages2",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      },
+
+      { 
+        "description" : "FSI10 into 3Ghml",
+        "onscript"  : "./DESY/W3C3/user_scripts/DLS_FSI10_FromSysPowON_ToSeq_3G_PGAB_10Img_12ms_PLL120MHz_ADC25MHz.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/FromSeq_ToSysPowON.sh --setpoint FSI10_3Ghml"
+      },
+
+      { 
+        "description" : "check voltages3",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      },
+
+      { 
+        "description" : "head into 3of7",
+        "onscript"  : "./DESY/W3C3/user_scripts/NOdmxSELHigh_RESET_DATA_SYNCH_STATUS_unix.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/RESET_DATA_SYNCH_STATUS_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages4",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      }
+
+  ],
+
+"snake_ToSeq_FixGnVeryHi" : 
+
+  [
+      {
+        "description" : "turn on wiener",
+        "onscript"  : "./user_scripts/wiener/mainswitchON.sh",
+        "offscript" : "./user_scripts/wiener/mainswitchOFF.sh"
+      },
+
+      { 
+        "description" : "power to PwB",
+        "onscript"  : "./user_scripts/wiener/pwb_UP.sh",
+        "offscript" : "./user_scripts/wiener/pwb_DOWN.sh"
+      },
+
+      { 
+        "description" : "check voltages1",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon"
+      },
+
+      { 
+        "description" : "power to head",
+        "onscript"  : "./DESY/W3C3/user_scripts/POWERUP_000_unix.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/POWERDOWN_000_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages2",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      },
+
+      { 
+        "description" : "FSI10 into FixGnVeryHi",
+        "onscript"  : "./DESY/W3C3/user_scripts/DLS_FSI10_FromSysPowON_ToSeq_3T_PGA6_10Img_12ms_PLL120MHz_ADC25MHz.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/FromSeq_ToSysPowON.sh --setpoint FSI10_FixGnAll"
+      },
+
+      { 
+        "description" : "check voltages3",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      },
+
+      { 
+        "description" : "head into 3of7",
+        "onscript"  : "./DESY/W3C3/user_scripts/NOdmxSELHigh_RESET_DATA_SYNCH_STATUS_unix.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/RESET_DATA_SYNCH_STATUS_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages4",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      }
+
+  ]
+
+}
+
