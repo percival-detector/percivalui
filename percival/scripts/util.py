@@ -180,14 +180,12 @@ class DAQClient(object):
     def set_file_name(self, filename):
         return self.send_command('hdf/file/name', filename)
 
+    def set_master_dset(self, dset):
+        return self.send_command('hdf/master', dset)
+
     def start_writing(self):
         # Reset the FPs
         response = self.send_reset()
-        if 'error' in response:
-            return response
-
-        # First send the master dataset name as data
-        response = self.send_command('hdf/master', 'data')
         if 'error' in response:
             return response
 

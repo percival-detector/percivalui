@@ -150,7 +150,6 @@ function start_fp_writing()
 {
     // Send the write true
     send_fp_reset();
-    send_fp_command('hdf/master', 'data');
     setTimeout(function(){
         //alert('here');
         send_fp_command('hdf/write', '1');
