@@ -24,18 +24,18 @@ percival-hl-configure-setpoints -i ./DESY/W3C3/config/05_Spreadsheets/DESY_W3C3_
 if [[ $2 -gt 1300 ]]; then
 echo "1300mA actions:"
 echo " Ramp down Current Biases..."
-percival-hl-scan-setpoints -i 08_0_CurrentBiases_ON -f 07_0_VoltageReferences_ON -n 4 -d 2000
+percival-hl-scan-setpoints -i 08_0_CurrentBiases_ON -f 07_0_VoltageReferences_ON -n 2 -d 500
 fi
 
 if [[ $2 -gt 850 ]]; then
 echo "850mA actions:"
 echo " Ramp down Voltage references..."
-percival-hl-scan-setpoints -i 07_0_VoltageReferences_ON -f 06_0_PixelVoltages_ON -n 4 -d 2000
+percival-hl-scan-setpoints -i 07_0_VoltageReferences_ON -f 06_0_PixelVoltages_ON -n 2 -d 500
 echo " Ramp down PixelVoltages..."
-percival-hl-scan-setpoints -i 06_0_PixelVoltages_ON -f 05_0_PixelVoltages_ON -n 4 -d 2000
-percival-hl-scan-setpoints -i 05_0_PixelVoltages_ON -f 04_0_PixelVoltages_ON -n 4 -d 2000
-percival-hl-scan-setpoints -i 04_0_PixelVoltages_ON -f 03_0_PixelVoltages_ON -n 4 -d 2000
-percival-hl-scan-setpoints -i 03_0_PixelVoltages_ON -f 02_0_LVDS_ON -n 4 -d 2000
+percival-hl-scan-setpoints -i 06_0_PixelVoltages_ON -f 05_0_PixelVoltages_ON -n 2 -d 500
+percival-hl-scan-setpoints -i 05_0_PixelVoltages_ON -f 04_0_PixelVoltages_ON -n 2 -d 500
+percival-hl-scan-setpoints -i 04_0_PixelVoltages_ON -f 03_0_PixelVoltages_ON -n 2 -d 500
+percival-hl-scan-setpoints -i 03_0_PixelVoltages_ON -f 02_0_LVDS_ON -n 2 -d 500
 echo " disabling IOs"
 percival-hl-system-command -c disable_LVDS_IOs
 fi
@@ -44,19 +44,19 @@ fi
 if [[ $2 -gt 550 ]]; then
 echo "550mA actions:"
 echo " Ramp down Voltage Supplies and LVDS IOs..."
-percival-hl-scan-setpoints -i 02_0_LVDS_ON -f 01_0_VDD_ON -n 4 -d 2000
+percival-hl-scan-setpoints -i 02_0_LVDS_ON -f 01_0_VDD_ON -n 2 -d 500
 fi
 
 
 if [[ $2 -gt 100 ]]; then
 echo "100mA actions:"
 echo " setpoint 01 to 00"
-percival-hl-scan-setpoints -i 01_0_VDD_ON -f 00_0_0V0A -n 4 -d 2000
+percival-hl-scan-setpoints -i 01_0_VDD_ON -f 00_0_0V0A -n 2 -d 500
 fi
 
 
 echo "EMERGENCY PERCIVAL POWERDOWN COMPLETED"
-echo "now please power off Wiener"
+echo "now please power-down the powerboard, then switch off the wiener."
 
 else
     echo "help: this script powers down percival based on a u0 current in mA. Specify eg -u0 1000"

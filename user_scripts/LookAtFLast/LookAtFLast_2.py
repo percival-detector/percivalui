@@ -95,12 +95,12 @@ def percDebug_plot_interactive_wCMA_2(data_GnCrsFn,data_CDSavg,data_CDSCMAavg, m
 #dflt_mainFolder='/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010234/scratch_bl/'
 #
 dflt_mainFolder='/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010254/raw/'
-#dflt_mainFolder='/home/ulw43618/morespace/test/percyNewHead011121/coveroff'
+dflt_mainFolder='/dls/detectors/Percival/captures/friday/'
 #dflt_mainFolder='/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010254/scratch_bl/'
 #
 if dflt_mainFolder[-1]!='/': dflt_mainFolder+='/'
-dflt_suffix_fl0='001.h5'
-dflt_suffix_fl1='002.h5'
+dflt_suffix_fl0='_000001.h5'
+dflt_suffix_fl1='_000002.h5'
 #dflt_img2proc_str= "0:9" # using the sensible matlab convention; "all",":","*" means all
 dflt_img2proc_str= ":" # using the sensible matlab convention; "all",":","*" means all
 #

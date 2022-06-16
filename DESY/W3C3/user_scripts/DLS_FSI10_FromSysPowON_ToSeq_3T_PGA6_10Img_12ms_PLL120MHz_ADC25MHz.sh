@@ -1,15 +1,17 @@
+percival-hl-configure-setpoints -i ./DESY/W3C3/config/05_Spreadsheets/DLS_Setpoint_Definitions.xls
+
 percival-hl-system-command -c stop_acquisition
 percival-hl-system-command -c exit_acquisition_armed_status
 
-echo "change biases from standard-after-PowON-status to 08_2g-status , FSI01 3T"
-percival-hl-scan-setpoints -i 08_1_CurrentBiases_ON_ready3T -f 08_2g_Test -n 2 -d 500
+echo "change biases from standard-after-PowON-status to FixGnAll-status , FSI10 3T"
+percival-hl-scan-setpoints -i 08_1_CurrentBiases_ON_ready3T -f FSI10_FixGnAll -n 2 -d 500
 
-echo "Load ADC25MHz, PLL120MHz, 3T,PGAB SequentialMode, 10 Images, 12ms integration"
+echo "Load ADC25MHz, PLL120MHz, 3T,PGA6 SequentialMode, 10 Images, 12ms integration"
 percival-hl-configure-clock-settings -i ./DESY/W3C3/config/01_Clock_Settings/ClockSettings_N06_120MHz_ACD25MHz.ini
-percival-hl-configure-chip-readout-settings -i ./DESY/W3C3/config/02_Chip_Readout_Settings/ChipReadoutSettings_N15_3T_ADC25MHz_PLL120MHz_SEQUENTIAL.ini
+percival-hl-configure-chip-readout-settings -i ./DESY/W3C3/config/02_Chip_Readout_Settings/ChipReadoutSettings_N16_3T_PGA6_ADC25MHz_PLL120MHz_Seq.ini
 percival-hl-configure-system-settings -i ./DESY/W3C3/config/03_System_Settings/SystemSettings_N15_pixel_10Img_12ms_SEQUENTIAL.ini
 
-echo RESET DATA SYNCH STATUS...
+echo "RESET DATA SYNCH STATUS x1"
 # EXIT ARMED STATUS
 percival-hl-system-command -c exit_acquisition_armed_status
 # ASSERT CPNI FLAGS IN DEBUG REGISTERS
@@ -25,8 +27,8 @@ percival-hl-configure-sensor-debug -i ./DESY/W3C3/config/04_Sensor_Settings/Sens
 # ENTER ARMED STATUS
 percival-hl-system-command -c enter_acquisition_armed_status
 
-echo  "DONE"
+echo  "DONE (FSI10)"
 echo  "PLL120MHz,ADC25MHz PLL120MHz,ADC25MHz PLL120MHz,ADC25MHz"
 echo  "SeqMod,dmuxSELswitching SeqMode,dmuxSELswitching"
 echo  "10img,12ms 10img,12ms 10img,12ms 10img,12ms 10img,12ms 10img,12ms"
-echo  "3T,PGAB,0802g(FSI01) 3T,PGAB,0802g(FSI01) 3T,PGAB,0802g(FSI01)"
+echo  "3T,PGA6,FixGnAll,3T,PGA6,FixGnAll,3T,PGA6,FixGnAll,"

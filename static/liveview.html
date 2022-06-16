@@ -1,0 +1,57 @@
+<html>
+<head>
+<script src="js/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script src="js/jquery-ui.min.js" type="text/javascript"></script>
+<script language='javascript'>
+ function imageRefresh(img, timeout) {
+    setTimeout(function() {
+     var d = new Date;
+     var http = img.src;
+     if (http.indexOf("&d=") != -1) { http = http.split("&d=")[0]; } 
+
+     img.src = http + '&d=' + d.getTime();
+    }, timeout);
+
+  };
+
+  $(document).ready(function () {
+      $.get( "api/0.1/liveview/shrinkratio", function( data ) {
+      $("#shrinkratio").html(data);
+      });
+  });
+
+</script>
+
+</head>
+<body bgcolor=lightgray>
+<h1>Live View</h1>
+<p>
+Top-left is origin (0,0).
+No pixel-averaging is done; 1 pixel is shown from every <b id="shrinkratio"></b> rows / cols.
+<p>
+<table border=1>
+<tr><td>
+<h1>Gain</h1>
+<img src="api/0.1/liveview/gain" onload="imageRefresh(this, 1000);" width=1000>
+</td></tr>
+<tr><td>
+<h1>Coarse</h1>
+<img src="api/0.1/liveview/coarse" onload="imageRefresh(this, 1000);" width=1000>
+</td></tr>
+<tr><td>
+<h1>Fine</h1>
+<img src="api/0.1/liveview/fine" onload="imageRefresh(this, 1000);" width=1000>
+</td></tr>
+</table>
+
+
+<p>
+<a href="api/0.1/liveview/coarse">coarse</a>
+
+<p>
+
+
+<p>
+
+</body>
+</html>
