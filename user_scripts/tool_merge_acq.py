@@ -38,7 +38,7 @@ def merge_files_and_save(filename1, filename2, outfile, delete=True, split=False
 
       dtp = "float32" if dset=="ecount" else "uint16";
 
-      output = np.zeros(outshape, dtype=dtp) * numpy.nan;
+      output = np.zeros(outshape, dtype=dtp) * np.nan;
 
       for i in range(0, numfr1):
         output[i*2,:,numrefcols:] = f1[dset][i,:,:];
