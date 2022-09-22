@@ -42,7 +42,7 @@ It is possible to load and execute the detector as a plugin of an Odin server in
 
 Open the requirements.txt file for the percivalui project and uncomment the line 
 ```
-#-e git+git://github.com/percival-detector/odin.git#egg=odin&subdirectory=server
+#-e git+https://github.com/percival-detector/odin.git#egg=odin&subdirectory=server
 ```
 
 Install the Odin server with the pip command
