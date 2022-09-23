@@ -54,8 +54,7 @@
 
   ],
 
-
-"snake_ToSeq_3Ghml_3of7" : 
+"snake_fsi10_ca" : 
 
   [
       {
@@ -100,25 +99,14 @@
         "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
       },
 
-      { 
-        "description" : "head into 3of7",
-        "onscript"  : "./DESY/W3C3/user_scripts/NOdmxSELHigh_RESET_DATA_SYNCH_STATUS_unix.sh",
-        "offscript" : "./DESY/W3C3/user_scripts/RESET_DATA_SYNCH_STATUS_unix.sh"
-      },
-
-      { 
-        "description" : "check voltages4",
-        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
-        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
-      },
-
       {
-        "description" : "Capture",
-        "onscript"  : "./user_scripts/tool_acquire_timestamp.py -o /dls/detectors/Percival/captures",
-        "action" : "True"
+        "description" : "Continuous Acq",
+        "onscript"  : "./sandbox/tool_cont_acqu.py --start",
+        "offscript" : "./sandbox/tool_cont_acqu.py --stop"
       }
 
   ]
+
 
 }
 
