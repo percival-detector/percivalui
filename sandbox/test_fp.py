@@ -9,9 +9,9 @@ import sys
 import argparse
 import logging
 
-from percival.log import log
-from percival.carrier import const
-from percival.scripts.util import DAQClient
+from percival_detector.log import log
+from percival_detector.carrier import const
+from percival_detector.scripts.util import DAQClient
 
 
 SCRIPT_NAME = "test_fp.py"

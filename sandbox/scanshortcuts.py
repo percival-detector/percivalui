@@ -8,10 +8,10 @@ Created on 13 May 2015
 from builtins import range  # pylint: disable=W0622
 import os
 
-from percival.log import log
-from percival.carrier.txrx import TxRxContext
-from percival.carrier.encoding import (encode_message, decode_message)
-from percival.carrier.const import *
+from percival_detector.log import log
+from percival_detector.carrier.txrx import TxRxContext
+from percival_detector.carrier.encoding import (encode_message, decode_message)
+from percival_detector.carrier.const import *
 
 board_ip_address = os.getenv("PERCIVAL_CARRIER_IP")
 

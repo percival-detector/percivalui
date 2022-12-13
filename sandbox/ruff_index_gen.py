@@ -8,7 +8,7 @@ import random;
 import matplotlib.pyplot;
 import time;
 import threading;
-import percival.carrier.const;
+import percival_detector.carrier.const;
 from collections import OrderedDict;
 import h5py;
 import argparse;

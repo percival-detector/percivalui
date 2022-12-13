@@ -18,7 +18,7 @@ logging.basicConfig()
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
-from percival.percivalui import PercivalUI
+from percival_detector.percivalui import PercivalUI
 import datetime
 
 pcvl = PercivalUI()

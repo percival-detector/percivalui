@@ -8,11 +8,11 @@ Created on 19 May 2015
 import os, time, signal
 import numpy, h5py
 
-from percival.log import log
+from percival_detector.log import log
 
-from percival.carrier import const
-from percival.carrier.registers import UARTRegister, ReadValueMap
-from percival.carrier.txrx import TxRxContext
+from percival_detector.carrier import const
+from percival_detector.carrier.registers import UARTRegister, ReadValueMap
+from percival_detector.carrier.txrx import TxRxContext
 
 board_ip_address = os.getenv("PERCIVAL_CARRIER_IP")
 

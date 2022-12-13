@@ -5,7 +5,7 @@ Created on 24 July 2017
 '''
 
 from builtins import range  # pylint: disable=W0622
-from percival.log import log
+from percival_detector.log import log
 
 
 def main():

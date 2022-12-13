@@ -7,8 +7,8 @@ Created on 15 June 2016
 
 import argparse
 
-from percival.log import log
-from percival.detector.ipc_channel import IpcChannel
+from percival_detector.log import log
+from percival_detector.control.ipc_channel import IpcChannel
 
 
 def options():

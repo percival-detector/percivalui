@@ -9,10 +9,10 @@ import argparse
 import requests
 import getpass
 
-from percival.log import log
+from percival_detector.log import log
 from datetime import datetime
-from percival.detector.ipc_channel import IpcChannel
-from percival.detector.ipc_message import IpcMessage
+from percival_detector.control.ipc_channel import IpcChannel
+from percival_detector.control.ipc_message import IpcMessage
 
 
 def options():

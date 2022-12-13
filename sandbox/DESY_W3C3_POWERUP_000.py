@@ -10,10 +10,10 @@ import argparse
 import logging
 import xlrd
 
-from percival.log import log
-from percival.carrier import const
-from percival.scripts.util import PercivalClient
-from percival.detector.spreadsheet_parser import ControlGroupGenerator, MonitorGroupGenerator, SetpointGroupGenerator
+from percival_detector.log import log
+from percival_detector.carrier import const
+from percival_detector.scripts.util import PercivalClient
+from percival_detector.control.spreadsheet_parser import ControlGroupGenerator, MonitorGroupGenerator, SetpointGroupGenerator
 
 
 SCRIPT_NAME = "DESY_W3C3_POWERUP_000"

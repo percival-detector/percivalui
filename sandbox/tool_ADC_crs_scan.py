@@ -18,10 +18,10 @@ import time
 import logging
 import numpy
 
-from percival.log import log
-from percival.carrier import const
-from percival.scripts.util import DAQClient
-from percival.scripts.util import PercivalClient
+from percival_detector.log import log
+from percival_detector.carrier import const
+from percival_detector.scripts.util import DAQClient
+from percival_detector.scripts.util import PercivalClient
 
 system_commands = "\n\t".join([name for name, tmp in list(const.SystemCmd.__members__.items())])
 
