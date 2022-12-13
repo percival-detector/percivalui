@@ -7,9 +7,9 @@ Created on 15 July 2016
 
 import os
 
-from percival.log import log
-from percival.carrier.txrx import TxRxContext
-from percival.carrier.encoding import (encode_message, decode_message)
+from percival_detector.log import log
+from percival_detector.carrier.txrx import TxRxContext
+from percival_detector.carrier.encoding import (encode_message, decode_message)
 
 board_ip_address = os.getenv("PERCIVAL_CARRIER_IP")
 

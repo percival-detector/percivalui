@@ -1,8 +1,8 @@
 
 
 
-from percival.carrier.database import InfluxDB
-from percival.log import log
+from percival_detector.carrier.database import InfluxDB
+from percival_detector.log import log
 
 def main():
     log.info("Connecting to influxdb...")

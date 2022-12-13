@@ -8,12 +8,12 @@ Created on 17 May 2016
 import sys
 import argparse
 
-from percival.log import log
+from percival_detector.log import log
 
-from percival.carrier import const
-from percival.carrier.txrx import TxRxContext
-from percival.carrier.system import SystemCommand
-from percival.detector.detector import PercivalParameters
+from percival_detector.carrier import const
+from percival_detector.carrier.txrx import TxRxContext
+from percival_detector.carrier.system import SystemCommand
+from percival_detector.control.detector import PercivalParameters
 
 system_commands = "\n\t".join([name for name, tmp in list(const.SystemCmd.__members__.items())])
 

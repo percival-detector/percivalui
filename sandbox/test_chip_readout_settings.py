@@ -5,12 +5,12 @@ Created on 17 May 2016
 '''
 
 
-from percival.log import log
+from percival_detector.log import log
 
-from percival.carrier.registers import ChipReadoutSettingsMap
-from percival.carrier.configuration import ChipReadoutSettingsParameters
-from percival.carrier.chip import ChipReadoutSettings
-from percival.carrier.txrx import TxRxContext
+from percival_detector.carrier.registers import ChipReadoutSettingsMap
+from percival_detector.carrier.configuration import ChipReadoutSettingsParameters
+from percival_detector.carrier.chip import ChipReadoutSettings
+from percival_detector.carrier.txrx import TxRxContext
 
 
 def main():

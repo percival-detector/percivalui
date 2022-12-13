@@ -4,7 +4,7 @@ import argparse
 import json
 import requests
 
-from percival.log import get_exclusive_file_logger
+from percival_detector.log import get_exclusive_file_logger
 
 
 def options():

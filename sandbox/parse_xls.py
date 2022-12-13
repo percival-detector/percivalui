@@ -8,7 +8,7 @@ Created on 20 May 2016
 import argparse
 import xlrd
 
-from percival.log import log
+from percival_detector.log import log
 
 
 class WorksheetParser(object):

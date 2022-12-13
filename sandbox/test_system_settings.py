@@ -5,12 +5,12 @@ Created on 17 May 2016
 '''
 
 
-from percival.log import log
+from percival_detector.log import log
 
-from percival.carrier.registers import SystemSettingsMap
-from percival.carrier.configuration import SystemSettingsParameters
-from percival.carrier.system import SystemSettings
-from percival.carrier.txrx import TxRxContext
+from percival_detector.carrier.registers import SystemSettingsMap
+from percival_detector.carrier.configuration import SystemSettingsParameters
+from percival_detector.carrier.system import SystemSettings
+from percival_detector.carrier.txrx import TxRxContext
 
 def main():
     test_map = SystemSettingsMap()

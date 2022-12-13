@@ -15,7 +15,7 @@
 import sys;
 import numpy;
 import matplotlib.pyplot;
-import percival.carrier.const;
+import percival_detector.carrier.const;
 import h5py;
 import argparse;
 import os;

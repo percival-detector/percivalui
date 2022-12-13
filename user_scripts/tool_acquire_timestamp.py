@@ -6,14 +6,14 @@ import sys
 import argparse
 import time
 
-import percival.log;
-from percival.carrier import const
-from percival.scripts.util import DAQClient
-from percival.scripts.util import PercivalClient
+import percival_detector.log;
+from percival_detector.carrier import const
+from percival_detector.scripts.util import DAQClient
+from percival_detector.scripts.util import PercivalClient
 
-# system_commands = "\n".join([name for name, tmp in list(percival.carrier.const.SystemCmd.__members__.items())])
+# system_commands = "\n".join([name for name, tmp in list(percival_detector.carrier.const.SystemCmd.__members__.items())])
 # use the root logger because it goes to console.
-logger = percival.log.logger("");
+logger = percival_detector.log.logger("");
 verbose = True;
 
 

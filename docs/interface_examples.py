@@ -6,7 +6,7 @@ try:
 except:
     pass # not everyone use setuptools and that is OK...
 
-from percival.detector.interface import IDetector
+from percival_detector.control.interface import IDetector
 
 class MyDetector( object ):
     exposure = 0.1

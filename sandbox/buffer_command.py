@@ -9,12 +9,12 @@ import os
 
 import argparse
 
-from percival.log import log
-from percival.carrier.txrx import TxRxContext
-from percival.carrier.registers import UARTRegister
-from percival.carrier import const
-#from percival.carrier.encoding import encode_message
-#from percival.carrier.buffer import BufferCommand
+from percival_detector.log import log
+from percival_detector.carrier.txrx import TxRxContext
+from percival_detector.carrier.registers import UARTRegister
+from percival_detector.carrier import const
+#from percival_detector.carrier.encoding import encode_message
+#from percival_detector.carrier.buffer import BufferCommand
 
 board_ip_address = os.getenv("PERCIVAL_CARRIER_IP")
 

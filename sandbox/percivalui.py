@@ -9,7 +9,7 @@ import h5py
 import time
 import logging
 
-from percival.detector import interface
+from percival_detector.control import interface
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +56,7 @@ class PercivalSimulator:
 #    some_gain = detector.parameter.Observable('some_gain')
 
 class CarrierBoard(object):
-    """Implements the :class:`percival.detector.interface.IControl` interface for the Percival Carrier Board"""
+    """Implements the :class:`percival_detector.control.interface.IControl` interface for the Percival Carrier Board"""
     def __init__(self):
         self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         #self.dacs = DACs

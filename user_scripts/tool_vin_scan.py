@@ -8,14 +8,14 @@ import time
 import numpy;
 
 # do we use print or logger?
-import percival.log;
-import percival.carrier.const;
-from percival.scripts.util import DAQClient
-from percival.scripts.util import PercivalClient
+import percival_detector.log;
+import percival_detector.carrier.const;
+from percival_detector.scripts.util import DAQClient
+from percival_detector.scripts.util import PercivalClient
 
-# system_commands = "\n".join([name for name, tmp in list(percival.carrier.const.SystemCmd.__members__.items())])
+# system_commands = "\n".join([name for name, tmp in list(percival_detector.carrier.const.SystemCmd.__members__.items())])
 # use the root logger because it goes to console.
-logger = percival.log.logger("");
+logger = percival_detector.log.logger("");
 # make this a command line option
 verbose = False;
 
@@ -33,7 +33,7 @@ def start_acquisition(pc):
     if verbose:
         logger.info("starting acq.");
     # system commands go under the command 'cmd_system_command'
-    system_command = percival.carrier.const.SystemCmd['start_acquisition']
+    system_command = percival_detector.carrier.const.SystemCmd['start_acquisition']
     result = pc.send_system_command(system_command, 'calib_scan')
     time.sleep(1.0)
    # logger.info("Acquisition start response: {}".format(result));
