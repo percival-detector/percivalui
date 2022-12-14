@@ -736,12 +736,14 @@ class SetpointGroupParameters(object):
                 break
         return desc
 
+    # this returns a map of (key,value) pairs for the setpoint, excluding the
+    # name and description of the setpoint. (string, int).
     def get_setpoint(self, setpointname):
         section = self.setpoint2section[setpointname];
         sps = {}
         for item in self.conf.items(section):
             if "Setpoint_description" not in item and "Setpoint_name" not in item:
-                sps[item[0]] = item[1]
+                sps[item[0]] = int(item[1])
         return sps
 
 
