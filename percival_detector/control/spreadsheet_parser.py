@@ -135,7 +135,8 @@ class SetpointGroupGenerator(object):
                   ini_str += "Setpoint_name = \"{}\"\n".format(setpoint_id)
                   ini_str += "Setpoint_description = \"{}\"\n".format(group['Description'])
                   for channel in group["channels"]:
-                      ini_str += "{} = {}\n".format(channel, group["channels"][channel])
+                      # setpoint values are all uints.
+                      ini_str += "{} = {}\n".format(channel, int(group["channels"][channel]))
 
                   ini_str += "\n"
                   allsps.append(setpoint_id);
