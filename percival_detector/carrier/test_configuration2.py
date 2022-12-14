@@ -20,8 +20,8 @@ class TestSetpointGroupParameters(unittest.TestCase):
       sgp.load_ini(ini2);
 
       self.assertEqual(len(sgp.get_all_setpoints()),2);
-      self.assertEqual(sgp.get_setpoint("setp1").get("a"), "1");
-      self.assertEqual(sgp.get_setpoint("setp2").get("a"), "3");
+      self.assertEqual(sgp.get_setpoint("setp1").get("a"), 1);
+      self.assertEqual(sgp.get_setpoint("setp2").get("a"), 3);
 
       sgp.clear_ini();
       self.assertEqual(len(sgp.get_all_setpoints()),0);
@@ -35,7 +35,7 @@ class TestSetpointGroupParameters(unittest.TestCase):
       sgp.load_ini(ini2);
 
       self.assertEqual(len(sgp.get_all_setpoints()),1);
-      self.assertEqual(sgp.get_setpoint("setp1").get("a"), "3");
+      self.assertEqual(sgp.get_setpoint("setp1").get("a"), 3);
 
 
 if __name__ == '__main__':
