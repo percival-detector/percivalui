@@ -1,4 +1,7 @@
 echo -n "RESET DATA SYNCH for digital test 1 ..."
+# you must have Percival in a Sequencing mode like 3ghml before running this script!
+# If you dont, you may need to restart Percival as it gets confused about frame numbers.
+
 # EXIT ARMED STATUS
 percival-hl-system-command -c exit_acquisition_armed_status
 
