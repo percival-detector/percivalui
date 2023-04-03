@@ -1,4 +1,5 @@
 echo -n "load readout.ini for digTestMode3"
+# you must have Percival in a Seq mode like 3ghml before entering digTest state
 percival-hl-configure-chip-readout-settings -i ./DESY/W3C3/config/02_Chip_Readout_Settings/ChipReadoutSettings_N15b_digTestMode3.ini
 echo -n RESET DATA SYNCH STATUS...
 # EXIT ARMED STATUS
