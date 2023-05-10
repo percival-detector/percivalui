@@ -21,8 +21,8 @@ System dependencies:
 * pip - python package manager
 * HDF5 libraries (development package)
 * ZeroMQ (development package)
-* InfluxDB - time series database
-* Grafana - analytics and monitoring
+* InfluxDB - time series database (optional)
+* Grafana - analytics and monitoring (optional)
 * odin-control - 1.1.0 is python3 compatible
 * odin-data - 1.6.0 is python3 compatible
 * pySerial - for connection with uninterruptible power supply (optional).
@@ -182,7 +182,7 @@ Once installation is complete running the Odin server requires only the setting 
 	source venv3/bin/activate
 
 	# Execute the Odin server
-	odin_server --config=percival_test.cfg
+	odin_control --config=percival_test.cfg
 
 Once the server is up and running you can open a web browser and browse to the correct address of the odin server (e.g. 127.0.0.1:8888).  You will be presented with the home page shown below:
 
