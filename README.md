@@ -182,7 +182,7 @@ Once installation is complete running the Odin server requires only the setting 
 	source venv3/bin/activate
 
 	# Execute the Odin server
-	odin_server --config=percival_test.cfg
+	odin_control --config=percival_test.cfg
 
 Once the server is up and running you can open a web browser and browse to the correct address of the odin server (e.g. 127.0.0.1:8888).  You will be presented with the home page shown below:
 
