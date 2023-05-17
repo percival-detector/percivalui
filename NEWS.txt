@@ -1,0 +1,9 @@
+
+2023-05-17 -- version 0.0.3 -- wnichols
+
+  * The python installs newer versions of odin, but the DAQ-software is unaffected.
+
+  * The script sandbox/pcap_reader.py can be run on a pcap of Percival packets, and
+      allows you to do things like check there are enough packets every frame etc.
+
+  * Scripts added to enter FixGain1 and FixGain2 modes.
