@@ -99,8 +99,8 @@ dflt_mainFolder='/dls/detectors/Percival/captures/friday/'
 #dflt_mainFolder='/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010254/scratch_bl/'
 #
 if dflt_mainFolder[-1]!='/': dflt_mainFolder+='/'
-dflt_suffix_fl0='_000001.h5'
-dflt_suffix_fl1='_000002.h5'
+dflt_suffix_fl0='_000000.h5'
+dflt_suffix_fl1='_000001.h5'
 #dflt_img2proc_str= "0:9" # using the sensible matlab convention; "all",":","*" means all
 dflt_img2proc_str= ":" # using the sensible matlab convention; "all",":","*" means all
 #
