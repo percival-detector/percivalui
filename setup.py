@@ -19,7 +19,7 @@ with open(path.join(rootdir, 'README.md'), encoding='utf-8') as f:
 setup(
     name='percivalui',
 
-    version='0.1.0',
+    version='0.3.0',
 
     description='A Python based user control interface to the Percival detector',
     long_description=long_description,
