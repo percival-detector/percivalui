@@ -74,13 +74,14 @@ and it is recommended to setup a virtualenv first:
 
 	cd percivalui
 	
-	# Setup your virtual python environment and activate it
+	# Setup your virtual python3 environment and activate it
 	virtualenv --no-site-packages -p /path/to/python3.7 venv3
 	source venv3/bin/activate
 	
 	# Point to your HDF5 installation if it is not in the system path
 	export HDF5_DIR=/path/to/your/hdf5/installation
 	
+	# Please read requirements.txt and setup any specific requirements for your system.
 	# Install the python dependencies
 	pip install -r requirements.txt
 	
@@ -91,7 +92,7 @@ and it is recommended to setup a virtualenv first:
 	# Optionally build the documentation
 	python setup.py build_sphinx
 
-Once you have everything working you can build and install the product. While the module is in development it is
+Once you have everything working you can build and install the product. It is
 recommended to install it into a virtual environment in development mode:
 
     cd percivalui
@@ -99,7 +100,7 @@ recommended to install it into a virtual environment in development mode:
 	# activate your virtual python environment 
 	source venv3/bin/activate
     
-    python setup.py develop
+    python setup.py develop (or pip install -e .)
 
 Updating the percivalui code is like this:
 
@@ -175,8 +176,8 @@ NOTE: The above configuration file "percival_test.cfg" should not need to be cha
 
 Once installation is complete running the Odin server requires only the setting up of the Python virtual environment followed by the execution of the Odin instance:
 
-    # cd to the correct location
-    cd percivalui
+	# cd to the correct location
+	cd percivalui
 
 	# activate your virtual python environment
 	source venv3/bin/activate
