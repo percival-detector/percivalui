@@ -48,6 +48,7 @@ class InfluxDB(object):
         return status
 
     def log_point(self, time, measurement, data):
+        self._log.debug("influxdb point: %s %s %s", time, measurement, data)
         if self._connected:
             point = {
                 "measurement": measurement,
