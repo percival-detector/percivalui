@@ -26,7 +26,8 @@ percival_log_config = {
                                                 #        .replace(':', '_')
                                                 #        .replace('-', '_')),
             'maxBytes': 5242880,
-            'backupCount': 20
+            'backupCount': 20,
+            'mode':'w'
         },
         'trace_file': {
             'class': 'percival_detector.mkdir_handler.MkDirRotatingFileHandler',
@@ -36,7 +37,8 @@ percival_log_config = {
                                                       #        .replace(':', '_')
                                                       #        .replace('-', '_')),
             'maxBytes': 5242880,
-            'backupCount': 20
+            'backupCount': 20,
+            'mode':'w'
         }
     },
     'loggers': {
@@ -72,6 +74,11 @@ percival_log_config = {
         },
         'percival_detector.carrier.simulator': {
             'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'percival_detector.carrier.database.InfluxDB': {
+            'handlers': ['log_file'],
             'level': 'INFO',
             'propagate': False,
         },
