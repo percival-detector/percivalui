@@ -19,7 +19,7 @@ class PercivalAdapter(ApiAdapter):
     PercivalAdapter class
 
     This class provides the adapter interface between the ODIN server and the PERCIVAL detector system,
-    transforming the REST-like API HTTP verbs into the appropriate EXCALIBUR detector control actions
+    transforming the REST-like API HTTP verbs into the appropriate Percival detector control actions
     """
 
     # Thread executor used for background tasks
@@ -57,7 +57,7 @@ class PercivalAdapter(ApiAdapter):
     def get(self, path, request):
 
         """
-        Implementation of the HTTP GET verb for ExcaliburAdapter
+        Implementation of the HTTP GET verb for PercivalAdapter
 
         :param path: URI path of the GET request
         :param request: Tornado HTTP request object
@@ -83,7 +83,7 @@ class PercivalAdapter(ApiAdapter):
     def put(self, path, request):  # pylint: disable=W0613
 
         """
-        Implementation of the HTTP PUT verb for ExcaliburAdapter
+        Implementation of the HTTP PUT verb for PercivalAdapter
 
         :param path: URI path of the PUT request
         :param request: Tornado HTTP request object
@@ -132,7 +132,7 @@ class PercivalAdapter(ApiAdapter):
     @response_types('application/json', default='application/json')
     def delete(self, path, request):  # pylint: disable=W0613
         """
-        Implementation of the HTTP DELETE verb for ExcaliburAdapter
+        Implementation of the HTTP DELETE verb for PercivalAdapter
 
         :param path: URI path of the DELETE request
         :param request: Tornado HTTP request object

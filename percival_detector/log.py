@@ -72,7 +72,7 @@ percival_log_config = {
             'level': 'INFO',
             'propagate': False,
         },
-        'percival_detector.carrier.simulator': {
+        'percival_detector.carrier.Simulator': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
@@ -183,6 +183,11 @@ percival_log_config = {
             'propagate': False,
         },
         'percival_detector.control.percival_adapter.PercivalAdapter': {
+            'handlers': ['log_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'percival_detector.control.command.Command': {
             'handlers': ['log_file'],
             'level': 'INFO',
             'propagate': False,

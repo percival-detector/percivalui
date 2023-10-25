@@ -184,6 +184,7 @@ class Command(object):
     def parse_request(self, request):
         self._log.debug("Path: %s", request.path)
         self._log.debug("Query: %s", request.query)
+        self._log.debug("Body: %s", request.body)
         # If a request object exists then it contains the method type
         self._command_type = request.method
 
@@ -206,10 +207,10 @@ class Command(object):
 
         self._log.debug("Parsed request [%s], trace: %s", self._command_type, self._trace)
 
-        # Parse any parameters
+        # Parse any parameters in the ?foo=bar part (from javascript)
         self.parse_parameters(request.query)
 
-        # Check request body to see if we can parse it
+        # Check any parameters in the body (from percival-hl-system-command)
         if request.body:
             try:
                 self._parameters.update(json.loads(request.body))
