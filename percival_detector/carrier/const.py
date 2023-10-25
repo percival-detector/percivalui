@@ -150,6 +150,22 @@ class SystemCmd(Enum):
     deassert_MARKER_OUT_2 = 49
     assert_MARKER_OUT_3 = 50
     deassert_MARKER_OUT_3 = 51
+    assert_PERIPHERY_BOTTOM_IO_0 = 52
+    deassert_PERIPHERY_BOTTOM_IO_0 = 53
+    assert_PERIPHERY_BOTTOM_IO_1 = 54
+    deassert_PERIPHERY_BOTTOM_IO_1 = 55
+    assert_PERIPHERY_BOTTOM_IO_2 = 56
+    deassert_PERIPHERY_BOTTOM_IO_2 = 57
+    assert_PERIPHERY_BOTTOM_IO_3 = 58
+    deassert_PERIPHERY_BOTTOM_IO_3 = 59
+    assert_PERIPHERY_LEFT_IO_0 = 60
+    deassert_PERIPHERY_LEFT_IO_0 = 61
+    assert_PERIPHERY_LEFT_IO_1 = 62
+    deassert_PERIPHERY_LEFT_IO_1 = 63
+    assert_PERIPHERY_LEFT_IO_2 = 64
+    deassert_PERIPHERY_LEFT_IO_2 = 65
+    assert_PERIPHERY_LEFT_IO_3 = 66
+    deassert_PERIPHERY_LEFT_IO_3 = 67
 		   
 		   
 @unique
