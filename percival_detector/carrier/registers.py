@@ -835,7 +835,7 @@ BoardValueRegisters = {
     const.BoardTypes.plugin: const.READ_VALUES_PLUGIN
 }
 
-# Each entry is a tuple of:     (description,                 read_addr, entries, words, RegisterMap subclass)
+# Each entry is a tuple of:     (description, readback_block=(read_addr, entries, words-per-entry), RegisterMap subclass)
 CarrierUARTRegisters = {
     const.HEADER_SETTINGS_LEFT:         ("Header settings left",        const.READBACK_HEADER_SETTINGS_LEFT,         HeaderInfoMap),
     const.CONTROL_SETTINGS_LEFT:        ("Control settings left",       const.READBACK_CONTROL_SETTINGS_LEFT,        ControlChannelMap),
@@ -888,7 +888,7 @@ class UARTRegister(object):
         """
         self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         (self._name, self._readback_addr, DeviceClass) = CarrierUARTRegisters[uart_block]
-        self._uart_block_address = uart_block
+        self._uart_block = uart_block
         self._uart_address = uart_block.start_address
         self.log.debug("UARTRegister _uart_address: %02X", self._uart_address)
 
@@ -913,11 +913,11 @@ class UARTRegister(object):
 
     @property
     def words_per_item(self):
-        return self._uart_block_address.words_per_entry
+        return self._uart_block.words_per_entry
 
     @property
     def num_items(self):
-        return self._uart_block_address.entries
+        return self._uart_block.entries
 
     def initialize_map(self, register_map):
         if len(register_map) >= 1:

@@ -24,7 +24,7 @@ import binascii;
 
 board_ip_port = 10002
 
-log = logger("percival_detector.carrier.simulator");
+log = logger("percival_detector.carrier.Simulator");
 g_show_status = True;
 
 def bytes_to_str(byte_list):
