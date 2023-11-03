@@ -54,59 +54,6 @@
 
   ],
 
-"snake_fsi10_ca" : 
-
-  [
-      {
-        "description" : "turn on wiener",
-        "onscript"  : "./user_scripts/wiener/mainswitchON.sh",
-        "offscript" : "./user_scripts/wiener/mainswitchOFF.sh"
-      },
-
-      { 
-        "description" : "power to PwB",
-        "onscript"  : "./user_scripts/wiener/pwb_UP.sh",
-        "offscript" : "./user_scripts/wiener/pwb_DOWN.sh"
-      },
-
-      { 
-        "description" : "check voltages1",
-        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon",
-        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon"
-      },
-
-      { 
-        "description" : "power to head",
-        "onscript"  : "./DESY/W3C3/user_scripts/POWERUP_000_unix.sh",
-        "offscript" : "./DESY/W3C3/user_scripts/POWERDOWN_000_unix.sh"
-      },
-
-      { 
-        "description" : "check voltages2",
-        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
-        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
-      },
-
-      { 
-        "description" : "head into 3Ghml",
-        "onscript"  : "./DESY/W3C3/user_scripts/DLS_FSI10_FromSysPowON_ToSeq_3G_PGAB_10Img_12ms_PLL120MHz_ADC25MHz.sh",
-        "offscript" : "./DESY/W3C3/user_scripts/FromSeq_ToSysPowON.sh --setpoint FSI10_3Ghml"
-      },
-
-      { 
-        "description" : "check voltages3",
-        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
-        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
-      },
-
-      {
-        "description" : "Continuous Acq",
-        "onscript"  : "./sandbox/tool_cont_acqu.py --start",
-        "offscript" : "./sandbox/tool_cont_acqu.py --stop"
-      }
-
-  ]
-
 
 }
 
