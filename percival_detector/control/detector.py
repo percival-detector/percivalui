@@ -1362,7 +1362,7 @@ class PercivalDetector(object):
 
     def update_status(self):
         """
-        Return the status of the monitor devices.
+        Return the status of the monitor devices. Seems to take ~150ms.
         """
         self._log.info("Update status callback called")
         status_msg = {}

@@ -42,7 +42,7 @@ class PercivalAdapter(ApiAdapter):
         self._detector = PercivalDetector(ini_file, False, False)
         self._detector.set_global_monitoring(True)
         self._auto_read = False
-        self.status_update(0.1)
+        self.status_update(0.9)
 
     @run_on_executor
     def status_update(self, task_interval):
