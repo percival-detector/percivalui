@@ -7,9 +7,10 @@ Created on 17 May 2016
 
 import argparse
 
-from percival_detector.log import log
+import percival_detector.log
 from percival_detector.scripts.util import PercivalClient
 
+slogger = percival_detector.log.logger("percival_scripts")
 
 def options():
     desc = """Send the apply sensor ROI command to the Percival Carrier Board
@@ -25,11 +26,11 @@ def options():
 
 def main():
     args = options()
-    log.info(args)
+    slogger.info(args)
 
     pc = PercivalClient(args.address)
     result = pc.send_command('cmd_apply_roi', 'hl_apply_sensor_roi.py', wait=(args.wait.lower() == "true"))
-    log.info("Response: %s", result)
+    slogger.info("Response: %s", result)
 
 
 if __name__ == '__main__':

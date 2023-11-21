@@ -27,7 +27,7 @@ class SystemCommand(object):
         :param txrx: Percival communication context
         :type  txrx: TxRx
         """
-        self.log = logging.getLogger(self.__class__.__name__)
+        self._log = logging.getLogger(self.__class__.__name__)
         self._txrx = txrx
         self._reg_command = UARTRegister(const.COMMAND)
         self._reg_command.initialize_map([0,0,0])

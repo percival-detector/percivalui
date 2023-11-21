@@ -19,8 +19,8 @@ class TestChannels(unittest.TestCase):
 
     def setUp(self):
         # Perform any setup here
-        self.log = logging.getLogger(self.__class__.__name__)
-        self.log.setLevel(logging.DEBUG)
+        self._log = logging.getLogger(self.__class__.__name__)
+        self._log.setLevel(logging.DEBUG)
         self.txrx = MagicMock()
         self.channel_ini = MagicMock()
         # these are tuples of address->32 bit value; set max to 0x20

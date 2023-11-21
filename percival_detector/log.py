@@ -62,6 +62,11 @@ percival_log_config = {
             'propagate': False,
             'level': 'INFO',
         },
+        'percival_scripts': {
+            'handlers': ['log_file'],
+            'propagate': False,
+            'level': 'INFO',
+        },
         'percival_detector.spreadsheet_parser': {
             'handlers': ['log_file'],
             'propagate': False,
@@ -211,6 +216,7 @@ percival_log_config = {
 import logging
 import logging.config
 logging.config.dictConfig(percival_log_config)
+# rename percylogger or delete
 log = logging.getLogger("percival")
 
 

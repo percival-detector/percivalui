@@ -110,7 +110,7 @@ class TxRx(object):
             :param timeout:   Socket communication timeout (seconds)
             :type  timeout:   `float`
         """
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         
         self._fpga_addr = (fpga_addr, port)
         self._connected = False
@@ -123,12 +123,12 @@ class TxRx(object):
             try:
                 self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.sock.settimeout(timeout)
-                self.log.info("connecting to FPGA at %s", str(self._fpga_addr))
+                self._log.info("connecting to FPGA at %s", str(self._fpga_addr))
                 self.sock.connect(self._fpga_addr)
                 self._connected = True
             except Exception as ex:
                 # Any kind of exception will result in non-connection and so set status accordingly
-                self.log.error("Unable to connect to FPGA: %s", ex)
+                self._log.error("Unable to connect to FPGA: %s", ex)
                 self._connected = False
 
     def get_status(self):
@@ -165,7 +165,7 @@ class TxRx(object):
         if self._connected:
             try:
               #  txt = binascii.hexlify(msg);
-                self.log.debug("sending %s", binascii.hexlify(msg));
+                self._log.debug("sending %s", binascii.hexlify(msg));
                 self.sock.sendall(msg)
             except socket.error as e:
                 self._connected = False
@@ -210,11 +210,11 @@ class TxRx(object):
                     raise raise_with_traceback(
                         PercivalCommsError("socket connection broken (expected a multiple of 6 bytes)"))
                 msg = msg + chunk;
-                self.log.debug("receiving %s", binascii.hexlify(chunk));
+                self._log.debug("receiving %s", binascii.hexlify(chunk));
         else:
             self._connected = False
             raise raise_with_traceback(PercivalCommsError("Socket not connected"))
-        self.log.debug(" ie response: %s", hexify(msg))
+        self._log.debug(" ie response: %s", hexify(msg))
         return msg
 
     def send_recv(self, msg, expected_bytes = None):
@@ -236,14 +236,14 @@ class TxRx(object):
                 except PercivalCommsError as e:
                     self._connected = False
                     self.clean()
-                    self.log.exception("Failed to send message %s. ERROR: %s" % (msg, e))
+                    self._log.exception("Failed to send message %s. ERROR: %s" % (msg, e))
                     raise
                 try:
                     resp = self.rx_msg(expected_bytes)
                 except PercivalCommsError as e:
                     self._connected = False
                     self.clean()
-                    self.log.exception("Failed to receive response to message %s. ERROR: %s" % (msg, e))
+                    self._log.exception("Failed to receive response to message %s. ERROR: %s" % (msg, e))
                     raise
             else:
                 self._connected = False
@@ -272,14 +272,14 @@ class TxRx(object):
                 except PercivalCommsError as e:
                     self._connected = False
                     self.clean()
-                    self.log.exception("Failed to send message %s. ERROR: %s" % (message, e))
+                    self._log.exception("Failed to send message %s. ERROR: %s" % (message, e))
                     raise
                 try:
                     resp = self.rx_msg(message.expected_bytes)
                 except PercivalCommsError as e:
                     self._connected = False
                     self.clean()
-                    self.log.exception("Failed to receive response to message %s. ERROR: %s" % (message, e))
+                    self._log.exception("Failed to receive response to message %s. ERROR: %s" % (message, e))
                     raise
             result = decode_message(resp)
 
@@ -300,11 +300,11 @@ class TxRx(object):
         try:
             self.sock.shutdown(socket.SHUT_RDWR)
         except socket.error:
-            self.log.warning("unable to shutdown socket")
+            self._log.warning("unable to shutdown socket")
         try:
             self.sock.close()
         except socket.error:
-            self.log.warning("unable to close socket")
+            self._log.warning("unable to close socket")
 
 
 @contextmanager

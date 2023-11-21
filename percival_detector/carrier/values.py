@@ -29,7 +29,7 @@ class BoardValues:
         :param board: which board to read the value shortcut from
         :type  board: BoardTypes
         """
-        self.log = logging.getLogger(self.__class__.__name__)
+        self._log = logging.getLogger(self.__class__.__name__)
         self._txrx = txrx
         self._board = board
         self._value_block = BoardValueRegisters[board]

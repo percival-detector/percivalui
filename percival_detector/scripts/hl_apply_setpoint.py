@@ -7,9 +7,10 @@ Created on 17 May 2016
 
 import argparse
 
-from percival_detector.log import log
+import percival_detector.log
 from percival_detector.scripts.util import PercivalClient
 
+slogger = percival_detector.log.logger("percival_scripts")
 
 def options():
     desc = """Apply a set-point to the Percival Carrier Board
@@ -27,13 +28,13 @@ def options():
 
 def main():
     args = options()
-    log.info(args)
+    slogger.info(args)
 
     set_point = args.setpoint
 
     pc = PercivalClient(args.address)
     result = pc.apply_setpoint(set_point, 'hl_apply_setpoint.py', wait=(args.wait.lower() == "true"))
-    log.info("Response: %s", result)
+    slogger.info("Response: %s", result)
 
 
 if __name__ == '__main__':

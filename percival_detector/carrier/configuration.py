@@ -186,7 +186,7 @@ class ChannelParameters(object):
     Loads device channel settings and parameters from an INI file.
     """
     def __init__(self, ini_file):
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self._ini_filename = find_file(ini_file)
         self.conf = None
 
@@ -202,8 +202,8 @@ class ChannelParameters(object):
         self._monitoring_channels = None
         self.conf = ConfigParser(dict_type=OrderedDict)
         self.conf.read(self._ini_filename)
-        self.log.debug("Read Board Parameters INI file %s:", self._ini_filename)
-        self.log.debug("    sections: %s", self.conf.sections())
+        self._log.debug("Read Board Parameters INI file %s:", self._ini_filename)
+        self._log.debug("    sections: %s", self.conf.sections())
 
     @staticmethod
     def _get_channel_number(section_name):
@@ -327,7 +327,7 @@ class ChannelParameters(object):
                 else:
                     raise_with_traceback(TypeError("Unsupported parameter type %s"%str(parameter_type)))
                 channel.__setattr__(param, value)
-            self.log.debug("Appending channel: %s", channel)
+            self._log.debug("Appending channel: %s", channel)
             channels.append(channel)
         return channels
 
@@ -364,7 +364,7 @@ class BoardParameters(object):
     Loads device channel settings and parameters from an INI file.
     """
     def __init__(self, ini_file):
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self._ini_filename = find_file(ini_file)
         self.conf = None
 
@@ -375,8 +375,8 @@ class BoardParameters(object):
         self.conf = ConfigParser(dict_type=OrderedDict)
         self.conf.read(self._ini_filename)
 
-        self.log.debug("Read Board Parameters INI file %s:", self._ini_filename)
-        self.log.debug("    sections: %s", self.conf.sections())
+        self._log.debug("Read Board Parameters INI file %s:", self._ini_filename)
+        self._log.debug("    sections: %s", self.conf.sections())
 
     @property
     def board_name(self):
@@ -415,7 +415,7 @@ class ControlParameters(object):
     Loads control parameter from an INI file.
     """
     def __init__(self, ini_file):
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self._ini_filename = find_file(ini_file)
         self.conf = None
         self._ini_file_options = ["system_settings_file",
@@ -445,8 +445,8 @@ class ControlParameters(object):
         """
         self.conf = ConfigParser(dict_type=OrderedDict)
         self.conf.read(self._ini_filename)
-        self.log.debug("Read Percival control ini file %s:", self._ini_filename)
-        self.log.debug("    sections: %s", self.conf.sections())
+        self._log.debug("Read Percival control ini file %s:", self._ini_filename)
+        self._log.debug("    sections: %s", self.conf.sections())
 
     @property
     def carrier_ip(self):
@@ -482,7 +482,7 @@ class ControlParameters(object):
         if "Configuration" not in self.conf.sections():
             raise_with_traceback(RuntimeError("Configuration section not found in ini file %s" % str(self._ini_filename)))
         value = self.conf.get("Configuration", item).strip("\"")
-        self.log.debug("Checking for %s in percival control config file.  Value: %s", item, value)
+        self._log.debug("Checking for %s in percival control config file.  Value: %s", item, value)
         return value
 
     def get_ini_file_download(self, item):
@@ -490,15 +490,15 @@ class ControlParameters(object):
         if "Configuration" not in self.conf.sections():
             raise_with_traceback(RuntimeError("Configuration section not found in ini file %s" % str(self._ini_filename)))
         raw_value = self.conf.get("Configuration", item).strip("\"")
-        self.log.debug("Checking for %s in percival control config file.  Raw value: %s", item, raw_value)
+        self._log.debug("Checking for %s in percival control config file.  Raw value: %s", item, raw_value)
         if 'false' in str(raw_value).lower():
             value = False
         elif 'true' in str(raw_value).lower():
             value = True
         else:
-            self.log.error("Could not parse %s in percival control config file.  Raw value: %s", item, raw_value)
+            self._log.error("Could not parse %s in percival control config file.  Raw value: %s", item, raw_value)
 
-        self.log.debug("    Processed value: %s", value)
+        self._log.debug("    Processed value: %s", value)
         return value
 
     @property
@@ -525,7 +525,7 @@ class ControlParameters(object):
 #    Loads buffer transfer description from an INI file.
 #    """
 #    def __init__(self, ini_file):
-#        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+#        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
 #        self._ini_filename = find_file(ini_file)
 #        self.conf = None
 #        self._dac_channels = None
@@ -537,8 +537,8 @@ class ControlParameters(object):
 #        """
 #        self.conf = ConfigParser(dict_type=OrderedDict)
 #        self.conf.read(self._ini_filename)
-#        self.log.debug("Read Buffer Transfer Parameters INI file %s:", self._ini_filename)
-#        self.log.debug("    sections: %s", self.conf.sections())
+#        self._log.debug("Read Buffer Transfer Parameters INI file %s:", self._ini_filename)
+#        self._log.debug("    sections: %s", self.conf.sections())
 #
 #    @staticmethod
 #    def _get_channel_number(section_name):
@@ -600,7 +600,7 @@ class ControlParameters(object):
 #                else:
 #                    raise_with_traceback(TypeError("Unsupported parameter type %s" % str(parameter_type)))
 #                channel.__setattr__(param, value)
-#            self.log.debug("Appending channel: %s", channel)
+#            self._log.debug("Appending channel: %s", channel)
 #            channels.append(channel)
 #        return channels
 
@@ -610,7 +610,7 @@ class ChannelGroupParameters(object):
     Loads groups of controls description from an INI file.
     """
     def __init__(self, ini_file):
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self._ini_filename = None
         self._ini_buffer = None
         try:
@@ -628,11 +628,11 @@ class ChannelGroupParameters(object):
         self.conf.optionxform = str
         if self._ini_filename:
             self.conf.read(self._ini_filename)
-            self.log.debug("Read Channel Groups INI file %s:", self._ini_filename)
+            self._log.debug("Read Channel Groups INI file %s:", self._ini_filename)
         else:
             self.conf.read_string(self._ini_buffer)
-            self.log.debug("Read Channel Groups INI string %s", self._ini_buffer)
-        self.log.debug("    sections: %s", self.conf.sections())
+            self._log.debug("Read Channel Groups INI string:\n%s", self._ini_buffer)
+        self._log.debug("    sections: %s", self.conf.sections())
 
     @property
     def sections(self):
@@ -667,7 +667,7 @@ class SetpointGroupParameters(object):
     Loads groups of controls description from an INI file.
     """
     def __init__(self):
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
 
         self.conf = ConfigParser(dict_type=OrderedDict)
         self.conf.optionxform = str; # this makes the option names case-sensitive
@@ -691,11 +691,11 @@ class SetpointGroupParameters(object):
 
         if _ini_filename:
             self.conf.read(_ini_filename)
-            self.log.debug("Read Setpoint Groups INI file: %s", _ini_filename)
+            self._log.debug("Read Setpoint Groups INI file: %s", _ini_filename)
         else:
             self.conf.read_string(_ini_buffer)
-            self.log.debug("Read Setpoint Groups INI string %s", _ini_buffer)
-        self.log.info("    sections: %s", self.conf.sections())
+            self._log.debug("Read Setpoint Groups INI string:\n%s", _ini_buffer)
+        self._log.info("    sections: %s", self.conf.sections())
 
         for sect in self.conf.sections():
           name = self.get_name(sect);
@@ -752,7 +752,7 @@ class SystemSettingsParameters(object):
     Loads groups of controls description from an INI file.
     """
     def __init__(self, ini_file):
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self._ini_filename = None
         self._ini_buffer = None
         self._conf = None
@@ -772,11 +772,11 @@ class SystemSettingsParameters(object):
         self._conf.optionxform = str
         if self._ini_filename:
             self._conf.read(self._ini_filename)
-            self.log.debug("Read System Settings INI file: %s", self._ini_filename)
+            self._log.debug("Read System Settings INI file: %s", self._ini_filename)
         else:
             self._conf.read_string(self._ini_buffer)
-            self.log.debug("Read System Settings INI string %s", self._ini_buffer)
-        self.log.info("    sections: %s", self._conf.sections())
+            self._log.debug("Read System Settings INI string:\n%s", self._ini_buffer)
+        self._log.info("    sections: %s", self._conf.sections())
 
     @property
     def value_map(self):
@@ -795,7 +795,7 @@ class ChipReadoutSettingsParameters(object):
     Loads chip readout settings from an INI file.
     """
     def __init__(self, ini_file):
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self._ini_filename = None
         self._ini_buffer = None
         self._conf = None
@@ -815,11 +815,11 @@ class ChipReadoutSettingsParameters(object):
         self._conf.optionxform = str
         if self._ini_filename:
             self._conf.read(self._ini_filename)
-            self.log.debug("Read Chip Readout Settings INI file: %s", self._ini_filename)
+            self._log.debug("Read Chip Readout Settings INI file: %s", self._ini_filename)
         else:
             self._conf.read_string(self._ini_buffer)
-            self.log.debug("Read Chip Readout Settings INI string %s", self._ini_buffer)
-        self.log.info("    sections: %s", self._conf.sections())
+            self._log.debug("Read Chip Readout Settings INI string:\n%s", self._ini_buffer)
+        self._log.info("    sections: %s", self._conf.sections())
 
     @property
     def value_map(self):
@@ -838,7 +838,7 @@ class ClockSettingsParameters(object):
     Loads clock settings from an INI file.
     """
     def __init__(self, ini_file):
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self._ini_filename = None
         self._ini_buffer = None
         self._conf = None
@@ -858,11 +858,11 @@ class ClockSettingsParameters(object):
         self._conf.optionxform = str
         if self._ini_filename:
             self._conf.read(self._ini_filename)
-            self.log.debug("Read Clock Settings INI file: %s", self._ini_filename)
+            self._log.debug("Read Clock Settings INI file: %s", self._ini_filename)
         else:
             self._conf.read_string(self._ini_buffer)
-            self.log.debug("Read Clock Settings INI string %s", self._ini_buffer)
-        self.log.info("    sections: %s", self._conf.sections())
+            self._log.debug("Read Clock Settings INI string\n%s", self._ini_buffer)
+        self._log.info("    sections: %s", self._conf.sections())
 
     @property
     def value_map(self):
@@ -881,7 +881,7 @@ class SensorDACParameters(object):
     Loads sensor configuration parameters from an INI file
     """
     def __init__(self, ini_file):
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self._ini_filename = None
         self._ini_buffer = None
         self._conf = None
@@ -901,11 +901,11 @@ class SensorDACParameters(object):
         self._conf.optionxform = str
         if self._ini_filename:
             self._conf.read(self._ini_filename)
-            self.log.debug("Read Sensor DAC INI file: %s", self._ini_filename)
+            self._log.debug("Read Sensor DAC INI file: %s", self._ini_filename)
         else:
             self._conf.read_string(self._ini_buffer)
-            self.log.debug("Read Sensor DAC INI string %s", self._ini_buffer)
-        self.log.info("    sections: %s", self._conf.sections())
+            self._log.debug("Read Sensor DAC INI string:\n%s", self._ini_buffer)
+        self._log.info("    sections: %s", self._conf.sections())
 
     @property
     def value_map(self):
@@ -921,7 +921,7 @@ class SensorConfigurationParameters(object):
     Loads sensor configuration parameters from an INI file
     """
     def __init__(self, ini_file):
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self._ini_filename = None
         self._ini_buffer = None
         self._conf = None
@@ -941,11 +941,11 @@ class SensorConfigurationParameters(object):
         self._conf.optionxform = str
         if self._ini_filename:
             self._conf.read(self._ini_filename)
-            self.log.debug("Read Sensor Configuration Settings INI file: %s", self._ini_filename)
+            self._log.debug("Read Sensor Configuration Settings INI file: %s", self._ini_filename)
         else:
             self._conf.read_string(self._ini_buffer)
-            self.log.debug("Read Sensor Configuration Settings INI string %s", self._ini_buffer)
-        self.log.info("    sections: %s", self._conf.sections())
+            self._log.debug("Read Sensor Configuration Settings INI string:\n%s", self._ini_buffer)
+        self._log.info("    sections: %s", self._conf.sections())
 
     @property
     def value_map(self):
@@ -957,7 +957,7 @@ class SensorConfigurationParameters(object):
             if match:
                 desc[match.group(1)] = int(item[1])
         # Now loop over each defined group adding the values
-        self.log.info("Ini description: %s", desc)
+        self._log.info("Ini description: %s", desc)
         for item in desc:
             val_list = []
             for index in range(desc[item]):
@@ -972,7 +972,7 @@ class SensorCalibrationParameters(object):
     Loads sensor calibration parameters from an INI file
     """
     def __init__(self, ini_file):
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self._ini_filename = None
         self._ini_buffer = None
         self._conf = None
@@ -992,11 +992,11 @@ class SensorCalibrationParameters(object):
         self._conf.optionxform = str
         if self._ini_filename:
             self._conf.read(self._ini_filename)
-            self.log.debug("Read Sensor Configuration Settings INI file: %s", self._ini_filename)
+            self._log.debug("Read Sensor Configuration Settings INI file: %s", self._ini_filename)
         else:
             self._conf.read_string(self._ini_buffer)
-            self.log.debug("Read Sensor Configuration Settings INI string %s", self._ini_buffer)
-        self.log.info("    sections: %s", self._conf.sections())
+            self._log.debug("Read Sensor Configuration Settings INI string:\n%s", self._ini_buffer)
+        self._log.info("    sections: %s", self._conf.sections())
 
     @property
     def value_map(self):
@@ -1011,7 +1011,7 @@ class SensorCalibrationParameters(object):
             elif 'target_signals' in item[0].lower():
                 target_signals = int(item[1])
         # Now loop over each defined group adding the values
-        self.log.info("Ini description: %s", desc)
+        self._log.info("Ini description: %s", desc)
         for item in desc:
             values[item] = {}
             for cal_no in range(target_signals):
@@ -1026,7 +1026,7 @@ class SensorCalibrationParameters(object):
                     left_val_list.append(self._conf.getint(item, item_name))
                 values[item][target_string]['Right'] = right_val_list
                 values[item][target_string]['Left'] = left_val_list
-        self.log.info("Calibration Map: %s", values)
+        self._log.info("Calibration Map: %s", values)
         return values
 
 
@@ -1035,7 +1035,7 @@ class SensorDebugParameters(object):
     Loads sensor debug parameters from an INI file
     """
     def __init__(self, ini_file):
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self._ini_filename = None
         self._ini_buffer = None
         self._conf = None
@@ -1055,11 +1055,11 @@ class SensorDebugParameters(object):
         self._conf.optionxform = str
         if self._ini_filename:
             self._conf.read(self._ini_filename)
-            self.log.debug("Read Sensor Debug Settings INI file: %s", self._ini_filename)
+            self._log.debug("Read Sensor Debug Settings INI file: %s", self._ini_filename)
         else:
             self._conf.read_string(self._ini_buffer)
-            self.log.debug("Read Sensor Debug Settings INI string %s", self._ini_buffer)
-        self.log.info("    sections: %s", self._conf.sections())
+            self._log.debug("Read Sensor Debug Settings INI string:\n%s", self._ini_buffer)
+        self._log.info("    sections: %s", self._conf.sections())
 
     @property
     def value_map(self):

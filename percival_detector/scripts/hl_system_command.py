@@ -8,9 +8,11 @@ Created on 17 May 2016
 import sys
 import argparse
 
-from percival_detector.log import log
+import percival_detector.log
 from percival_detector.carrier import const
 from percival_detector.scripts.util import PercivalClient
+
+slogger = percival_detector.log.logger("percival_scripts")
 
 system_commands = "\n\t".join([name for name, tmp in list(const.SystemCmd.__members__.items())])
 
@@ -31,19 +33,19 @@ def options():
 
 def main():
     args = options()
-    log.info(args)
+    slogger.info(args)
 
     try:
         system_command = const.SystemCmd[args.command]
     except KeyError:
-        log.error("Invalid command \'%s\' supplied to --command", args.command)
+        slogger.error("Invalid command \'%s\' supplied to --command", args.command)
         print("Invalid command: \'%s\'" % args.command)
         print("Valid commands are: \n\t%s" % system_commands)
         sys.exit(-1)
 
     pc = PercivalClient(args.address)
     result = pc.send_system_command(system_command, 'hl_system_command.py', wait=(args.wait.lower() == "true"))
-    log.info("Response: %s", result)
+    slogger.info("Response: %s", result)
 
 
 if __name__ == '__main__':

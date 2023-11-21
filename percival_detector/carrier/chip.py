@@ -13,7 +13,7 @@ class ChipReadoutSettings(object):
         :param txrx: Percival communication context
         :type  txrx: TxRx
         """
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self._reg_command = UARTRegister(const.CHIP_READOUT_SETTINGS)
         self._reg_command.initialize_map([0, 0, 0, 0, 0, 0, 0, 0,
                                           0, 0, 0, 0, 0, 0, 0, 0,
@@ -33,7 +33,7 @@ class ChipReadoutSettings(object):
         if settings_ini:
             self._settings_ini = settings_ini
             map = self._settings_ini.value_map
-            self.log.info(map)
+            self._log.info(map)
             # First replace any true or false with 1 or 0
             for item in map:
                 if isinstance(map[item], str) or isinstance(map[item], str):
@@ -47,12 +47,12 @@ class ChipReadoutSettings(object):
                     if hasattr(self._reg_command.fields, item):
                         setattr(self._reg_command.fields, item, int(map[item]))
                     else:
-                        self.log.debug("No register found for ini file setting %s", item)
+                        self._log.debug("No register found for ini file setting %s", item)
                 except:
-                    self.log.error("Failed to set iten %s from ini file", item)
+                    self._log.error("Failed to set iten %s from ini file", item)
                     raise
         else:
-            self.log.debug("Attempted to load a none type ini object")
+            self._log.debug("Attempted to load a none type ini object")
 
     def set_txrx(self, txrx):
         self._txrx = txrx

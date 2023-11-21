@@ -89,7 +89,7 @@ class MapField(object):
      * Value bit offset within the word
     """
     def __init__(self, name, word_index, num_bits, bit_offset):
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self._word_index = word_index
         self._num_bits = num_bits
         self._name = name
@@ -118,12 +118,12 @@ class MapField(object):
 
     @property
     def value(self):
-        self.log.debug("getting value = %s", str(self._value))
+        self._log.debug("getting value = %s", str(self._value))
         return self._value
 
     @value.setter
     def value(self, value):
-        self.log.debug("setting value = %s (was = %s)", str(value), str(self._value))
+        self._log.debug("setting value = %s (was = %s)", str(value), str(self._value))
         self._value = value
 
     def extract_field_value(self, words):
@@ -886,11 +886,11 @@ class UARTRegister(object):
                 this will be used to generate write commands in get_write_cmd_msg().
             :type uart_device: int
         """
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         (self._name, self._readback_addr, DeviceClass) = CarrierUARTRegisters[uart_block]
         self._uart_block = uart_block
         self._uart_address = uart_block.start_address
-        self.log.debug("UARTRegister _uart_address: %02X", self._uart_address)
+        self._log.debug("UARTRegister _uart_address: %02X", self._uart_address)
 
         self.fields = None  # A devices.RegisterMap object
         if DeviceClass:
@@ -898,7 +898,7 @@ class UARTRegister(object):
 
         if uart_device:
             self._uart_address = uart_device
-            self.log.debug("UARTRegister updated _uart_address: %02X", self._uart_address)
+            self._log.debug("UARTRegister updated _uart_address: %02X", self._uart_address)
             if uart_device.bit_length() > self.UART_ADDR_WIDTH:
                 raise_with_traceback(ValueError("UART device address value 0x%X is greater than 16 bits" %
                                                 uart_device))
@@ -939,7 +939,7 @@ class UARTRegister(object):
         if not self._readback_addr:
             raise_with_traceback( TypeError("A readback shortcut is not available for \'%s\'"%self._name) )
         read_cmd_msg = encoding.encode_message(self._readback_addr.start_address, 0x00000000)
-        self.log.debug(read_cmd_msg)
+        self._log.debug(read_cmd_msg)
         return txrx.TxMessage(read_cmd_msg, self.words_per_item * self.num_items)
     
     def get_write_cmd_msg(self, eom=False):
