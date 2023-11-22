@@ -43,10 +43,9 @@ String.prototype.replaceAll = function(search, replacement) {
     return target.replace(new RegExp(search, 'g'), replacement);
 };
 
-$.put = function(url, data, callback, type)
+$.put = function(url, callback, data)
 {
   if ( $.isFunction(data) ){
-    type = type || callback,
     callback = data,
     data = {}
   }
@@ -54,9 +53,14 @@ $.put = function(url, data, callback, type)
   return $.ajax({
     url: url,
     type: 'PUT',
-    success: callback,
-    data: data,
-    contentType: type
+    data: JSON.stringify(data),
+    processData : false,
+    contentType: "application/json",
+    headers: {'Content-Type': 'application/json',
+                  'Accept': 'application/json'},
+    // I doubt we need dataType: "json" as it will infer the response-data from the response-headers.
+    dataType: 'json',
+    success: callback
   });
 }
 
@@ -378,15 +382,12 @@ function send_config_command()
         percival.current_config = event.target.result
 
         config_type = $('#select-config').find(":selected").text();
-        $.ajax({
-            url: '/api/' + api_version + '/percival/cmd_load_config',
-            type: 'PUT',
-            dataType: 'json',
-            data: 'config=' + encodeURIComponent(percival.current_config.replaceAll('=', '::')) + '&config_type=' + config_type,
-            headers: {'Content-Type': 'application/json',
-                      'Accept': 'application/json'},
-            success: process_cmd_response
-        });
+        data0 = {
+                  'config_type' : config_type,
+                  'config' : percival.current_config
+               };
+
+        $.put('/api/' + api_version + '/percival/cmd_load_config', process_cmd_response, data0);
     }
     reader.readAsText(element.files[0], 'UF-8');
 }
@@ -435,85 +436,48 @@ function send_scan_command()
     //alert(data)
     steps = $('#scan-sp-steps').val();
     dwell = $('#scan-sp-dwell').val();
-    //$.put('/api/' + api_version + '/percival/cmd_scan_setpoints?dwell=' + dwell + '&steps=' + steps, data, process_cmd_response, 'json');
-    //alert('/api/' + api_version + '/percival/cmd_scan_setpoints?dwell=' + dwell + '&steps=' + steps);
-    $.ajax({
-        url: '/api/' + api_version + '/percival/cmd_scan_setpoints',
-        type: 'PUT',
-        dataType: 'json',
-        data: {
+    data0 = {
             'dwell' : dwell,
             'steps' : steps,
             'setpoints' : sp
-        },
-        headers: {'Content-Type': 'application/json',
-                  'Accept': 'application/json'},
-        success: process_cmd_response
-    });
+        };
+
+    $.put( '/api/' + api_version + '/percival/cmd_scan_setpoints', process_cmd_response, data0);
 }
 
 function send_sscan_command()
 {
-    //data = {}
     sp = $('#sscan-set-point-end').find(":selected").text();
     //data = {'setpoints': sp};
     //alert(data)
     steps = $('#sscan-sp-steps').val();
     dwell = $('#sscan-sp-dwell').val();
-    //$.put('/api/' + api_version + '/percival/cmd_scan_setpoints?dwell=' + dwell + '&steps=' + steps, data, process_cmd_response, 'json');
-    //alert('/api/' + api_version + '/percival/cmd_scan_setpoints?dwell=' + dwell + '&steps=' + steps);
-    $.ajax({
-        url: '/api/' + api_version + '/percival/cmd_scan_setpoints',
-        type: 'PUT',
-        dataType: 'json',
-        data: {
+    data0 = {
             'dwell' : dwell,
             'steps' : steps,
             'setpoints' : sp
-        },
-        headers: {'Content-Type': 'application/json',
-                  'Accept': 'application/json'},
-        success: process_cmd_response
-    });
+        };
+
+    $.put( '/api/' + api_version + '/percival/cmd_scan_setpoints', process_cmd_response, data0);
 }
 
 function write_buffer_values()
 {
-    $.ajax({
-        url: '/api/' + api_version + '/percival/cmd_write_buffer',
-        type: 'PUT',
-        dataType: 'json',
-        data: {
+    data0 = {
             'data' : percival.buffer_values
-        },
-        headers: {'Content-Type': 'application/json',
-                  'Accept': 'application/json'},
-        success: process_cmd_response
-    });
+        };
+
+    $.put('/api/' + api_version + '/percival/cmd_write_buffer', process_cmd_response, data0);
 }
 
 function write_buffer_refresh()
 {
-    $.ajax({
-        url: '/api/' + api_version + '/percival/cmd_refresh_write_buffer',
-        type: 'PUT',
-        dataType: 'json',
-        headers: {'Content-Type': 'application/json',
-                  'Accept': 'application/json'},
-        success: process_cmd_response
-    });
+    $.put('/api/' + api_version + '/percival/cmd_refresh_write_buffer', process_cmd_response);
 }
 
 function read_buffer_refresh()
 {
-    $.ajax({
-        url: '/api/' + api_version + '/percival/cmd_refresh_read_buffer',
-        type: 'PUT',
-        dataType: 'json',
-        headers: {'Content-Type': 'application/json',
-                  'Accept': 'application/json'},
-        success: process_cmd_response
-    });
+    $.put('/api/' + api_version + '/percival/cmd_refresh_read_buffer', process_cmd_response);
 }
 
 function buffer_transfer_apply()
@@ -533,20 +497,14 @@ function buffer_transfer_apply()
     }
 //    alert("Number: " + pts + " Address: " + address);
 
-    $.ajax({
-        url: '/api/' + api_version + '/percival/cmd_buffer_transfer',
-        type: 'PUT',
-        dataType: 'json',
-        data: {
+    data0 = {
             'target' : target,
             'command' : cmd,
             'words': pts,
             'address': address
         },
-        headers: {'Content-Type': 'application/json',
-                  'Accept': 'application/json'},
-        success: process_cmd_response
-    });
+
+    $.put('/api/' + api_version + '/percival/cmd_buffer_transfer', process_cmd_response, data0);
 }
 
 function send_abort_scan_command()
@@ -613,7 +571,7 @@ function update_api_version() {
 }
 
 function update_api_adapters() {
-//alert("HERE");
+
     $.getJSON('/api/' + api_version + '/adapters/', function(response) {
         adapter_list = response.adapters.join(", ");
         $('#api-adapters').html(adapter_list);

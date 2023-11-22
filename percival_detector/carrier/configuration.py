@@ -608,6 +608,10 @@ class ControlParameters(object):
 class ChannelGroupParameters(object):
     """
     Loads groups of controls description from an INI file.
+    @param ini_file this is either
+            1) the filepath of the ini-file or
+            2) the contents of the ini-file. No changes are made to it, and it is loaded with
+                ConfigParser.read_string().
     """
     def __init__(self, ini_file):
         self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))

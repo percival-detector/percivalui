@@ -936,7 +936,7 @@ class PercivalDetector(object):
                     if command.has_param('config'):
                         if len(command.get_param('config')) > 0:
                             config_type = command.get_param('config_type')
-                            config_desc = command.get_param('config').replace('::', '=')
+                            config_desc = command.get_param('config')
                             if 'setpoints' in config_type:
                                 self.load_setpoints(config_desc)
                             elif 'control_groups' in config_type:

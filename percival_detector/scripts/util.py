@@ -3,6 +3,7 @@
 import requests
 import time
 import getpass
+import json
 from datetime import datetime
 import percival_detector.log
 
@@ -20,7 +21,7 @@ class PercivalClient(object):
             url = self._url + command
             slogger.debug("Sending msg to: %s", url)
             result = requests.put(url,
-                                  data=arguments,
+                                  data=json.dumps(arguments),
                                   headers={
                                       'Content-Type': 'application/json',
                                       'Accept': 'application/json',
@@ -45,7 +46,7 @@ class PercivalClient(object):
             url = self._url + status_item
             slogger.debug("Sending msg to: %s", url)
             result = requests.get(url,
-                                  data=arguments,
+                                  data=json.dumps(arguments),
                                   headers={
                                       'Content-Type': 'application/json',
                                       'Accept': 'application/json',
@@ -75,8 +76,9 @@ class PercivalClient(object):
     def send_configuration(self, config_type, config_contents, command_id="python_script", wait=True):
         arguments = {
             'config_type': config_type,
-            'config': config_contents.replace('=', '::')
+            'config': config_contents
         }
+
         return self.send_command('cmd_load_config', command_id, arguments, wait=wait)
 
     def send_system_command(self, system_command, command_id="python_script", wait=True):
@@ -113,7 +115,7 @@ class DAQClient(object):
             url = self._url + 'config/' + command
             slogger.debug("Sending msg to: %s", url)
             result = requests.put(url,
-                                  data='{}'.format(arguments),
+                                  data=json.dumps(arguments),
                                   headers={
                                       'Content-Type': 'application/json',
                                       'Accept': 'application/json'
@@ -200,7 +202,7 @@ class DAQClient(object):
             return response
 
         # If no error was returned send the command to start writing
-        response = self.send_command('hdf/write', '1')
+        response = self.send_command('hdf/write', 1)
         if 'error' in response:
             return response
 
@@ -219,4 +221,4 @@ class DAQClient(object):
         return {'error': 'Timed out waiting for HDF to start writing'}
 
     def stop_writing(self):
-        return self.send_command('hdf/write', '0')
+        return self.send_command('hdf/write', 0)
