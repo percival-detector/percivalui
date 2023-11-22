@@ -207,14 +207,15 @@ class Command(object):
 
         self._log.debug("Parsed request [%s], trace: %s", self._command_type, self._trace)
 
-        # Parse any parameters in the ?foo=bar part (from javascript)
-        self.parse_parameters(request.query)
+        # Parse any parameters in the ?foo=bar part of the url
+        if request.query:
+          self.parse_parameters(request.query)
 
-        # Check any parameters in the body (from percival-hl-system-command)
-        if request.body:
+        # Check any parameters in the body (which will be in json not url-formencoded)
+        # body is a bytes object.
+        if request.body and request.body != b"null":
             try:
                 self._parameters.update(json.loads(request.body))
             except:
-                #self.parse_parameters(str(request.body.encode('ascii')))
-                self.parse_parameters(str(escape.url_unescape(request.body))) #.decode("utf-8")))
+                self._log.warn("could not parse http-body as json");
 

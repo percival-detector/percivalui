@@ -7,7 +7,6 @@ Created on 17 May 2016
 
 import sys
 import argparse
-import requests
 import getpass
 from datetime import datetime
 
