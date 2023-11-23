@@ -2,7 +2,7 @@
 ???? -- wnichols
 
   * json transport instituted in messages; please refresh your browser cache.
-  * 
+  * percival-hl-set-channel has -r option to read channel-values.
 
 
 

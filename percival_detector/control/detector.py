@@ -1351,6 +1351,12 @@ class PercivalDetector(object):
             for monitor in self._monitors:
                 reply[monitor] = self._monitors[monitor].status
 
+        elif getcmd == "channel_values":
+            vals = {}
+            for (name, device) in self._control_chs.items():
+              vals[name] = device.get_value()
+            reply = { 'channel_values' : vals }
+
         # Check to see if the getcmd is a monitoring device that we own
         elif getcmd in self._monitors:
             reply = { getcmd : self._monitors[getcmd].status }
