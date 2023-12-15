@@ -12,6 +12,8 @@ import random
 import zmq
 import signal
 import argparse
+import h5py
+import time
 
 from PyQt5 import QtCore, QtWidgets
 import numpy as np
@@ -19,7 +21,7 @@ import numpy as np
 from mplplot import MplPlotCanvas, MplNavigationToolbar
 from framestatsbar import FrameStatisticsBar
 
-from descrambler import descramble_to_crs_fn_gn, aggregate_to_GnCrsFn;
+from descrambler import descramble_to_gn_crs_fn, aggregate_to_GnCrsFn
 
 
 class LiveViewerDefaults(object):
@@ -39,6 +41,8 @@ class LiveViewerDefaults(object):
         self.width = 600
         self.height = 500
         self.title = 'Percival Live View'
+        self.cadu_min = None;
+        self.cadu_max = None;
 
 class LiveViewReceiver():
     """
@@ -49,7 +53,7 @@ class LiveViewReceiver():
     mechanism.
     """
 
-    def __init__(self, endpoint_url, descramble):
+    def __init__(self, endpoint_url):
         """Initialise the receiver."""
         # Create a ZeroMQ context, socket and connect the specified endpoint
         self.context = zmq.Context()
@@ -57,12 +61,12 @@ class LiveViewReceiver():
         self.socket.setsockopt_string(zmq.SUBSCRIBE, "")
         self.socket.connect(endpoint_url)
 
-        self.descramble = descramble;
-
         # Set up socket operation parameters
         self.zmq_flags = 0
         self.zmq_copy = True
         self.zmq_track = False
+        self.reset_frame = None
+        self.reset_frame_num = -1
 
         self.debug_socket = False
 
@@ -73,21 +77,23 @@ class LiveViewReceiver():
         """
         Receive frames from the ZeroMQ channel.
 
-        This method receives frames from the ZeroMQ channel. This is event-driven and receives
-        all pending image header/body multi-part messages before returning the latest one. This
-        allows the viewer to drop frames when it is unable to display them at the rated transmitted.
+        This method receives all the frames waiting in the ZeroMQ channel, clearing the channel to empty.
+        It returns the latest data / reset frame or both if possible. We would like to return only one
+        frame per call, but the reset and data frame can be published nearly simultaneously, so we need
+        to be able to receive both of them in one call.
+        Frames are here dropped when the viewer is unable to display them at the rated transmitted.
         """
 
         # Set up default header and frame data variables
         header = {}
-        frame_data = None
+        data = reset = None
 
         # Get the socket event flags 
         flags = self.socket.getsockopt(zmq.EVENTS)
 
         # Keep handling socket events until all flags are cleared. This is necessary as the
-        # QT socket notifier is edge-triggered so the socket must be cleared of pending 
-        # messages before returning.
+        # QT socket notifier is triggered on the state leaving non-empty so the socket must be
+        # cleared of messages before returning.
         while flags != 0:
 
             if flags & zmq.POLLIN:
@@ -108,26 +114,15 @@ class LiveViewReceiver():
                 array = np.frombuffer(buf, dtype=header['dtype'])
                 frame_data =  array.reshape([int(header["shape"][0]), int(header["shape"][1])])
 
-                if self.descramble:
-                  frame_data = descramble_to_crs_fn_gn(frame_data,
-                                                    False, # refColH1_0_Flag
-                                                    True,  # cleanmem
-                                                    False) # verbose;
-                else:
-                  frame_data = aggregate_to_GnCrsFn(frame_data);
-
-                frame_data = (frame_data[2], frame_data[0], frame_data[1]);
-
-                #print(str(type(frame_data)))
-                #print(str(len(frame_data))) # tuple of 3, each a ndarray, (1484, 1408)
-                #print(str(type(frame_data[0])))
-                #print(str(frame_data[0].shape))
-
-
                 if self.debug_socket:
-                    print("[Socket] received frame shape: " + repr(frame_data.shape))
+                    print("[Socket] received frame dataset:", header['dataset'], "frame_num:", header['frame_num'],"shape: " + repr(frame_data.shape))
 
-                # Increment frames received counter
+                if header['dataset'] == "data":
+                  data = frame_data
+                if header['dataset'] == "reset":
+                  self.reset_frame = frame_data
+                  self.reset_frame_num = header['frame_num']
+                
                 self.frames_received += 1
 
             elif flags & zmq.POLLOUT:
@@ -145,8 +140,14 @@ class LiveViewReceiver():
             if self.debug_socket:
                 print("Flags at end", flags)
 
-        # Return the most receently received header and frame data
-        return (header, frame_data)
+        if(data is not None):
+          reset = self.reset_frame
+          self.reset_frame = None
+          if reset is not None and header['frame_num'] != self.reset_frame_num:
+            print("ERROR: reset frame number mismatch:%d vs %d"%(self.reset_frame_num, header['frame_num']))
+            reset = None
+
+        return (reset, data)
 
     def get_socket_fd(self):
         """Return the ZeroMQ channel socket file descriptor."""
@@ -173,21 +174,44 @@ class LiveViewer(QtWidgets.QMainWindow):
         """
         super().__init__()
         
+        self._calibfile = None
         # Create a default parameter object and parse command-line arguments
         self.defaults = LiveViewerDefaults()
         self.args = self._parse_arguments(args)
 
+        # load optional calibfile
+        if self.args.calibfile:
+          self.load_calibfile(self.args.calibfile)
+
+        if self.args.cadu_min is not None:
+          self.cadu_min = self.args.cadu_min;
+          print("cadu min set to", self.cadu_min);
+        else:
+          self.cadu_min = self.defaults.cadu_min;
+
+        if self.args.cadu_max is not None:
+          self.cadu_max = self.args.cadu_max;
+          print("cadu max set to", self.cadu_max);
+        else:
+          self.cadu_max = self.defaults.cadu_max;
+
+        # if the user wants to use a calibfile, we must specify it.
+        self.descramble = self.args.descramble
+
         # Initialise frames shown counter        
         self.frames_shown = 0
 
-        # Initialise the main window user interface
+        # Initialise the main window user interface after loading calibfile
         self.init_ui()
 
         # Create the receiver object
-        self.receiver = LiveViewReceiver(self.args.endpoint_url, self.args.descramble)
+        self.receiver = LiveViewReceiver(self.args.endpoint_url)
 
         # Create a socket event notifier attached to the receiver socket and connect
         # to the receive handler
+        # the notifier is a quirky thing and activates when it connects or disconnects
+        # to the publisher, or when its incoming queue goes non-empty. I would be
+        # inclined to do this ourselves in a background thread in the next version.
         self.notifier = QtCore.QSocketNotifier(
             self.receiver.get_socket_fd(), QtCore.QSocketNotifier.Read, self
         )
@@ -225,16 +249,54 @@ class LiveViewer(QtWidgets.QMainWindow):
         parser.add_argument('--descramble', default=False, dest="descramble", action="store_true",
                             help='Employ software descrambling')
 
+        parser.add_argument('--calibfile', default=None, dest="calibfile",
+                            help='h5 file containing calibration constants')
+
+        parser.add_argument('--cadu_min', default=None, type=float,
+                            help='min value for combined-adu graphs')
+
+        parser.add_argument('--cadu_max', default=None, type=float,
+                            help='max value for combined-adu graphs')
+
+
+
         # Parse and return arguments
         parsed_args = parser.parse_args(args)
         return parsed_args
+
+    def load_calibfile(self, filepath):
+        if os.path.isfile(filepath):
+          try:
+            self._calibfile = h5py.File(filepath);
+            self._Sc = np.asarray(self._calibfile["sample/coarse/slope"]);
+            self._Oc = np.asarray(self._calibfile["sample/coarse/offset"]);
+            self._Sf = np.asarray(self._calibfile["sample/fine/slope"]);
+            self._Of = np.asarray(self._calibfile["sample/fine/offset"]);
+
+            if(self._Sc.shape[1] == 1440):
+              print("Removing reference column from calibration datasets");
+              self._Sc = self._Sc[:,32:];
+              self._Oc = self._Oc[:,32:];
+              self._Sf = self._Sf[:,32:];
+              self._Of = self._Of[:,32:];
+          except:
+            print("ERROR could not load requisite datasets from", filepath);
+            self._calibfile = None;
+            exit(1);
+          else:
+            print("loaded calibfile ok", filepath);
+            self._calibfile.close();
+            self._calibfile = True;
+        else:
+          print("ERROR could not find", filepath);
+          exit(1);
 
     def init_ui(self):
         """
         Initialise the user interface.
 
         This method initialises the QT main window interface, setting up the various widgets
-        and shwoing the window.
+        and showing the window.
         """
         # Set window title and geometry
         self.setWindowTitle(self.defaults.title)
@@ -248,7 +310,10 @@ class LiveViewer(QtWidgets.QMainWindow):
         vbl = QtWidgets.QVBoxLayout(self.main_widget)
 
         # Instantiate a Matplotlib canvas
-        self.plot = MplPlotCanvas(self.main_widget)
+        if(self._calibfile):
+          self.plot = MplPlotCanvas(self.main_widget, labels = ('ResetCADU', 'SampleCADU', 'Difference'))
+        else:
+          self.plot = MplPlotCanvas(self.main_widget)
 
         # Instantiate the navigation toolbar for the plot
         self.nav_tool_bar = MplNavigationToolbar(self.plot, self.main_widget)
@@ -273,6 +338,47 @@ class LiveViewer(QtWidgets.QMainWindow):
         # Show the window
         self.show()
 
+    def nan2zero(self, img):
+        """
+        apply_calib is expected to have some NaN pixels as NaN is used as a signifier for
+        a dead pixel or something. These NaN values confuse the auto-scaling algorithm so
+        we can set them all to zero.
+        """
+        if img is not None:
+          nanidx = np.isnan(img);
+          img[nanidx] = 0.0;
+        return img;
+
+    def apply_calib(self, resetGCF, dataGCF):
+        """
+        This applies the calib coefficients to data, reset frames and performs CDS on the two.
+        The function can accept None in its arguments, in which case None is returned.
+        @return a triple of frames (resetCADU, dataCADU, diffCADU) all with the same units.
+        """
+        dataCADU = resetCADU = diffCADU = None;
+
+        # check on the dimensions of the calibfile or the broadcast will fail
+        if(dataGCF is not None):
+          if(dataGCF[0].shape != self._Sc.shape):
+            print("ERROR the dimensions of the calibfile is", self._Sc.shape, "and the dims of the dataframe is", dataGCF[0].shape);
+            return (resetCADU, dataCADU, diffCADU);
+
+        idOf = 128.0*32;
+        idSl = idOf / 1.5;
+
+        if(dataGCF is not None):
+          dataCADU = idOf + (idSl / self._Sc) * (dataGCF[1] + 1.0 - self._Oc) - (idSl / self._Sf) * (dataGCF[2] - self._Of);
+          g0idx = (dataGCF[0] == 0);
+        if(resetGCF is not None):
+          resetCADU = idOf + (idSl / self._Sc) * (resetGCF[1] + 1.0 - self._Oc) - (idSl / self._Sf) * (resetGCF[2] - self._Of);
+
+        if(dataCADU is not None and resetCADU is not None):
+          diffCADU = dataCADU.copy();
+          # this idiomatic statement subtracts the reset entry where g0idx is True
+          diffCADU[g0idx] -= resetCADU[g0idx];
+
+        return (resetCADU, dataCADU, diffCADU);
+
     def handle_receive(self):
         """
         Handle receive events.
@@ -281,23 +387,43 @@ class LiveViewer(QtWidgets.QMainWindow):
         calling the receiver and rendering any frames returned.
         """
 
-        # Disable notifier while handling
-        self.notifier.setEnabled(False)
+        dataGCF = resetGCF = None
+        diffCADC = dataCADC = resetCADC = None
 
         # Get frame data from the receiver
-        (header, frame_data) = self.receiver.receive_frame()
+        (resetf, dataf) = self.receiver.receive_frame()
 
         # Plot frame data if returned
-        if frame_data is not None:
-            self.plot.multi_render_frame(frame_data)
+        if dataf is not None:
+          if self.descramble:
+            dataGCF = descramble_to_gn_crs_fn(dataf,
+                                              False, # refColH1_0_Flag
+                                              True,  # cleanmem
+                                              False) # verbose
+          else:
+            dataGCF = aggregate_to_GnCrsFn(dataf)
 
-            self.frames_shown += 1
+          if resetf is not None:
+            if self.descramble:
+              resetGCF = descramble_to_gn_crs_fn(resetf,
+                                                False, # refColH1_0_Flag
+                                                True,  # cleanmem
+                                                False) # verbose
+            else:
+              resetGCF = aggregate_to_GnCrsFn(resetf)
 
-        # Update statistics bar
-        self.stats_bar.update(self.receiver.frames_received, self.frames_shown)
+          if self._calibfile:
+            (resetCADU, dataCADU, diffCADU) = self.apply_calib(resetGCF, dataGCF)
+            self.nan2zero(resetCADU); self.nan2zero(dataCADU); self.nan2zero(diffCADU)
+            self.plot.multi_render_frame((resetCADU, dataCADU, diffCADU), self.cadu_min, self.cadu_max)
+          else:
+            self.plot.multi_render_frame((dataGCF[0], dataGCF[1], dataGCF[2]))
 
-        # Re-enable the notifier
-        self.notifier.setEnabled(True)
+          self.frames_shown += 1
+
+          # Update statistics bar
+          self.stats_bar.update(self.receiver.frames_received, self.frames_shown)
+
 
     @QtCore.pyqtSlot()
     def on_reset_stats(self):
