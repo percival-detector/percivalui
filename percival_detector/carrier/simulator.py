@@ -249,9 +249,10 @@ class Simulator(object):
                 if a == 0x0385:
                   if g_show_status:
                     slogger.info("Message %05d received: (0x%04X) 0x%08X", count, a, w);
+                    count += 1;
                 else:
                   slogger.info("Message %05d received: (0x%04X) 0x%08X", count, a, w)
-                count += 1;
+                  count += 1;
                 # Save the message to the register
                 self.registers[a] = w
                 if a in self.shortcuts:

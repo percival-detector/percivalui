@@ -97,6 +97,7 @@ class SetPointControl(object):
                     self._detector.set_value(device_list, sps[device_list])
         else:
             self._log.error("The set point [%s] is not available", set_point)
+            raise ValueError("Set point is not available", set_point)
 
     def scan_set_points(self, set_points, steps, delay, device_list=None):
         # Need to create a dictionary of discrete position steps for each channel
