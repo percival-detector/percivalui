@@ -179,7 +179,7 @@ class Command(object):
                     # New parameter
                     self._parameters[pv[0]] = pv[1]
 
-        self._log.debug("Parsed parameters for [%s]: %s", self._command_name, self._parameters)
+        self._log.debug("Parsed urlencoded parameters for [%s]: %s", self._command_name, self._parameters)
 
     def parse_request(self, request):
         self._log.debug("Path: %s", request.path)
@@ -217,5 +217,8 @@ class Command(object):
             try:
                 self._parameters.update(json.loads(request.body))
             except:
-                self._log.warn("could not parse http-body as json");
+                self._log.error("could not parse http-body as json", request.body);
+                # do not throw here because it will stop the command
+                # becoming the active command, which means the js will not see it
+                # fail.
 
