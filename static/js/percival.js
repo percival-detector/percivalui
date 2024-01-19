@@ -159,7 +159,7 @@ class Monitor
     $(this.parent).html(this.html_text);
     $('#' + this.id + '-dtbl').hide();
     $('#' + this.id + '-expbtn').click(function(){
-        //alert("Clicked!! " + $(this).attr("id"));
+
         if ($('#' + $(this).attr("id").replace('-expbtn', '-dtbl')).is(':visible')){
             $('#' + $(this).attr("id").replace('-expbtn', '-dtbl')).hide();
             $('#' + $(this).attr("id").replace('-expbtn', '-expglp')).removeClass('glyphicon-resize-small');
@@ -319,10 +319,10 @@ $( document ).ready(function()
     send_config_command();
   });
   $('#select-config-file').on('change', function(event){
-    //alert(event.target.files[0]);
+
     reader = new FileReader();
     reader.onloadend = function(event){
-        //alert(event.target.result);
+
         percival.current_config = event.target.result
     };
     reader.readAsText(event.target.files[0], 'UF-8');
@@ -378,7 +378,7 @@ function send_config_command()
     element = $('#select-config-file')[0];
     reader = new FileReader();
     reader.onloadend = function(event){
-        //alert(event.target.result);
+
         percival.current_config = event.target.result
 
         config_type = $('#select-config').find(":selected").text();
@@ -433,7 +433,7 @@ function send_scan_command()
     //data = {}
     sp = [$('#scan-set-point-start').find(":selected").text(),$('#scan-set-point-end').find(":selected").text()];
     //data = {'setpoints': sp};
-    //alert(data)
+
     steps = $('#scan-sp-steps').val();
     dwell = $('#scan-sp-dwell').val();
     data0 = {
@@ -449,7 +449,7 @@ function send_sscan_command()
 {
     sp = $('#sscan-set-point-end').find(":selected").text();
     //data = {'setpoints': sp};
-    //alert(data)
+
     steps = $('#sscan-sp-steps').val();
     dwell = $('#sscan-sp-dwell').val();
     data0 = {
@@ -484,7 +484,7 @@ function buffer_transfer_apply()
 {
     target = $('#buffer-trns-target').find(":selected").val();
     cmd = $('#buffer-trns-cmd').find(":selected").val();
-//    alert("Target: " + target + " Cmd: " + cmd);
+
     pts = parseInt($('#buffer-trns-no-words').val());
     if (isNaN(pts) || pts < 1 || pts > 64){
         alert("Number of words must be an integer between 1 and 64");
@@ -495,7 +495,7 @@ function buffer_transfer_apply()
         alert("Number of words must be an integer 0 or greater");
         return;
     }
-//    alert("Number: " + pts + " Address: " + address);
+
 
     data0 = {
             'target' : target,
@@ -559,7 +559,6 @@ function update_server_command_status()
         $('#ctrl-resp-param').html(html);
     });
 
-    //alert(response.command);
 }
 
 function update_api_version() {
@@ -575,7 +574,6 @@ function update_api_adapters() {
     $.getJSON('/api/' + api_version + '/adapters/', function(response) {
         adapter_list = response.adapters.join(", ");
         $('#api-adapters').html(adapter_list);
-        //alert(adapter_list);
     });
 }
 
@@ -627,7 +625,6 @@ function update_server_setup() {
             html += "<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" href=\"#/status-view\" onclick=\"update_visible_monitors('"+mg[index]+"')\">"+mg[index]+"</a></li>";
         }
         $('#status-group').html(html);
-        //alert(JSON.stringify(response));
 
         // Control channels for manual set points
         cg = percival.groups.control_groups.group_names.concat(percival.control_names);
@@ -660,13 +657,11 @@ function update_server_setup() {
         }
     });
     $.getJSON('/api/' + api_version + '/percival/setpoints/', function(response) {
-        //alert(response);
         percival.set_points = response.setpoints.sort();
 		html = "";
 		for (var index=0; index < percival.set_points.length; index++){
             html += "<option role=\"presentation\">" + percival.set_points[index] + "</option>";
         }
-        //alert(html);
         //if (html != $('#select-set-point').html()){
         //    $('#select-set-point').html(html);
         //}
@@ -692,7 +687,7 @@ function update_visible_monitors(group)
     $('#status-group-name').text("Channels [ " + group + " ] ");
 
     var mon_length = monitor_names.length;
-    //alert(mon_length);
+
     for (var index = 0; index < mon_length; index++){
         if (group == "All"){
             percival.monitors[monitor_names[index]].show();
@@ -982,7 +977,7 @@ function update_api_read_status()
     $('#safety-fast-powerdown').html(led_html(detector['safety_driven_fast_sensor_powerdown_completed'],'green', 20));
     $('#safety-exit-armed').html(led_html(detector['safety_driven_exit_acquisition_armed_status_completed'],'green', 20));
     $('#safety-stop-acq').html(led_html(detector['safety_driven_stop_acquisition_completed'],'green', 20));
-    //alert(detector['LVDS_IOs_enabled']);
+
     var len = monitor_names.length;
     render_status_view();
     var tableData = [];
@@ -1062,7 +1057,7 @@ function render_status_view()
     if (percival.monitor_count > percival.monitor_divs){
         // Calculate the number of new rows
         var new_count = percival.monitor_count - percival.monitor_divs;
-        //alert("New rows: " + new_row_count);
+
         for (var index = percival.monitor_divs; index < (percival.monitor_divs+new_count); index++){
             //html_text = "<div class=\"row sidebar-row vertical-align\"><div class=\"col-xs-1\">&nbsp;</div>";
             html_text = "";
@@ -1070,7 +1065,7 @@ function render_status_view()
                              "\" class=\"col-xs-3 status vertical-align panel panel-default\">&nbsp;</div>";
             //}
             //html_text += "</div>";
-            //alert(html_text);
+
             // Append the rows to the container
             $('#stat-container').append(html_text);
         }
