@@ -1,4 +1,11 @@
 
+???? -- wnichols
+
+  * json transport instituted in messages; please refresh your browser cache.
+  * 
+
+
+
 2023-10-27 -- version 0.0.4 -- wnichols
 
   * Change auto-read monitors frequency from 10Hz to 1Hz.
