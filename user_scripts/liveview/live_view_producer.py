@@ -126,7 +126,7 @@ class LiveViewProducer(object):
         """
         Run the live view producer.
 
-        This method creates the ZeroMQ PUB/SUB socket, binds it and then starts transmitting
+        This method creates a ZeroMQ PUBlish socket, binds it and then starts transmitting
         frames to subscribed viewer applications at the specified rate.
         """
         # Open the ZeroMQ SUB socket and bind it to the endpoint
