@@ -202,7 +202,7 @@ class DAQClient(object):
             return response
 
         # If no error was returned send the command to start writing
-        response = self.send_command('hdf/write', '1')
+        response = self.send_command('hdf/write', 1)
         if 'error' in response:
             return response
 
@@ -221,4 +221,4 @@ class DAQClient(object):
         return {'error': 'Timed out waiting for HDF to start writing'}
 
     def stop_writing(self):
-        return self.send_command('hdf/write', '0')
+        return self.send_command('hdf/write', 0)
