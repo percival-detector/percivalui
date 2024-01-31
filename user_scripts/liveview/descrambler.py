@@ -291,7 +291,12 @@ def descramble_to_gn_crs_fn(scrmblShot,
                                     NSmplRst,
                                     NRow,
                                     auxNCol), dtype='uint16') * ERRDLSraw
-    data2srcmbl_noRefCol[:, iSmpl, :, :] = convert_odin_daq_2_mezzanine(scrmblShot_byteSwap)
+    # in the old days, the rhs was convert_odin_daq_2_mezzanine(scrmblShot_byteSwap), for use
+    # with PercivalProcessPlugin; we keep the function in case we need to rescue an old
+    # acquisition, but don't use it.
+    # data2srcmbl_noRefCol[:, iSmpl, :, :] = convert_odin_daq_2_mezzanine(scrmblShot_byteSwap)
+    data2srcmbl_noRefCol[:, iSmpl, :, :] = scrmblShot_byteSwap
+
     if cleanMemFlag:
         del scrmblShot_byteSwap
 
