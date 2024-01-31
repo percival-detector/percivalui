@@ -25,5 +25,4 @@ requests>=2.26
 PyQt5-sip<=12.12 # 12.13 did not work
 PyQt5
 matplotlib
-
-
+pyqtgraph

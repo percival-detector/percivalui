@@ -88,6 +88,7 @@ class LiveViewReceiver():
         It returns the latest data / reset frame or both if possible. We would like to return only one
         frame per call, but the reset and data frame can be published nearly simultaneously, so we need
         to be able to receive both of them in one call.
+        This function is not blocking: it does not wait for a message to arrive.
         Frames are here dropped when the viewer is unable to display them at the rated transmitted.
         """
 
