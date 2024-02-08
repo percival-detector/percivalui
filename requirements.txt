@@ -21,4 +21,9 @@ pyserial>=3.4
 requests>=2.26
 # this is for the html-liveview
 #opencv-python==4.5.5.64
+# this is for the python liveviews
+PyQt5-sip<=12.12 # 12.13 did not work
+PyQt5
+matplotlib
+
 
