@@ -100,15 +100,18 @@ class DataReceiver(QtCore.QThread):
             self.dataData = data;
             self.dataFrameNumber = header['frame_num'];
 
-        #pulse_id = header['ts'] & 0x000000000001FFFF
-        #print(header)
-        #print('\x1b[K\r%d' % (pulse_id), end='')
-        #print('%d %d\n' % (pulse_id, pulse_id % 12), end='')
+            #pulse_id = header['ts'] & 0x000000000001FFFF
+            #print(header)
+            #print('\x1b[K\r%d' % (pulse_id), end='')
+            #print('%d %d\n' % (pulse_id, pulse_id % 12), end='')
 
-        if(self.resetFrameNumber == self.dataFrameNumber):
-          self.transferPts.signal2.emit(self.dataHeader, [self.dataData, self.resetData])
-        elif self.dataFrameNumber:
-          self.transferPts.signal2.emit(self.dataHeader, [self.dataData, None])
+            # we expect the reset-frame to arrive before the data-frame (if at all).
+            # so we only update the gui on a new data-frame
+
+            if(self.resetFrameNumber == self.dataFrameNumber):
+              self.transferPts.signal2.emit(self.dataHeader, [self.dataData, self.resetData])
+            elif self.dataFrameNumber:
+              self.transferPts.signal2.emit(self.dataHeader, [self.dataData, None])
 
       except:
         print('Data Error')
@@ -122,7 +125,9 @@ class DataReceiver(QtCore.QThread):
 class MainWindow(QtWidgets.QMainWindow):
   def __init__(self, parsed_args, name=None):
     super(MainWindow, self).__init__()
-    self.ui=uic.loadUi('pcv_viewer.ui',self)
+    dir_path = os.path.dirname(__file__)
+
+    self.ui=uic.loadUi('%s/pcv_viewer.ui'%dir_path,self)
     self.setWindowTitle('PERCIVAL Live-Viewer2')
 
     self.Header = None
