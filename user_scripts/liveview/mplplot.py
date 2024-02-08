@@ -12,9 +12,9 @@ import numpy as np
 import time
 
 import matplotlib
-from matplotlib.backends.qt_compat import QtCore, QtWidgets, is_pyqt5
+from matplotlib.backends.qt_compat import QtCore, QtWidgets
 
-if is_pyqt5():
+if QtCore.qVersion()[0]=='5':
     from matplotlib.backends.backend_qt5agg import (
         FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
 else:

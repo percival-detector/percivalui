@@ -15,6 +15,13 @@ import argparse
 import h5py
 import time
 
+try:
+    # new location for sip
+    # https://www.riverbankcomputing.com/static/Docs/PyQt5/incompatibilities.html#pyqt-v5-11
+    from PyQt5 import sip
+except:
+    import sip
+
 from PyQt5 import QtCore, QtWidgets
 import numpy as np
 
