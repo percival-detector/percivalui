@@ -12,9 +12,9 @@ import numpy as np
 import time
 
 import matplotlib
-from matplotlib.backends.qt_compat import QtCore, QtWidgets, is_pyqt5
+from matplotlib.backends.qt_compat import QtCore, QtWidgets
 
-if is_pyqt5():
+if QtCore.qVersion()[0]=='5':
     from matplotlib.backends.backend_qt5agg import (
         FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
 else:
@@ -135,7 +135,7 @@ class MplPlotCanvas(FigureCanvas):
             axe.invert_xaxis()
             if self.colorbar[label] is None:
                 cbar_ticks = np.linspace(
-                    min_val, max_val, self.cbar_numticks, dtype=np.int).tolist()
+                    min_val, max_val, self.cbar_numticks, dtype=np.int32).tolist()
                 self.colorbar[label] = self.figure.colorbar(
                     self.img_obj[label], ax=axe, orientation=self.bar_orient, ticks=cbar_ticks)
 
@@ -147,7 +147,7 @@ class MplPlotCanvas(FigureCanvas):
         # If the range of the data changed, update the colorbar accordingly
         if self.img_range != (min_val, max_val):
             self.img_range = (min_val, max_val)
-            cbar_ticks = np.linspace(min_val, max_val, self.cbar_numticks, dtype=np.int).tolist()
+            cbar_ticks = np.linspace(min_val, max_val, self.cbar_numticks, dtype=np.int32).tolist()
             self.colorbar[label].mappable.set_clim(min_val, max_val)
             self.colorbar[label].set_ticks(cbar_ticks)
             self.colorbar[label].draw_all()
