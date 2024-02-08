@@ -24,7 +24,7 @@ class BoardSettings:
         :param board: Which board to initialise/read
         :type  board: BoardTypes
         """
-        self.log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
+        self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self.txrx = txrx
         self.board = board
         self._header_block, self._control_block, self._monitoring_block = BoardRegisters[board]
@@ -50,18 +50,18 @@ class BoardSettings:
         cmd_msg = self._reg_header_settings.get_write_cmd_msg(True)
 
         # Initialise the control channels
-        #self.log.info(self._reg_control_settings.num_items)
+        #self._log.info(self._reg_control_settings.num_items)
         self._control_settings = {}
-        self.log.info("Num Items: %d", self._reg_control_settings.num_items)
+        self._log.info("Num Items: %d", self._reg_control_settings.num_items)
         for address in range(0, self._reg_control_settings.num_items):
             channel_address = self._reg_control_settings._uart_address + (address * self._reg_control_settings.words_per_item)
             channel = ini.control_channel_by_address(channel_address)
-            #self.log.info(channel_address)
-            #self.log.info("self._reg_control_settings._uart_address: %d", self._reg_control_settings._uart_address)
-            #self.log.info("address: %d", address)
-            #self.log.info("self._reg_control_settings.words_per_item: %d", self._reg_control_settings.words_per_item)
-            #self.log.info("Uart address %02X", self._reg_control_settings._uart_address + (address * self._reg_control_settings.words_per_item))
-            #self.log.info(channel)
+            #self._log.info(channel_address)
+            #self._log.info("self._reg_control_settings._uart_address: %d", self._reg_control_settings._uart_address)
+            #self._log.info("address: %d", address)
+            #self._log.info("self._reg_control_settings.words_per_item: %d", self._reg_control_settings.words_per_item)
+            #self._log.info("Uart address %02X", self._reg_control_settings._uart_address + (address * self._reg_control_settings.words_per_item))
+            #self._log.info(channel)
 
             self._control_settings[address] = UARTRegister(self._control_block, channel_address)
 
@@ -82,27 +82,27 @@ class BoardSettings:
             try:
                 cmd_msg += self._control_settings[address].get_write_cmd_msg(True)
             except:
-                self.log.info(channel_address)
-                self.log.info("self._reg_control_settings._uart_address: %d", self._reg_control_settings._uart_address)
-                self.log.info("address: %d", address)
-                self.log.info("self._reg_control_settings.words_per_item: %d", self._reg_control_settings.words_per_item)
-                self.log.info("Uart address %02X", self._reg_control_settings._uart_address + (address * self._reg_control_settings.words_per_item))
-                self.log.info(channel)
+                self._log.info(channel_address)
+                self._log.info("self._reg_control_settings._uart_address: %d", self._reg_control_settings._uart_address)
+                self._log.info("address: %d", address)
+                self._log.info("self._reg_control_settings.words_per_item: %d", self._reg_control_settings.words_per_item)
+                self._log.info("Uart address %02X", self._reg_control_settings._uart_address + (address * self._reg_control_settings.words_per_item))
+                self._log.info(channel)
                 raise
 
         # Initialise the control channels
-        # self.log.info(self._reg_control_settings.num_items)
+        # self._log.info(self._reg_control_settings.num_items)
         self._monitoring_settings = {}
         for address in range(0, self._reg_monitoring_settings.num_items):
             channel_address = self._reg_monitoring_settings._uart_address + (address * self._reg_monitoring_settings.words_per_item)
             channel = ini.monitoring_channel_by_address(channel_address)
-            #self.log.info(channel_address)
-            #self.log.info("Uart address %02X", self._reg_monitoring_settings._uart_address + (address * self._reg_monitoring_settings.words_per_item))
-            #self.log.info(channel.Channel_ID)
+            #self._log.info(channel_address)
+            #self._log.info("Uart address %02X", self._reg_monitoring_settings._uart_address + (address * self._reg_monitoring_settings.words_per_item))
+            #self._log.info(channel.Channel_ID)
 
             self._monitoring_settings[address] = UARTRegister(self._monitoring_block, channel_address)
 
-            #self.log.info("Channel ID: %d", channel.Channel_ID)
+            #self._log.info("Channel ID: %d", channel.Channel_ID)
             self._monitoring_settings[address].fields.channel_id = channel.Channel_ID
             self._monitoring_settings[address].fields.device_address = 0
             self._monitoring_settings[address].fields.board_type = channel.Board_type
@@ -128,9 +128,9 @@ class BoardSettings:
             try:
                 cmd_msg += self._monitoring_settings[address].get_write_cmd_msg(True)
             except:
-                self.log.info(channel_address)
-                self.log.info("Uart address %02X", self._reg_monitoring_settings._uart_address + (address * self._reg_monitoring_settings.words_per_item))
-                self.log.info(channel)
+                self._log.info(channel_address)
+                self._log.info("Uart address %02X", self._reg_monitoring_settings._uart_address + (address * self._reg_monitoring_settings.words_per_item))
+                self._log.info(channel)
                 raise
 
         return cmd_msg
@@ -153,7 +153,7 @@ class BoardSettings:
         Generate the command message for reading the control settings, send it and
         store the response
         """
-        self.log.debug("Readback Board Control Settings")
+        self._log.debug("Readback Board Control Settings")
         self._control_settings = self._readback_settings(self._reg_control_settings)
 
     def device_control_settings(self, device_addr):
@@ -189,6 +189,6 @@ class BoardSettings:
         Generate the command message for reading the monitoring settings, send it and
         store the response
         """
-        self.log.debug("Readback Board Monitoring Settings")
+        self._log.debug("Readback Board Monitoring Settings")
         self._monitoring_settings = self._readback_settings(self._reg_monitoring_settings)
 

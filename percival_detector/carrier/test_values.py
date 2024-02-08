@@ -11,8 +11,8 @@ from percival_detector.carrier.txrx import TxMessage
 
 class TestBoardValuesClass(unittest.TestCase):
     def setUp(self):
-        self.log = logging.getLogger(self.__class__.__name__)
-        self.log.setLevel(logging.DEBUG)
+        self._log = logging.getLogger(self.__class__.__name__)
+        self._log.setLevel(logging.DEBUG)
         self.txrx = MagicMock()
         self.txrx.send_recv_message = MagicMock()
 

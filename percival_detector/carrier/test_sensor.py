@@ -9,8 +9,8 @@ from percival_detector.carrier.sensor import Sensor
 
 class TestSensorClass(unittest.TestCase):
     def setUp(self):
-        self.log = logging.getLogger(self.__class__.__name__)
-        self.log.setLevel(logging.DEBUG)
+        self._log = logging.getLogger(self.__class__.__name__)
+        self._log.setLevel(logging.DEBUG)
         self.buffer_cmd = MagicMock()
         self.sensor = Sensor(self.buffer_cmd)
 

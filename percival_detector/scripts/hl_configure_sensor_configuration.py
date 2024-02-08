@@ -7,9 +7,10 @@ Created on 17 May 2016
 
 import argparse
 
-from percival_detector.log import log
+import percival_detector.log
 from percival_detector.scripts.util import PercivalClient
 
+slogger = percival_detector.log.logger("percival_scripts")
 
 def options():
     parser = argparse.ArgumentParser()
@@ -24,7 +25,7 @@ def options():
 
 def main():
     args = options()
-    log.info(args)
+    slogger.info(args)
 
     with open(args.input, 'r') as ini_file:
         ini_str = ini_file.read()
@@ -34,7 +35,7 @@ def main():
                                    ini_str,
                                    'hl_configure_sensor_configuration.py',
                                    wait=(args.wait.lower() == "true"))
-    log.info("Response: %s", result)
+    slogger.info("Response: %s", result)
 
 
 if __name__ == '__main__':

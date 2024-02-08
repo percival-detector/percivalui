@@ -518,7 +518,7 @@ class PercivalDetector(object):
         self._board_settings = {}
         self._board_values ={}
         self._monitors = {}
-        self._controls = {}
+        self._control_chs = {}
         self._sys_cmd = None
         self._system_status = None
         self._sensor_buffer_cmd = None
@@ -743,7 +743,7 @@ class PercivalDetector(object):
         Readout the settings from the hardware and create all control and monitoring devices according to the current
         settings coupled with the ini file descriptions.
         Monitor type devices are stored in the _monitors dictionary.
-        Control type devices are stored in the _controls dictionary.
+        Control type devices are stored in the _control_chs dictionary.
         """
         # We can only load the channel information if we have a valid connection
         if self._txrx.connected:
@@ -791,7 +791,7 @@ class PercivalDetector(object):
                                            (const.DeviceFamily(cc._channel_ini.Component_family_ID)).name,
                                            cc._channel_ini.Channel_name)
                         description, device = DeviceFactory[const.DeviceFamily(cc._channel_ini.Component_family_ID)]
-                        self._controls[cc._channel_ini.Channel_name] = device(cc._channel_ini.Channel_name, cc)
+                        self._control_chs[cc._channel_ini.Channel_name] = device(cc._channel_ini.Channel_name, cc)
 
 #            # Load the sensor DACs from the ini file
 #            sensor_dacs = self._percival_params.sensor_dac_channels
@@ -936,7 +936,7 @@ class PercivalDetector(object):
                     if command.has_param('config'):
                         if len(command.get_param('config')) > 0:
                             config_type = command.get_param('config_type')
-                            config_desc = command.get_param('config').replace('::', '=')
+                            config_desc = command.get_param('config')
                             if 'setpoints' in config_type:
                                 self.load_setpoints(config_desc)
                             elif 'control_groups' in config_type:
@@ -1113,8 +1113,8 @@ class PercivalDetector(object):
         """
         Initialize all control devices that support the command.
         """
-        for control in self._controls:
-            self._controls[control].initialize()
+        for control in self._control_chs:
+            self._control_chs[control].initialize()
 
     def set_global_monitoring(self, state=True):
         """
@@ -1150,8 +1150,8 @@ class PercivalDetector(object):
         :param device: Name of device to set the value of
         :type device: str
         """
-        if device in self._controls:
-            self._controls[device].initialize()
+        if device in self._control_chs:
+            self._control_chs[device].initialize()
 
     def set_system_setting(self, setting, value):
         """
@@ -1161,57 +1161,57 @@ class PercivalDetector(object):
         self._log.info("Setting %s to %s", setting, str(value))
         self._system_settings.set_value(setting, value)
 
-    def set_value(self, device, value, timeout=0.1):
+    def set_value(self, cchannel, value, timeout=0.1):
         """
-        Set the value of a control device.
+        Set the value of a control-channel.
 
-        :param device: Name of device to set the value of
-        :type device: str
+        :param cchannel: Name of channel to set the value of
+        :type cchannel: str
         :param value: Value to set
         :type value: int
         :param timeout: Timeout for the set operation
         :type timeout: double
         """
-        self._log.info("Setting dev %s to %d", device, value)
-        if device in self._controls:
-            self._controls[device].set_value(value, timeout)
+        self._log.info("Setting ch %s to %d", cchannel, value)
+        if cchannel in self._control_chs:
+            self._control_chs[cchannel].set_value(value, timeout)
 
         #elif device in self._sensor.dacs:
         #    self._sensor.set_dac(device, value)
 
-        elif device in self._control_groups.group_names:
+        elif cchannel in self._control_groups.group_names:
             # A group name has been specified for the set value
             # Get the list of channels and apply the value for each one
-            for channel in self._control_groups.get_channels(device):
-                self._controls[channel].set_value(value, timeout)
+            for channel in self._control_groups.get_channels(cchannel):
+                self._control_chs[channel].set_value(value, timeout)
 
         else:
-            self._log.info("Device  %s not found", device)
-            raise PercivalDetectorError("Cannot set value, device {} does not exist".format(device))
+            self._log.warn("Channel  %s not found", cchannel)
+            raise PercivalDetectorError("Cannot set value, channel {} does not exist".format(cchannel))
 
-    def get_value(self, device):
+    def get_value(self, cchannel):
         """
-        Get the last set value of a control device.
+        Get the last set value of a control channel.
 
-        :param device: Name of device to set the value of
-        :type device: str
+        :param cchannel: Name of channel of which to get the value
+        :type cchannel: str
         """
         value = 0
-        self._log.info("Getting last value of %s", device)
-        if device in self._controls:
-            value = self._controls[device].get_value()
-            self._log.info("Value of %s is %d", device, value)
+        self._log.info("Getting last value of %s", cchannel)
+        if cchannel in self._control_chs:
+            value = self._control_chs[cchannel].get_value()
+            self._log.info("Value of %s is %d", cchannel, value)
 
         else:
-            self._log.info("Device %s not found", device)
-            raise PercivalDetectorError("Cannot get value, device {} does not exist".format(device))
+            self._log.warn("Channel %s not found", cchannel)
+            raise PercivalDetectorError("Cannot get value, channel {} does not exist".format(cchannel))
 
         return value
 
     def apply_sensor_dac_values(self):
         self._sensor.apply_dac_values()
 
-    def read(self, parameter):
+    def read(self, getcmd):
         """
         Read a parameter from the detector.
         The parameters currently include:
@@ -1221,15 +1221,15 @@ class PercivalDetector(object):
         - status of all monitors
         - status of a specific monitor
 
-        :param parameter: Name of parameter to read status of
-        :type parameter: str
-        :returns: Status report of the requested parameter
+        :param getcmd: Name of parameter to read status of
+        :type getcmd: str
+        :returns: Status report of the requested getcmd
         :rtype: dict
         """
-        self._log.debug("Reading data %s", parameter)
+        self._log.debug("Reading data: %s", getcmd)
 
-        # First check to see if parameter is a keyword
-        if parameter == "driver":
+        # First check to see if getcmd is a keyword
+        if getcmd == "driver":
             reply = {"username": self._username,
                      "start_time": self._start_time.strftime("%B %d, %Y %H:%M:%S"),
                      "up_time": str(datetime.now() - self._start_time),
@@ -1237,7 +1237,7 @@ class PercivalDetector(object):
                      "hardware": self._txrx.get_status()
                      }
 
-        elif parameter == "action":
+        elif getcmd == "action":
             if self._active_command:
                 reply = {'response': self._active_command.state,
                          'error': self._active_command.message,
@@ -1255,13 +1255,13 @@ class PercivalDetector(object):
                          'time': ''
                          }
 
-        elif parameter == "write_buffer":
+        elif getcmd == "write_buffer":
             reply = {'data': self._write_buffer}
 
-        elif parameter == "read_buffer":
+        elif getcmd == "read_buffer":
             reply = {'data': self._read_buffer}
 
-        elif parameter == "groups":
+        elif getcmd == "groups":
             # Construct dictionaries of control and monitor groups
             reply = {"control_groups": {"group_names": []},
                      "monitor_groups": {"group_names": []}
@@ -1281,17 +1281,17 @@ class PercivalDetector(object):
                     "channels": self._monitor_groups.get_channels(monitor_group)
                 }
 
-        elif parameter == "commands":
+        elif getcmd == "commands":
             reply = {}
             reply["commands"] = []
             for name, tmp in list(const.SystemCmd.__members__.items()):
                 reply["commands"].append(name)
 
-        elif parameter == "system_values":
+        elif getcmd == "system_values":
             reply = {}
             reply["system_values"] = self._system_settings.settings
 
-        elif parameter == "setpoints":
+        elif getcmd == "setpoints":
             reply = {}
             reply["setpoints"] = []
             for name in self._setpoint_control.set_points:
@@ -1299,21 +1299,21 @@ class PercivalDetector(object):
             reply["status"] = self._setpoint_control.get_status()
             self._log.debug("Setpoints: %s", reply)
 
-        elif parameter == "controls":
+        elif getcmd == "controls":
             reply = {}
             reply["controls"] = []
-            for control in self._controls:
+            for control in self._control_chs:
                 reply["controls"].append(control)
-                reply[control] = self._controls[control].device
+                reply[control] = self._control_chs[control].device
 
-        elif parameter == "monitors":
+        elif getcmd == "monitors":
             reply = {}
             reply["monitors"] = []
             for monitor in self._monitors:
                 reply["monitors"].append(monitor)
                 reply[monitor] = self._monitors[monitor].device
 
-        elif parameter == "boards":
+        elif getcmd == "boards":
             reply = {
                 "boards": [const.BoardTypes.carrier.name,
                            const.BoardTypes.left.name,
@@ -1346,14 +1346,20 @@ class PercivalDetector(object):
                 },
             }
 
-        elif parameter == "status":
+        elif getcmd == "status":
             reply = {'detector': self._system_status.get_status()}
             for monitor in self._monitors:
                 reply[monitor] = self._monitors[monitor].status
 
-        # Check to see if the parameter is a monitoring device that we own
-        elif parameter in self._monitors:
-            reply = { parameter: self._monitors[parameter].status }
+        elif getcmd == "channel_values":
+            vals = {}
+            for (name, device) in self._control_chs.items():
+              vals[name] = device.get_value()
+            reply = { 'channel_values' : vals }
+
+        # Check to see if the getcmd is a monitoring device that we own
+        elif getcmd in self._monitors:
+            reply = { getcmd : self._monitors[getcmd].status }
 
         else:
             reply = { "error": "Parameter not found" }

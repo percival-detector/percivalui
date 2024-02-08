@@ -24,7 +24,7 @@ import binascii;
 
 board_ip_port = 10002
 
-log = logger("percival_detector.carrier.Simulator");
+slogger = logger("percival_detector.carrier.Simulator");
 g_show_status = True;
 
 def bytes_to_str(byte_list):
@@ -184,14 +184,14 @@ class Simulator(object):
     def shutdown(self):
         """Wait a few moments for the thread to shutdown before killing it and closing the TCP socket"""
         if self.thread is not None:
-            log.debug("Waiting for sim thread to complete")
+            slogger.debug("Waiting for sim thread to complete")
             self.thread.join(2.0)
-        log.debug("Closing socket")
+        slogger.debug("Closing socket")
 #        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(("localhost", board_ip_port))
         self.server_sock.close()
         self.thread.join(2.0)
         if self.thread.isAlive():
-            log.warning("Simulation thread is still running. This should not happen")
+            slogger.warning("Simulation thread is still running. This should not happen")
 
     def start(self, forever=False, blocking=False):
         #self.sim_value_thread = Thread(target=self._update_sim_values)
@@ -199,15 +199,15 @@ class Simulator(object):
         if forever and blocking:
             self._serve_forever()
         elif forever and not blocking:
-            log.debug("creating thread forever")
+            slogger.debug("creating thread forever")
             self.thread = Thread(target=self._serve_forever)
         elif not forever and blocking:
             self._serve()
         elif not forever and not blocking:
-            log.debug("creating thread to run once")
+            slogger.debug("creating thread to run once")
             self.thread = Thread(target=self._serve)
         if self.thread is not None:
-            log.debug("starting thread")
+            slogger.debug("starting thread")
             self.thread.daemon = True
             self.thread.start()
 
@@ -228,10 +228,10 @@ class Simulator(object):
         The address space is empty on startup just like the Carrier.
         The function return when the client disconnects.
         """
-        log.info("Listening for connections on %d...", board_ip_port);
+        slogger.info("Listening for connections on %d...", board_ip_port);
         # Accept connections
         (client_sock, address) = self.server_sock.accept()
-        log.info("Client connected: %s", str(address))
+        slogger.info("Client connected: %s", str(address))
         count = 0;
 
         msg = bytes()
@@ -248,26 +248,26 @@ class Simulator(object):
             for (a, w) in data:
                 if a == 0x0385:
                   if g_show_status:
-                    log.info("Message %05d received: (0x%04X) 0x%08X", count, a, w);
+                    slogger.info("Message %05d received: (0x%04X) 0x%08X", count, a, w);
                 else:
-                  log.info("Message %05d received: (0x%04X) 0x%08X", count, a, w)
+                  slogger.info("Message %05d received: (0x%04X) 0x%08X", count, a, w)
                 count += 1;
                 # Save the message to the register
                 self.registers[a] = w
                 if a in self.shortcuts:
-                    log.debug("Shortcut found: (0x%04X)", a)
+                    slogger.debug("Shortcut found: (0x%04X)", a)
                     reg, length = self.shortcuts[a].getshortcut()
                     msg = bytes()
                     for creg in range(reg, reg+length):
-                        log.debug("creg: 0x%04X   reg: (0x%08X)", creg, self.registers[creg])
+                        slogger.debug("creg: 0x%04X   reg: (0x%08X)", creg, self.registers[creg])
                         msg = msg + encode_message(creg, self.registers[creg])
-                    log.debug("Message length of reply: %d bytes", len(msg))
+                    slogger.debug("Message length of reply: %d bytes", len(msg))
                     client_sock.send(msg)
                 else:
                     if a in self.eoms:
-                        log.debug("required to send EOM back")
+                        slogger.debug("required to send EOM back")
                         # We need to send FFFFABBABAC1 as an ack from the carrier board
-                        log.info("Sending 0x%s", binascii.hexlify(END_OF_MESSAGE))
+                        slogger.info("Sending 0x%s", binascii.hexlify(END_OF_MESSAGE))
                         client_sock.send(END_OF_MESSAGE)
                         # Check for buffer-command where extra response comes from command-target
                         if a == COMMAND.start_address + 1:
@@ -287,30 +287,30 @@ class Simulator(object):
                             for cmdtarget in cmdtargets:
                                 if (cmdtarget in cmdlookup):
                                     ack = cmdlookup.get(cmdtarget);
-                                    log.info("Sending %s", binascii.hexlify(ack));
+                                    slogger.info("Sending %s", binascii.hexlify(ack));
                                     client_sock.send(ack);
                                 else:
                                     raise Exception("can not find cmd target %d in my list" % cmdtarget);
 
                     else:
                         # Simply send back the registers
-                        log.info("Sending registers")
+                        slogger.info("Sending registers")
                         client_sock.send(encode_message(a, self.registers[a]))
 
                 if CONTROL_SETTINGS_CARRIER.start_address <= a < MONITORING_SETTINGS_CARRIER.start_address:
-                    log.debug("***** SETTING VALUE: 0x%04X = 0x%04X", a, w)
+                    slogger.debug("***** SETTING VALUE: 0x%04X = 0x%04X", a, w)
                     self.registers[READ_ECHO_WORD.start_address] = w&0xFFFF
 
                 if CONTROL_SETTINGS_BOTTOM.start_address <= a < MONITORING_SETTINGS_BOTTOM.start_address:
-                    log.debug("***** SETTING VALUE: 0x%04X = 0x%04X", a, w)
+                    slogger.debug("***** SETTING VALUE: 0x%04X = 0x%04X", a, w)
                     self.registers[READ_ECHO_WORD.start_address] = w&0xFFFF
 
                 if CONTROL_SETTINGS_LEFT.start_address <= a < MONITORING_SETTINGS_LEFT.start_address:
-                    log.debug("***** SETTING VALUE: 0x%04X = 0x%04X", a, w)
+                    slogger.debug("***** SETTING VALUE: 0x%04X = 0x%04X", a, w)
                     self.registers[READ_ECHO_WORD.start_address] = w&0xFFFF
 
                 if CONTROL_SETTINGS_PLUGIN.start_address <= a < MONITORING_SETTINGS_PLUGIN.start_address:
-                    log.debug("***** SETTING VALUE: 0x%04X = 0x%04X", a, w)
+                    slogger.debug("***** SETTING VALUE: 0x%04X = 0x%04X", a, w)
                     self.registers[READ_ECHO_WORD.start_address] = w&0xFFFF
 
                 # Implementation of some expected results
@@ -324,7 +324,7 @@ class Simulator(object):
                 #    a == 0x0242 or\
                 #    a == 0x0246 or\
                 #    a == 0x0250:
-                #    log.debug("***** SETTING VALUE: 0x%04X", a)
+                #    slogger.debug("***** SETTING VALUE: 0x%04X", a)
                 #    self.registers[READ_ECHO_WORD.start_address] = w
 
                 # Implementation of some expected results
@@ -340,7 +340,7 @@ class Simulator(object):
 
             chunk = client_sock.recv(block_read_bytes)
 
-        log.info("Client has disconnected")
+        slogger.info("Client has disconnected")
 
 def options():
     parser = argparse.ArgumentParser()
@@ -357,7 +357,7 @@ def main():
     sim = Simulator()
     sim.start(forever=True, blocking=True)
     #sim.shutdown()
-    log.debug("Sim out!")
+    slogger.debug("Sim out!")
 
 if __name__ == '__main__':
     main()

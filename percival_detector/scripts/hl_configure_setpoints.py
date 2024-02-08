@@ -8,10 +8,11 @@ Created on 17 May 2016
 import argparse
 import xlrd
 
-from percival_detector.log import log
+import percival_detector.log
 from percival_detector.scripts.util import PercivalClient
 from percival_detector.control.spreadsheet_parser import SetpointGroupGenerator
 
+slogger = percival_detector.log.logger("percival_scripts")
 
 def options():
     parser = argparse.ArgumentParser(description="Load named-setpoints into odin from xls spreadsheet. Existing setpoints will be kept, or silently overwritten.")
@@ -27,7 +28,7 @@ def options():
 
 def main():
     args = options()
-    log.info(args)
+    slogger.info(args)
 
     ini_str = "";
     sgg = SetpointGroupGenerator()
@@ -58,7 +59,7 @@ def main():
                                        ini_str,
                                        'hl_configure_setpoints.py',
                                        wait=(args.wait.lower() == "true"))
-        log.info("Response: %s", result)
+        slogger.info("Response: %s", result)
 
 
 if __name__ == '__main__':

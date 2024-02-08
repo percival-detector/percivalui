@@ -3,10 +3,11 @@
 import requests
 import time
 import getpass
+import json
 from datetime import datetime
+import percival_detector.log
 
-from percival_detector.log import log
-
+slogger = percival_detector.log.logger("percival_scripts")
 
 class PercivalClient(object):
     def __init__(self, address="127.0.0.1:8888", api=0.1):
@@ -18,9 +19,9 @@ class PercivalClient(object):
     def send_command(self, command, command_id="python_script", arguments=None, wait=True):
         try:
             url = self._url + command
-            log.debug("Sending msg to: %s", url)
+            slogger.debug("Sending msg to: %s", url)
             result = requests.put(url,
-                                  data=arguments,
+                                  data=json.dumps(arguments),
                                   headers={
                                       'Content-Type': 'application/json',
                                       'Accept': 'application/json',
@@ -32,7 +33,7 @@ class PercivalClient(object):
             result = {
                 "error": "Exception during HTTP request, check address and Odin server instance"
             }
-            log.exception(result['error'])
+            slogger.exception(result['error'])
 
         if wait:
             if result['response'] != 'Failed':
@@ -43,9 +44,9 @@ class PercivalClient(object):
     def get_status(self, status_item, arguments=None):
         try:
             url = self._url + status_item
-            log.debug("Sending msg to: %s", url)
+            slogger.debug("Sending msg to: %s", url)
             result = requests.get(url,
-                                  data=arguments,
+                                  data=json.dumps(arguments),
                                   headers={
                                       'Content-Type': 'application/json',
                                       'Accept': 'application/json',
@@ -56,7 +57,7 @@ class PercivalClient(object):
             result = {
                 "error": "Exception during HTTP request, check address and Odin server instance"
             }
-            log.exception(result['error'])
+            slogger.exception(result['error'])
 
         return result
 
@@ -65,7 +66,7 @@ class PercivalClient(object):
         command_active = True
         while command_active:
             response = self.get_status('action')
-            log.debug(response)
+            slogger.debug(response)
             if response['response'] == 'Active':
                 time.sleep(wait_time)
             else:
@@ -75,8 +76,9 @@ class PercivalClient(object):
     def send_configuration(self, config_type, config_contents, command_id="python_script", wait=True):
         arguments = {
             'config_type': config_type,
-            'config': config_contents.replace('=', '::')
+            'config': config_contents
         }
+
         return self.send_command('cmd_load_config', command_id, arguments, wait=wait)
 
     def send_system_command(self, system_command, command_id="python_script", wait=True):
@@ -111,9 +113,9 @@ class DAQClient(object):
     def send_command(self, command, arguments=None):
         try:
             url = self._url + 'config/' + command
-            log.debug("Sending msg to: %s", url)
+            slogger.debug("Sending msg to: %s", url)
             result = requests.put(url,
-                                  data='{}'.format(arguments),
+                                  data=json.dumps(arguments),
                                   headers={
                                       'Content-Type': 'application/json',
                                       'Accept': 'application/json'
@@ -122,16 +124,16 @@ class DAQClient(object):
             result = {
                 "error": "Exception during HTTP request, check address and Odin server instance"
             }
-            log.exception(result['error'])
+            slogger.exception(result['error'])
 
-        log.debug("{}".format(result))
+        slogger.debug("{}".format(result))
 
         return result
 
     def send_reset(self):
         try:
             url = self._url + 'command/reset_statistics'
-            log.debug("Sending msg to: %s", url)
+            slogger.debug("Sending msg to: %s", url)
             result = requests.put(url,
                                   headers={
                                       'Content-Type': 'application/json',
@@ -141,16 +143,16 @@ class DAQClient(object):
             result = {
                 "error": "Exception during HTTP request, check address and Odin server instance"
             }
-            log.exception(result['error'])
+            slogger.exception(result['error'])
 
-        log.debug("{}".format(result))
+        slogger.debug("{}".format(result))
 
         return result
 
     def get_status(self):
         try:
             url = self._url + 'status'
-            log.debug("Sending msg to: %s", url)
+            slogger.debug("Sending msg to: %s", url)
             result = requests.get(url,
                                   headers={
                                       'Content-Type': 'application/json',
@@ -160,14 +162,14 @@ class DAQClient(object):
             result = {
                 "error": "Exception during HTTP request, check address and Odin server instance"
             }
-            log.exception(result['error'])
+            slogger.exception(result['error'])
 
         return result
 
     def get_config(self, item):
         try:
             url = self._url + 'config/' + '{}'.format(item)
-            log.debug("Sending msg to: %s", url)
+            slogger.debug("Sending msg to: %s", url)
             result = requests.get(url,
                                   headers={
                                       'Content-Type': 'application/json',
@@ -177,7 +179,7 @@ class DAQClient(object):
             result = {
                 "error": "Exception during HTTP request, check address and Odin server instance"
             }
-            log.exception(result['error'])
+            slogger.exception(result['error'])
 
         return result
 
@@ -200,7 +202,7 @@ class DAQClient(object):
             return response
 
         # If no error was returned send the command to start writing
-        response = self.send_command('hdf/write', '1')
+        response = self.send_command('hdf/write', 1)
         if 'error' in response:
             return response
 
@@ -219,4 +221,4 @@ class DAQClient(object):
         return {'error': 'Timed out waiting for HDF to start writing'}
 
     def stop_writing(self):
-        return self.send_command('hdf/write', '0')
+        return self.send_command('hdf/write', 0)

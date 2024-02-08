@@ -125,7 +125,7 @@ class PercivalAdapter(ApiAdapter):
             response['error'] = "{} => {}".format(ex.args, traceback.format_exc())
 
         self._log.debug(response)
-
+        # don't assume anyone looks at this response
         return ApiAdapterResponse(response, status_code=status_code)
 
     @request_types('application/json')
