@@ -8,10 +8,12 @@ Created on 31 Jan 2018
 import sys
 import argparse
 
-from percival_detector.log import log
+import percival_detector.log
 from percival_detector.carrier import const
 from percival_detector.carrier.registers import UARTRegister
 from percival_detector.scripts.util import PercivalClient
+
+slogger = percival_detector.log.logger("percival_scripts")
 
 system_settings = [name for name in UARTRegister(const.SYSTEM_SETTINGS).fields.map_fields]
 system_settings.sort()
@@ -36,7 +38,7 @@ def options():
 
 def main():
     args = options()
-    log.info(args)
+    slogger.info(args)
 
     data = {
         'setting': args.setting,
@@ -48,7 +50,7 @@ def main():
                              'hl_set_system_setting.py',
                              arguments=data,
                              wait=(args.wait.lower() == "true"))
-    log.info("Response: %s", result)
+    slogger.info("Response: %s", result)
 
 
 if __name__ == '__main__':

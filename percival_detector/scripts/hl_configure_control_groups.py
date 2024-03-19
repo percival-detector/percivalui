@@ -8,10 +8,11 @@ Created on 17 May 2016
 import argparse
 import xlrd
 
-from percival_detector.log import log
+import percival_detector.log
 from percival_detector.scripts.util import PercivalClient
 from percival_detector.control.spreadsheet_parser import ControlGroupGenerator
 
+slogger = percival_detector.log.logger("percival_scripts")
 
 def options():
     parser = argparse.ArgumentParser()
@@ -26,7 +27,7 @@ def options():
 
 def main():
     args = options()
-    log.info(args)
+    slogger.info(args)
 
     workbook = xlrd.open_workbook(args.input)
 
@@ -38,7 +39,7 @@ def main():
                                    ini_str,
                                    'hl_configure_control_groups.py',
                                    wait=(args.wait.lower() == "true"))
-    log.info("Response: %s", result)
+    slogger.info("Response: %s", result)
 
 
 if __name__ == '__main__':

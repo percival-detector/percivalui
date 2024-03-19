@@ -1,4 +1,11 @@
 
+???? -- wnichols
+
+  * json transport instituted in messages; please refresh your browser cache.
+  * percival-hl-set-channel has -r option to read channel-values.
+
+
+
 2023-10-27 -- version 0.0.4 -- wnichols
 
   * Change auto-read monitors frequency from 10Hz to 1Hz.

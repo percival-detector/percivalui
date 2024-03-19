@@ -183,7 +183,7 @@ class TestUARTRegister(unittest.TestCase):
     def setUp(self):
         self.command_reg = registers.UARTRegister(const.COMMAND)  # CommandMap Register
         cl = ".".join([__name__, str(self.__class__)])
-        self.log = logging.getLogger(cl)
+        self._log = logging.getLogger(cl)
 
     def test_invalid_command_readback_msg(self):
         """Check that a Readback message from get_read_cmdmsg() throws an exception

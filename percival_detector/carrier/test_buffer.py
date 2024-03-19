@@ -19,8 +19,8 @@ class TestBuffer(unittest.TestCase):
 
     def setUp(self):
         # Perform any setup here
-        self.log = logging.getLogger(self.__class__.__name__)
-        self.log.setLevel(logging.ERROR)
+        self._log = logging.getLogger(self.__class__.__name__)
+        self._log.setLevel(logging.ERROR)
         self.txrx = MagicMock()
         self.buffer = SensorBufferCommand(self.txrx)
 
@@ -104,7 +104,7 @@ class TestBuffer(unittest.TestCase):
         return_values.append(std_reply)
         # Iteration 1 sensor response
         return_values.append([std_reply, sensor_reply])
-        self.log.debug("Return values : %s", return_values)
+        self._log.debug("Return values : %s", return_values)
         self.txrx.send_recv_message = MagicMock()
         self.txrx.send_recv_message.side_effect = return_values
         self.buffer.send_configuration_setup_cmd(words)
@@ -165,7 +165,7 @@ class TestBuffer(unittest.TestCase):
             return_values.append(std_reply)
             # block-end sensor response
             return_values.append([std_reply, sensor_reply])
-        self.log.debug("Return values : %s", return_values)
+        self._log.debug("Return values : %s", return_values)
         self.txrx.send_recv_message = MagicMock()
         self.txrx.send_recv_message.side_effect = return_values
         self.buffer.send_calibration_setup_cmd(words)

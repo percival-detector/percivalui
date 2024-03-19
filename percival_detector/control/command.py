@@ -179,7 +179,7 @@ class Command(object):
                     # New parameter
                     self._parameters[pv[0]] = pv[1]
 
-        self._log.debug("Parsed parameters for [%s]: %s", self._command_name, self._parameters)
+        self._log.debug("Parsed urlencoded parameters for [%s]: %s", self._command_name, self._parameters)
 
     def parse_request(self, request):
         self._log.debug("Path: %s", request.path)
@@ -207,14 +207,18 @@ class Command(object):
 
         self._log.debug("Parsed request [%s], trace: %s", self._command_type, self._trace)
 
-        # Parse any parameters in the ?foo=bar part (from javascript)
-        self.parse_parameters(request.query)
+        # Parse any parameters in the ?foo=bar part of the url
+        if request.query:
+          self.parse_parameters(request.query)
 
-        # Check any parameters in the body (from percival-hl-system-command)
-        if request.body:
+        # Check any parameters in the body (which will be in json not url-formencoded)
+        # body is a bytes object.
+        if request.body and request.body != b"null":
             try:
                 self._parameters.update(json.loads(request.body))
             except:
-                #self.parse_parameters(str(request.body.encode('ascii')))
-                self.parse_parameters(str(escape.url_unescape(request.body))) #.decode("utf-8")))
+                self._log.error("could not parse http-body as json", request.body);
+                # do not throw here because it will stop the command
+                # becoming the active command, which means the js will not see it
+                # fail.
 

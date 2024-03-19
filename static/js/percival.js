@@ -43,10 +43,9 @@ String.prototype.replaceAll = function(search, replacement) {
     return target.replace(new RegExp(search, 'g'), replacement);
 };
 
-$.put = function(url, data, callback, type)
+$.put = function(url, callback, data)
 {
   if ( $.isFunction(data) ){
-    type = type || callback,
     callback = data,
     data = {}
   }
@@ -54,9 +53,14 @@ $.put = function(url, data, callback, type)
   return $.ajax({
     url: url,
     type: 'PUT',
-    success: callback,
-    data: data,
-    contentType: type
+    data: JSON.stringify(data),
+    processData : false,
+    contentType: "application/json",
+    headers: {'Content-Type': 'application/json',
+                  'Accept': 'application/json'},
+    // I doubt we need dataType: "json" as it will infer the response-data from the response-headers.
+    dataType: 'json',
+    success: callback
   });
 }
 
@@ -155,7 +159,7 @@ class Monitor
     $(this.parent).html(this.html_text);
     $('#' + this.id + '-dtbl').hide();
     $('#' + this.id + '-expbtn').click(function(){
-        //alert("Clicked!! " + $(this).attr("id"));
+
         if ($('#' + $(this).attr("id").replace('-expbtn', '-dtbl')).is(':visible')){
             $('#' + $(this).attr("id").replace('-expbtn', '-dtbl')).hide();
             $('#' + $(this).attr("id").replace('-expbtn', '-expglp')).removeClass('glyphicon-resize-small');
@@ -315,10 +319,10 @@ $( document ).ready(function()
     send_config_command();
   });
   $('#select-config-file').on('change', function(event){
-    //alert(event.target.files[0]);
+
     reader = new FileReader();
     reader.onloadend = function(event){
-        //alert(event.target.result);
+
         percival.current_config = event.target.result
     };
     reader.readAsText(event.target.files[0], 'UF-8');
@@ -374,19 +378,16 @@ function send_config_command()
     element = $('#select-config-file')[0];
     reader = new FileReader();
     reader.onloadend = function(event){
-        //alert(event.target.result);
+
         percival.current_config = event.target.result
 
         config_type = $('#select-config').find(":selected").text();
-        $.ajax({
-            url: '/api/' + api_version + '/percival/cmd_load_config',
-            type: 'PUT',
-            dataType: 'json',
-            data: 'config=' + encodeURIComponent(percival.current_config.replaceAll('=', '::')) + '&config_type=' + config_type,
-            headers: {'Content-Type': 'application/json',
-                      'Accept': 'application/json'},
-            success: process_cmd_response
-        });
+        data0 = {
+                  'config_type' : config_type,
+                  'config' : percival.current_config
+               };
+
+        $.put('/api/' + api_version + '/percival/cmd_load_config', process_cmd_response, data0);
     }
     reader.readAsText(element.files[0], 'UF-8');
 }
@@ -432,95 +433,58 @@ function send_scan_command()
     //data = {}
     sp = [$('#scan-set-point-start').find(":selected").text(),$('#scan-set-point-end').find(":selected").text()];
     //data = {'setpoints': sp};
-    //alert(data)
+
     steps = $('#scan-sp-steps').val();
     dwell = $('#scan-sp-dwell').val();
-    //$.put('/api/' + api_version + '/percival/cmd_scan_setpoints?dwell=' + dwell + '&steps=' + steps, data, process_cmd_response, 'json');
-    //alert('/api/' + api_version + '/percival/cmd_scan_setpoints?dwell=' + dwell + '&steps=' + steps);
-    $.ajax({
-        url: '/api/' + api_version + '/percival/cmd_scan_setpoints',
-        type: 'PUT',
-        dataType: 'json',
-        data: {
+    data0 = {
             'dwell' : dwell,
             'steps' : steps,
             'setpoints' : sp
-        },
-        headers: {'Content-Type': 'application/json',
-                  'Accept': 'application/json'},
-        success: process_cmd_response
-    });
+        };
+
+    $.put( '/api/' + api_version + '/percival/cmd_scan_setpoints', process_cmd_response, data0);
 }
 
 function send_sscan_command()
 {
-    //data = {}
     sp = $('#sscan-set-point-end').find(":selected").text();
     //data = {'setpoints': sp};
-    //alert(data)
+
     steps = $('#sscan-sp-steps').val();
     dwell = $('#sscan-sp-dwell').val();
-    //$.put('/api/' + api_version + '/percival/cmd_scan_setpoints?dwell=' + dwell + '&steps=' + steps, data, process_cmd_response, 'json');
-    //alert('/api/' + api_version + '/percival/cmd_scan_setpoints?dwell=' + dwell + '&steps=' + steps);
-    $.ajax({
-        url: '/api/' + api_version + '/percival/cmd_scan_setpoints',
-        type: 'PUT',
-        dataType: 'json',
-        data: {
+    data0 = {
             'dwell' : dwell,
             'steps' : steps,
             'setpoints' : sp
-        },
-        headers: {'Content-Type': 'application/json',
-                  'Accept': 'application/json'},
-        success: process_cmd_response
-    });
+        };
+
+    $.put( '/api/' + api_version + '/percival/cmd_scan_setpoints', process_cmd_response, data0);
 }
 
 function write_buffer_values()
 {
-    $.ajax({
-        url: '/api/' + api_version + '/percival/cmd_write_buffer',
-        type: 'PUT',
-        dataType: 'json',
-        data: {
+    data0 = {
             'data' : percival.buffer_values
-        },
-        headers: {'Content-Type': 'application/json',
-                  'Accept': 'application/json'},
-        success: process_cmd_response
-    });
+        };
+
+    $.put('/api/' + api_version + '/percival/cmd_write_buffer', process_cmd_response, data0);
 }
 
 function write_buffer_refresh()
 {
-    $.ajax({
-        url: '/api/' + api_version + '/percival/cmd_refresh_write_buffer',
-        type: 'PUT',
-        dataType: 'json',
-        headers: {'Content-Type': 'application/json',
-                  'Accept': 'application/json'},
-        success: process_cmd_response
-    });
+    $.put('/api/' + api_version + '/percival/cmd_refresh_write_buffer', process_cmd_response);
 }
 
 function read_buffer_refresh()
 {
-    $.ajax({
-        url: '/api/' + api_version + '/percival/cmd_refresh_read_buffer',
-        type: 'PUT',
-        dataType: 'json',
-        headers: {'Content-Type': 'application/json',
-                  'Accept': 'application/json'},
-        success: process_cmd_response
-    });
+    $.put('/api/' + api_version + '/percival/cmd_refresh_read_buffer', process_cmd_response);
 }
 
 function buffer_transfer_apply()
 {
     target = $('#buffer-trns-target').find(":selected").val();
     cmd = $('#buffer-trns-cmd').find(":selected").val();
-//    alert("Target: " + target + " Cmd: " + cmd);
+
     pts = parseInt($('#buffer-trns-no-words').val());
     if (isNaN(pts) || pts < 1 || pts > 64){
         alert("Number of words must be an integer between 1 and 64");
@@ -531,22 +495,16 @@ function buffer_transfer_apply()
         alert("Number of words must be an integer 0 or greater");
         return;
     }
-//    alert("Number: " + pts + " Address: " + address);
 
-    $.ajax({
-        url: '/api/' + api_version + '/percival/cmd_buffer_transfer',
-        type: 'PUT',
-        dataType: 'json',
-        data: {
+
+    data0 = {
             'target' : target,
             'command' : cmd,
             'words': pts,
             'address': address
         },
-        headers: {'Content-Type': 'application/json',
-                  'Accept': 'application/json'},
-        success: process_cmd_response
-    });
+
+    $.put('/api/' + api_version + '/percival/cmd_buffer_transfer', process_cmd_response, data0);
 }
 
 function send_abort_scan_command()
@@ -601,7 +559,6 @@ function update_server_command_status()
         $('#ctrl-resp-param').html(html);
     });
 
-    //alert(response.command);
 }
 
 function update_api_version() {
@@ -613,11 +570,10 @@ function update_api_version() {
 }
 
 function update_api_adapters() {
-//alert("HERE");
+
     $.getJSON('/api/' + api_version + '/adapters/', function(response) {
         adapter_list = response.adapters.join(", ");
         $('#api-adapters').html(adapter_list);
-        //alert(adapter_list);
     });
 }
 
@@ -669,7 +625,6 @@ function update_server_setup() {
             html += "<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" href=\"#/status-view\" onclick=\"update_visible_monitors('"+mg[index]+"')\">"+mg[index]+"</a></li>";
         }
         $('#status-group').html(html);
-        //alert(JSON.stringify(response));
 
         // Control channels for manual set points
         cg = percival.groups.control_groups.group_names.concat(percival.control_names);
@@ -702,13 +657,11 @@ function update_server_setup() {
         }
     });
     $.getJSON('/api/' + api_version + '/percival/setpoints/', function(response) {
-        //alert(response);
         percival.set_points = response.setpoints.sort();
 		html = "";
 		for (var index=0; index < percival.set_points.length; index++){
             html += "<option role=\"presentation\">" + percival.set_points[index] + "</option>";
         }
-        //alert(html);
         //if (html != $('#select-set-point').html()){
         //    $('#select-set-point').html(html);
         //}
@@ -734,7 +687,7 @@ function update_visible_monitors(group)
     $('#status-group-name').text("Channels [ " + group + " ] ");
 
     var mon_length = monitor_names.length;
-    //alert(mon_length);
+
     for (var index = 0; index < mon_length; index++){
         if (group == "All"){
             percival.monitors[monitor_names[index]].show();
@@ -1024,7 +977,7 @@ function update_api_read_status()
     $('#safety-fast-powerdown').html(led_html(detector['safety_driven_fast_sensor_powerdown_completed'],'green', 20));
     $('#safety-exit-armed').html(led_html(detector['safety_driven_exit_acquisition_armed_status_completed'],'green', 20));
     $('#safety-stop-acq').html(led_html(detector['safety_driven_stop_acquisition_completed'],'green', 20));
-    //alert(detector['LVDS_IOs_enabled']);
+
     var len = monitor_names.length;
     render_status_view();
     var tableData = [];
@@ -1104,7 +1057,7 @@ function render_status_view()
     if (percival.monitor_count > percival.monitor_divs){
         // Calculate the number of new rows
         var new_count = percival.monitor_count - percival.monitor_divs;
-        //alert("New rows: " + new_row_count);
+
         for (var index = percival.monitor_divs; index < (percival.monitor_divs+new_count); index++){
             //html_text = "<div class=\"row sidebar-row vertical-align\"><div class=\"col-xs-1\">&nbsp;</div>";
             html_text = "";
@@ -1112,7 +1065,7 @@ function render_status_view()
                              "\" class=\"col-xs-3 status vertical-align panel panel-default\">&nbsp;</div>";
             //}
             //html_text += "</div>";
-            //alert(html_text);
+
             // Append the rows to the container
             $('#stat-container').append(html_text);
         }

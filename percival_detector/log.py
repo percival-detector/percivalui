@@ -12,6 +12,9 @@ percival_log_config = {
         'simple': {
             'format': '%(asctime)s %(name)48s %(levelname)6s - %(message)s'
         },
+        'simulator': {
+            'format': '%(name)48s %(levelname)6s - %(message)s'
+        },
     },
     'handlers': {
         'console':{
@@ -22,6 +25,17 @@ percival_log_config = {
             'class': 'percival_detector.mkdir_handler.MkDirRotatingFileHandler',
             'formatter': 'simple',
             'filename': './logs/percival_detector.log',  #.format(datetime.now()
+                                                #        .isoformat()
+                                                #        .replace(':', '_')
+                                                #        .replace('-', '_')),
+            'maxBytes': 5242880,
+            'backupCount': 20,
+            'mode':'w'
+        },
+        'simulator_file': {
+            'class': 'percival_detector.mkdir_handler.MkDirRotatingFileHandler',
+            'formatter': 'simulator',
+            'filename': './logs/percival_simulator.log',  #.format(datetime.now()
                                                 #        .isoformat()
                                                 #        .replace(':', '_')
                                                 #        .replace('-', '_')),
@@ -62,6 +76,11 @@ percival_log_config = {
             'propagate': False,
             'level': 'INFO',
         },
+        'percival_scripts': {
+            'handlers': ['log_file'],
+            'propagate': False,
+            'level': 'INFO',
+        },
         'percival_detector.spreadsheet_parser': {
             'handlers': ['log_file'],
             'propagate': False,
@@ -73,7 +92,7 @@ percival_log_config = {
             'propagate': False,
         },
         'percival_detector.carrier.Simulator': {
-            'handlers': ['console'],
+            'handlers': ['console', 'simulator_file'],
             'level': 'INFO',
             'propagate': False,
         },
@@ -211,6 +230,7 @@ percival_log_config = {
 import logging
 import logging.config
 logging.config.dictConfig(percival_log_config)
+# rename percylogger or delete
 log = logging.getLogger("percival")
 
 

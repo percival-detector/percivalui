@@ -7,9 +7,10 @@ Created on 17 May 2016
 
 import argparse
 
-from percival_detector.log import log
+import percival_detector.log
 from percival_detector.scripts.util import PercivalClient
 
+slogger = percival_detector.log.logger("percival_scripts")
 
 def options():
     desc = """Send the initialise command to channels that support it
@@ -25,13 +26,13 @@ def options():
 
 def main():
     args = options()
-    log.info(args)
+    slogger.info(args)
 
     pc = PercivalClient(args.address)
     result = pc.send_command('cmd_initialise_channels',
                              'hl_initialise_channels.py',
                              wait=(args.wait.lower() == "true"))
-    log.info("Response: %s", result)
+    slogger.info("Response: %s", result)
 
 
 if __name__ == '__main__':

@@ -19,8 +19,8 @@ class TestPercivalCommand(unittest.TestCase):
 
     def setUp(self):
         # Perform any setup here
-        self.log = logging.getLogger(self.__class__.__name__)
-        self.log.setLevel(logging.DEBUG)
+        self._log = logging.getLogger(self.__class__.__name__)
+        self._log.setLevel(logging.DEBUG)
 
     def TestCommandParsing(self):
         request = MagicMock()

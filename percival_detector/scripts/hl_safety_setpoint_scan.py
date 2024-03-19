@@ -8,9 +8,10 @@ Created on 17 May 2016
 import argparse
 import signal
 
-from percival_detector.log import log
+import percival_detector.log
 from percival_detector.scripts.util import PercivalClient
 
+slogger = percival_detector.log.logger("percival_scripts")
 
 def options():
     desc = """Scan from the current position to a demand setpoint.  Dwell at each point.
@@ -35,14 +36,14 @@ def sigint_handler(signum, frame):
     args = options()
     pc = PercivalClient(args.address)
     result = pc.send_command('cmd_abort_scan', 'hl_safety_setpoint_scan.py')
-    log.info("Response: %s", result)
+    slogger.info("Response: %s", result)
 
 signal.signal(signal.SIGINT, sigint_handler)
 
 
 def main():
     args = options()
-    log.info(args)
+    slogger.info(args)
 
     data = {
                'setpoints': args.final_setpoint,
@@ -55,7 +56,7 @@ def main():
                              'hl_safety_setpoint_scan.py',
                              arguments=data,
                              wait=(args.wait.lower() == "true"))
-    log.info("Response: %s", result)
+    slogger.info("Response: %s", result)
 
 
 if __name__ == '__main__':
