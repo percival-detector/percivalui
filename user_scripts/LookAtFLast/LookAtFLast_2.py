@@ -95,7 +95,7 @@ def percDebug_plot_interactive_wCMA_2(data_GnCrsFn,data_CDSavg,data_CDSCMAavg, m
 #dflt_mainFolder='/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010234/scratch_bl/'
 #
 dflt_mainFolder='/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010254/raw/'
-dflt_mainFolder='/dls/detectors/Percival/captures/friday/'
+dflt_mainFolder='/dls/detectors/Percival/captures/'
 #dflt_mainFolder='/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010254/scratch_bl/'
 #
 if dflt_mainFolder[-1]!='/': dflt_mainFolder+='/'
@@ -281,8 +281,8 @@ def descrambleSome(scrmblSmpl,scrmblRst,
         return aux_reordered
     #
     data2srcmbl_noRefCol= numpy.ones((NImg,NSmplRst,NRow,aux_NCol), dtype='uint16') * ERRDLSraw
-    data2srcmbl_noRefCol[:,iSmpl,:,:]= convert_odin_daq_2_mezzanine(scrmblSmpl_byteSwap)
-    data2srcmbl_noRefCol[:,iRst,:,:] = convert_odin_daq_2_mezzanine(scrmblRst_byteSwap)
+    data2srcmbl_noRefCol[:,iSmpl,:,:]= scrmblSmpl_byteSwap
+    data2srcmbl_noRefCol[:,iRst,:,:] = scrmblRst_byteSwap
     if cleanMemFlag: del scrmblSmpl_byteSwap; del scrmblRst_byteSwap
     #
     data2srcmbl_noRefCol= data2srcmbl_noRefCol.reshape((NImg,NSmplRst,NGrp,NADC,aux_NCol))
