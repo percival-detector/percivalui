@@ -290,8 +290,8 @@ def descramble_odinDAQ_2links(dataSmpl_fl0,dataRst_fl0,dataSmpl_fl1,dataRst_fl1,
         return aux_reordered
     #
     data2srcmbl_noRefCol= numpy.ones((NImg,NSmplRst,NRow,aux_NCol), dtype='uint16') * ERRDLSraw
-    data2srcmbl_noRefCol[:,iSmpl,:,:]= convert_odin_daq_2_mezzanine(scrmblSmpl_byteSwap)
-    data2srcmbl_noRefCol[:,iRst,:,:] = convert_odin_daq_2_mezzanine(scrmblRst_byteSwap)
+    data2srcmbl_noRefCol[:,iSmpl,:,:]= (scrmblSmpl_byteSwap)
+    data2srcmbl_noRefCol[:,iRst,:,:] = (scrmblRst_byteSwap)
     if cleanMemFlag: del scrmblSmpl_byteSwap; del scrmblRst_byteSwap
     #
     data2srcmbl_noRefCol= data2srcmbl_noRefCol.reshape((NImg,NSmplRst,NGrp,NADC,aux_NCol))
