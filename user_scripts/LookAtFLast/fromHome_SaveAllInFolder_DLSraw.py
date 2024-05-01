@@ -46,8 +46,8 @@ verboseFlag= True
 #mainFolder='/gpfs/cfel/fsds/labs/percival/2020/calibration/20200304_000_BSI04_drk_severaltint/processed/BSI04_3TPGA666_drk_severaltint_Tm20/scrmbld/'
 mainFolder='/gpfs/cfel/fsds/labs/percival/2020/calibration/20200312_000_BSI04_dynamicRange/processed/fullWell_ramp_fixGn0_PGA666/scrmbld/'
 if mainFolder[-1]!='/': mainFolder+='/'
-expected_suffix_fl0= '000001.h5'
-expected_suffix_fl1= '000002.h5'
+expected_suffix_fl0= '000000.h5'
+expected_suffix_fl1= '000001.h5'
 
 expected_suffix_metadata= 'xxx'
 #

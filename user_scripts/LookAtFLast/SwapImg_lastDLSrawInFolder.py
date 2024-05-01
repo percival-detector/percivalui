@@ -110,11 +110,11 @@ def ShowSwap_DLSrawInFolder(mainFolder, # where data is
     data_pedestal= numpy.zeros((NRow,NCol))
     #
     if ADCcorrCDSFlag:
-        ADCparam_validMap= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_ADCproc_Map.h5', '/data/data/').astype(bool)
-        ADCparam_crs_slope= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_crs_slope.h5', '/data/data/')
-        ADCparam_crs_offset= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_crs_offset.h5', '/data/data/')
-        ADCparam_fn_slope= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_fn_slope.h5', '/data/data/')        
-        ADCparam_fn_offset= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_fn_offset.h5', '/data/data/')
+        ADCparam_validMap= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_ADCproc_Map.h5', '/data/data').astype(bool)
+        ADCparam_crs_slope= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_crs_slope.h5', '/data/data')
+        ADCparam_crs_offset= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_crs_offset.h5', '/data/data')
+        ADCparam_fn_slope= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_fn_slope.h5', '/data/data')        
+        ADCparam_fn_offset= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_fn_offset.h5', '/data/data')
         if verboseFlag: APy3_GENfuns.printcol("ADCcor files: {0}ADCcor _ADCproc_Map / _crs/fn _slope/offset.h5".format(ADCcorrFolder), 'green')
         #
         # modify load ADCparam to avoid /0
@@ -125,7 +125,7 @@ def ShowSwap_DLSrawInFolder(mainFolder, # where data is
         ADCparam_fn_slope[badPixMap]=1.0
         #
         if pedSubtractFlag:
-            data_pedestal= APy3_GENfuns.read_1xh5(pedestalFolder+'Pedestal.h5', '/data/data/') 
+            data_pedestal= APy3_GENfuns.read_1xh5(pedestalFolder+'Pedestal.h5', '/data/data') 
             APy3_GENfuns.printcol("pedestal: {0}Pedestal.h5".format(pedestalFolder), 'green')
     #
     #%% list or last data files
@@ -139,7 +139,7 @@ def ShowSwap_DLSrawInFolder(mainFolder, # where data is
     for ifile,file_in in enumerate(filelist_in):
         APy3_GENfuns.printcol('collection {0}/{1}'.format(ifile,len(filelist_in)-1), 'blue')
         APy3_GENfuns.printcol(mainFolder+file_in, 'green')
-        (dataSmpl_in,dataRst_in) = APy3_GENfuns.read_2xh5(mainFolder+file_in, '/data/','/reset/')
+        (dataSmpl_in,dataRst_in) = APy3_GENfuns.read_2xh5(mainFolder+file_in, '/data','/reset')
         (NImg, aux_NRow, aux_NCol) = dataSmpl_in.shape
         if verboseFlag: APy3_GENfuns.printcol("{0} Img read from file".format(NImg), 'green')
         # ---
@@ -229,7 +229,7 @@ def ShowSwap_DLSrawInFolder(mainFolder, # where data is
             nextstep_saveswap = input()
             if nextstep_saveswap in ['y','Y','yes','YES','Y']:
                 file_out= file_in+'_swap.h5'
-                APy3_GENfuns.write_2xh5(mainFolder+file_out, dataSmpl_swap,'/data/', dataRst_swap,'/reset/')
+                APy3_GENfuns.write_2xh5(mainFolder+file_out, dataSmpl_swap,'/data', dataRst_swap,'/reset')
                 APy3_GENfuns.printcol("swapped img set saved to: {0}".format(mainFolder+file_out), 'green')
         # ---
         if verboseFlag: APy3_GENfuns.printcol("--  --  --  --", 'blue')

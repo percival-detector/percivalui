@@ -470,14 +470,14 @@ if APy3_GENfuns.notFound(multiGnCal_file): APy3_GENfuns.printErr('not found: '+m
 if flagUseAlternPed:
     if verboseFlag: APy3_GENfuns.printcol('loading alternative Gn0 pedestal file','blue')
     if APy3_GENfuns.notFound(alternFile_Ped_Gn0_ADUFile): APy3_GENfuns.printErr('not found: '+ alternFile_Ped_Gn0_ADUFile)
-    PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(alternFile_Ped_Gn0_ADUFile, '/data/data/')
+    PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(alternFile_Ped_Gn0_ADUFile, '/data/data')
 #
 if verboseFlag: APy3_GENfuns.printcol("loading DLSraw file", 'blue')
 if APy3_GENfuns.notFound(inFileDLSrawFile): APy3_GENfuns.printErr('not found: '+inFileDLSrawFile)
-(auxNImg,ignNRow,ignNCol)= APy3_GENfuns.size_1xh5(inFileDLSrawFile, '/data/')
+(auxNImg,ignNRow,ignNCol)= APy3_GENfuns.size_1xh5(inFileDLSrawFile, '/data')
 if auxNImg<= Img2proc[-1]: APy3_GENfuns.printErr('{0} images in input file, cannot load {1}:{2} from it'.format(auxNImg, Img2proc[0],Img2proc[-1]))
 if (Img2proc[0]<0)|(Img2proc[-1]<Img2proc[0]): APy3_GENfuns.printErr('{0}:{1} image range is not valid'.format(Img2proc[0],Img2proc[-1]))
-dataSmpl_in,dataRst_in= APy3_GENfuns.read_partial_2xh5(inFileDLSrawFile, '/data/','/reset/', Img2proc[0],Img2proc[-1])
+dataSmpl_in,dataRst_in= APy3_GENfuns.read_partial_2xh5(inFileDLSrawFile, '/data','/reset', Img2proc[0],Img2proc[-1])
 # 
 if verboseFlag: APy3_GENfuns.printcol("elaborating DLSraw file", 'blue')
 data_e= APy3_P2Mfuns.convert_DLSraw_2_e_wLatOvflw(dataSmpl_in,dataRst_in, CDSFlag, CMAFlag,cols2CMA,

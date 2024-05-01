@@ -127,11 +127,11 @@ if (verboseFlag): APy3_GENfuns.printcol("script operations beginning for real at
 ##% load files
 data_e= numpy.zeros((0,NRow,NCol))
 for iFile,thisFile in enumerate(in_fileList):
-    (thisNImg, ignNR,ignNC)= APy3_GENfuns.size_1xh5(folder_data2process+thisFile, '/data/data/')
+    (thisNImg, ignNR,ignNC)= APy3_GENfuns.size_1xh5(folder_data2process+thisFile, '/data/data')
     if verboseFlag:
         if (iFile==0): APy3_GENfuns.printcol("loading and {0} Images from {1}".format(thisNImg,thisFile),'green')
         else: APy3_GENfuns.printcol("loading and 1+{0} Images from {1}".format(thisNImg-1,thisFile),'green')
-    this_e= APy3_GENfuns.read_1xh5(folder_data2process+thisFile, '/data/data/')
+    this_e= APy3_GENfuns.read_1xh5(folder_data2process+thisFile, '/data/data')
     if (iFile==0): data_e= numpy.append(data_e[:,:,:], this_e, axis=0)
     else: data_e= numpy.append(data_e[1:,:,:], this_e, axis=0) #need to take out the first
     del this_e

@@ -176,7 +176,7 @@ if APy3_GENfuns.notFound(ADUcorr_file): APy3_GENfuns.printErr('not found: '+ADUc
 (ADCparam_Smpl_crs_slope,ADCparam_Smpl_crs_offset,ADCparam_Smpl_fn_slope,ADCparam_Smpl_fn_offset,
  ADCparam_Rst_crs_slope, ADCparam_Rst_crs_offset, ADCparam_Rst_fn_slope, ADCparam_Rst_fn_offset)= APy3_P2Mfuns.read_ADUh5(ADUcorr_file)
 if APy3_GENfuns.notFound(folder_data2process+infile): APy3_GENfuns.printErr('not found: '+folder_data2process+infile)
-(drkSmpl_DLSraw,drkRst_DLSraw) = APy3_GENfuns.read_partial_2xh5(folder_data2process+infile, '/data/','/reset/', fromImg,toImg)
+(drkSmpl_DLSraw,drkRst_DLSraw) = APy3_GENfuns.read_partial_2xh5(folder_data2process+infile, '/data','/reset', fromImg,toImg)
 #---
 #%% DLSraw => Gn,Crs,Fn
 if verboseFlag: APy3_GENfuns.printcol('DLSraw => Gn,Crs,Fn','blue')
@@ -221,7 +221,7 @@ if showFlag:
     APy3_GENfuns.show_it()
 #---
 if saveAvgFlag: 
-    APy3_GENfuns.write_1xh5(outFolder+out_avgFile, PedGn0_ADU, '/data/data/')
+    APy3_GENfuns.write_1xh5(outFolder+out_avgFile, PedGn0_ADU, '/data/data')
     APy3_GENfuns.printcol("{0}-avg saved as {1}".format(mode_str,outFolder+out_avgFile),'green')
 #---
 #%% that's all folks

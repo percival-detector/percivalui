@@ -497,7 +497,7 @@ while nextstep not in ['e','E','q','Q']:
         file2load= input()
         if APy3_GENfuns.notFound(file2load): APy3_GENfuns.printcol("not found: {0}".format(file2load), 'green')
         else:
-            interpData_ADU0[GnToProc,:,:]= APy3_GENfuns.read_1xh5(file2load,'/data/data/')
+            interpData_ADU0[GnToProc,:,:]= APy3_GENfuns.read_1xh5(file2load,'/data/data')
             APy3_GENfuns.printcol("showing after filling, close image to move on", 'black')
             APy3_GENfuns.plot_2D_all(interpData_ADU2e[GnToProc,:,:], False, 'col','row',"Gn{0}: e/ADU (elaborated)".format(GnToProc), True)
             APy3_GENfuns.plot_2D_all(interpData_ADU0[GnToProc,:,:], False, 'col','row',"Gn{0}: pedestal [ADU] (elaborated)".format(GnToProc), True)
@@ -508,7 +508,7 @@ while nextstep not in ['e','E','q','Q']:
         file2load= input()
         if APy3_GENfuns.notFound(file2load): APy3_GENfuns.printcol("not found: {0}".format(file2load), 'green')
         else:
-            interpData_ADU2e[GnToProc,:,:]= APy3_GENfuns.read_1xh5(file2load,'/data/data/')
+            interpData_ADU2e[GnToProc,:,:]= APy3_GENfuns.read_1xh5(file2load,'/data/data')
             APy3_GENfuns.printcol("showing after filling, close image to move on", 'black')
             APy3_GENfuns.plot_2D_all(interpData_ADU2e[GnToProc,:,:], False, 'col','row',"Gn{0}: e/ADU (elaborated)".format(GnToProc), True)
             APy3_GENfuns.plot_2D_all(interpData_ADU0[GnToProc,:,:], False, 'col','row',"Gn{0}: pedestal [ADU] (elaborated)".format(GnToProc), True)

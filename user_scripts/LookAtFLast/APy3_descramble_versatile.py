@@ -81,11 +81,11 @@ def descramble_versatile(mainFolder, # where data is
     data_pedestal= numpy.zeros((NRow,NCol))
     #
     if ADCcorrCDSFlag:
-        ADCparam_validMap= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_ADCproc_Map.h5', '/data/data/').astype(bool)
-        ADCparam_crs_slope= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_crs_slope.h5', '/data/data/')
-        ADCparam_crs_offset= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_crs_offset.h5', '/data/data/')
-        ADCparam_fn_slope= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_fn_slope.h5', '/data/data/')        
-        ADCparam_fn_offset= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_fn_offset.h5', '/data/data/')
+        ADCparam_validMap= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_ADCproc_Map.h5', '/data/data').astype(bool)
+        ADCparam_crs_slope= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_crs_slope.h5', '/data/data')
+        ADCparam_crs_offset= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_crs_offset.h5', '/data/data')
+        ADCparam_fn_slope= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_fn_slope.h5', '/data/data')        
+        ADCparam_fn_offset= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_fn_offset.h5', '/data/data')
         if verboseFlag: APy3_GENfuns.printcol("ADCcor files: {0}ADCcor _ADCproc_Map / _crs/fn _slope/offset.h5".format(ADCcorrFolder), 'green')
         #
         # modify load ADCparam to avoid /0
@@ -96,7 +96,7 @@ def descramble_versatile(mainFolder, # where data is
         ADCparam_fn_slope[badPixMap]=1.0
         #
         if pedSubtractFlag:
-            data_pedestal= APy3_GENfuns.read_1xh5(pedestalFolder+'Pedestal.h5', '/data/data/') 
+            data_pedestal= APy3_GENfuns.read_1xh5(pedestalFolder+'Pedestal.h5', '/data/data') 
             APy3_GENfuns.printcol("pedestal: {0}Pedestal.h5".format(pedestalFolder), 'green')
     #
     #%% list or last data files
@@ -127,8 +127,8 @@ def descramble_versatile(mainFolder, # where data is
             APy3_GENfuns.printcol("reading files", 'blue')
             APy3_GENfuns.printcol(mainFolder+file_fl0, 'green')
             APy3_GENfuns.printcol(mainFolder+file_fl1, 'green')
-        (dataSmpl_fl0, dataRst_fl0) = APy3_GENfuns.read_2xh5(mainFolder+file_fl0, '/data/','/reset/')
-        (dataSmpl_fl1, dataRst_fl1) = APy3_GENfuns.read_2xh5(mainFolder+file_fl1, '/data/','/reset/')
+        (dataSmpl_fl0, dataRst_fl0) = APy3_GENfuns.read_2xh5(mainFolder+file_fl0, '/data','/reset')
+        (dataSmpl_fl1, dataRst_fl1) = APy3_GENfuns.read_2xh5(mainFolder+file_fl1, '/data','/reset')
         (NImg_fl0, aux_NRow, aux_NCol) = dataSmpl_fl0.shape
         (NImg_fl1, aux_NRow, aux_NCol) = dataSmpl_fl1.shape
         NImg = NImg_fl0 + NImg_fl0
@@ -171,13 +171,13 @@ def descramble_versatile(mainFolder, # where data is
                                                                    swapSmplRstFlag,seqModHalfImgFlag, refColH1_0_Flag,
                                                                    True,cleanMemFlag,False) #Highmem, notverbose since 1 img at a time
                 APy3_GENfuns.write_2xh5(outFolder+thisFile+out_multiFile_suffix, 
-                                        thisSmpl_DLSraw,'/data/', 
-                                        thisRst_DLSraw,'/reset/')
+                                        thisSmpl_DLSraw,'/data', 
+                                        thisRst_DLSraw,'/reset')
                 if verboseFlag: APy3_GENfuns.printcol("{0} descrambled img saved in file: {1}".format(out_imgXFile_multiFile,outFolder+thisFile+out_multiFile_suffix), 'green')
                 #
                 # show content of the file that has been saved
                 if showFlag:
-                    (rereadSmpl_DLSraw,rereadRst_DLSraw)= APy3_GENfuns.read_2xh5(outFolder+thisFile+out_multiFile_suffix,'/data/','/reset/')
+                    (rereadSmpl_DLSraw,rereadRst_DLSraw)= APy3_GENfuns.read_2xh5(outFolder+thisFile+out_multiFile_suffix,'/data','/reset')
                     reread_GnCrsFn= APy3_P2Mfuns.convert_DLSraw_2_GnCrsFn(rereadSmpl_DLSraw,rereadRst_DLSraw, ERRDLSraw,ERRint16)
                     aux_nodata= numpy.ones((NRow,NCol))*numpy.NaN
                     if verboseFlag: APy3_GENfuns.printcol("showing it", 'blue')
@@ -244,7 +244,7 @@ def descramble_versatile(mainFolder, # where data is
             #
             #%% save DLSraw to 1 file
             if saveFlag_1file:
-                APy3_GENfuns.write_2xh5(outFolder+file_1file_out, Smpl_DLSraw,'/data/', Rst_DLSraw,'/reset/')
+                APy3_GENfuns.write_2xh5(outFolder+file_1file_out, Smpl_DLSraw,'/data', Rst_DLSraw,'/reset')
                 if verboseFlag: APy3_GENfuns.printcol("descrambled file file saved: {0}".format(outFolder+file_1file_out), 'green')
             # ---
             #
@@ -256,15 +256,15 @@ def descramble_versatile(mainFolder, # where data is
                     thisSmpl_DLSraw= numpy.copy(Smpl_DLSraw[iImgStart:iImgEndPlus1,:,:].astype('uint16'))
                     thisRst_DLSraw=  numpy.copy(Rst_DLSraw[ iImgStart:iImgEndPlus1,:,:].astype('uint16'))
                     APy3_GENfuns.write_2xh5(outFolder+thisFile+out_multiFile_suffix, 
-                                            thisSmpl_DLSraw,'/data/', 
-                                            thisRst_DLSraw,'/reset/')
+                                            thisSmpl_DLSraw,'/data', 
+                                            thisRst_DLSraw,'/reset')
                     if verboseFlag: APy3_GENfuns.printcol("{0}:{1} descrambled img saved in file: {2}".format(iImgStart,iImgEndPlus1,outFolder+thisFile+out_multiFile_suffix), 'green')
             # ---
             #
             # save CDS avg file
             if ADCcorrCDSFlag & saveAvgCDSFlag:
                 file_AvgCDSfile_out= file_fl0[:auxN]+out_AvgCDSfile_suffix
-                APy3_GENfuns.write_1xh5(outFolder+file_AvgCDSfile_out, data_CDSavg, '/data/data/')
+                APy3_GENfuns.write_1xh5(outFolder+file_AvgCDSfile_out, data_CDSavg, '/data/data')
                 if verboseFlag: APy3_GENfuns.printcol("CDS avg file file saved: {0}".format(outFolder+file_AvgCDSfile_out), 'green')
             #
             if verboseFlag: APy3_GENfuns.printcol("--  --  --  --", 'blue')

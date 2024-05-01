@@ -253,7 +253,7 @@ APy3_GENfuns.printcol("script operations beginning for real at {0}".format(APy3_
 PedestalADU= numpy.zeros((NRow,NCol))
 if alternPed_flag: 
     APy3_GENfuns.printcol("reading Pedestal file",'blue')
-    PedestalADU= read_warn_1xh5(alternPed_file, '/data/data/')
+    PedestalADU= read_warn_1xh5(alternPed_file, '/data/data')
 else: PedestalADU= numpy.zeros((NRow,NCol))
 
 #---
@@ -277,9 +277,9 @@ measQ_3DAr= APy3_GENfuns.numpy_NaNs((NSets, NRow,NCol)) #Nsets, NRow,NCol
 j_estQ=0
 j_ADU=1
 for iSet in range(NSets):
-    alldata_3DAr[j_estQ,iSet,:,:]= read_warn_1xh5(folder_data2process+fileList_all[iSet][j_estQ], '/data/data/')
-    alldata_3DAr[j_ADU, iSet,:,:]= read_warn_1xh5(folder_data2process+fileList_all[iSet][j_ADU],  '/data/data/') - PedestalADU
-    measQ_3DAr[iSet,:,:]=read_warn_1xh5(folder_data2process+fileList_measQ_all[iSet][0], '/data/data/')
+    alldata_3DAr[j_estQ,iSet,:,:]= read_warn_1xh5(folder_data2process+fileList_all[iSet][j_estQ], '/data/data')
+    alldata_3DAr[j_ADU, iSet,:,:]= read_warn_1xh5(folder_data2process+fileList_all[iSet][j_ADU],  '/data/data') - PedestalADU
+    measQ_3DAr[iSet,:,:]=read_warn_1xh5(folder_data2process+fileList_measQ_all[iSet][0], '/data/data')
     APy3_GENfuns.dot_every10th(iSet,NSets)
 #---
 #% save/show ramps, non interactive
@@ -357,7 +357,7 @@ elif ((showFlag | saveFlag) & (interactiveShowFlag)):
                 APy3_GENfuns.write_2xh5(fileNamePath+'.h5', alldata_3DAr[j_estQ,:,thisRow,thisCol],'estQ',  alldata_3DAr[j_ADU,:,thisRow,thisCol],'ADU')
                 APy3_GENfuns.printcol("2-folders h5 file: (estQ,ADU) saved: {0}".format(fileNamePath+'.h5'),'green')
 
-                APy3_GENfuns.write_1xh5(fileNamePath+'measQ.h5', measQ_3DAr[:,thisRow,thisCol] ,'/data/data/')
+                APy3_GENfuns.write_1xh5(fileNamePath+'measQ.h5', measQ_3DAr[:,thisRow,thisCol] ,'/data/data')
                 APy3_GENfuns.printcol("1-folder h5 file (measQ in /data/data/) file saved {0}".format(fileNamePath+'measQ.h5'),'green')
             #
         #
