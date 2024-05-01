@@ -214,13 +214,13 @@ alldataADU_Gn0= APy3_GENfuns.numpy_NaNs((len(list_filesGn0),NRow,NCol))
 alldataADU_Gn1= APy3_GENfuns.numpy_NaNs((len(list_filesGn1),NRow,NCol))
 alldataADU_Gn2= APy3_GENfuns.numpy_NaNs((len(list_filesGn2),NRow,NCol))
 for iFile,thisFile in enumerate(list_filesGn0):
-    alldataADU_Gn0[iFile, Row2proc[0]:(Row2proc[-1]+1), Col2proc[0]:(Col2proc[-1]+1)]= APy3_GENfuns.read_1xh5(folder_data2process+thisFile,'/data/data/')[Row2proc[0]:(Row2proc[-1]+1), Col2proc[0]:(Col2proc[-1]+1)]
+    alldataADU_Gn0[iFile, Row2proc[0]:(Row2proc[-1]+1), Col2proc[0]:(Col2proc[-1]+1)]= APy3_GENfuns.read_1xh5(folder_data2process+thisFile,'/data/data')[Row2proc[0]:(Row2proc[-1]+1), Col2proc[0]:(Col2proc[-1]+1)]
     APy3_GENfuns.dot_every10th(iFile,len(list_filesGn0))
 for iFile,thisFile in enumerate(list_filesGn1):
-    alldataADU_Gn1[iFile,Row2proc[0]:(Row2proc[-1]+1), Col2proc[0]:(Col2proc[-1]+1)]= APy3_GENfuns.read_1xh5(folder_data2process+thisFile,'/data/data/')[Row2proc[0]:(Row2proc[-1]+1), Col2proc[0]:(Col2proc[-1]+1)]
+    alldataADU_Gn1[iFile,Row2proc[0]:(Row2proc[-1]+1), Col2proc[0]:(Col2proc[-1]+1)]= APy3_GENfuns.read_1xh5(folder_data2process+thisFile,'/data/data')[Row2proc[0]:(Row2proc[-1]+1), Col2proc[0]:(Col2proc[-1]+1)]
     APy3_GENfuns.dot_every10th(iFile,len(list_filesGn1))
 for iFile,thisFile in enumerate(list_filesGn2):
-    alldataADU_Gn2[iFile,Row2proc[0]:(Row2proc[-1]+1), Col2proc[0]:(Col2proc[-1]+1)]= APy3_GENfuns.read_1xh5(folder_data2process+thisFile,'/data/data/')[Row2proc[0]:(Row2proc[-1]+1), Col2proc[0]:(Col2proc[-1]+1)]
+    alldataADU_Gn2[iFile,Row2proc[0]:(Row2proc[-1]+1), Col2proc[0]:(Col2proc[-1]+1)]= APy3_GENfuns.read_1xh5(folder_data2process+thisFile,'/data/data')[Row2proc[0]:(Row2proc[-1]+1), Col2proc[0]:(Col2proc[-1]+1)]
     APy3_GENfuns.dot_every10th(iFile,len(list_filesGn2))
 # ---
 #%% proc data

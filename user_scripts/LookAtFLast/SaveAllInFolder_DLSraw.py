@@ -50,11 +50,10 @@ verboseFlag= True
 #mainFolder= "/gpfs/cfel/fsds/labs/percival/2020/calibration/20200505_000_BSI04_LatOvflw_PGA4or6BB/processed/PTC_BSI04_7of7ADC_biasBSI04_05_PGA6/scrmbld/"
 #mainFolder= "/gpfs/cfel/fsds/labs/percival/2020/calibration/20200505_000_BSI04_LatOvflw_PGA4or6BB/processed/fixGn_BSI04_Tm20_7of7_bSI04_05_PGA6BB/ramps/scrmbld/"
 #mainFolder= "/gpfs/cfel/fsds/labs/percival/2020/calibration/20200505_000_BSI04_LatOvflw_PGA4or6BB/processed/fixGn_BSI04_Tm20_7of7_bSI04_05_PGA6BB/drk/scrmbld/"
-mainFolder= "/gpfs/cfel/fsds/labs/percival/2020/calibration/20200505_000_BSI04_LatOvflw_PGA4or6BB/processed/LatOvflw_BSI04_7of7ADC_biasBSI04_05_PGA6BB/scrmbld_drk/"
 
 if mainFolder[-1]!='/': mainFolder+='/'
-expected_suffix_fl0= '000001.h5'
-expected_suffix_fl1= '000002.h5'
+expected_suffix_fl0= '000000.h5'
+expected_suffix_fl1= '000001.h5'
 
 expected_suffix_metadata= 'xxx'
 #

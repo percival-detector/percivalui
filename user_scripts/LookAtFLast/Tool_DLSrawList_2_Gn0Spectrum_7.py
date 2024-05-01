@@ -38,11 +38,11 @@ def versatile_1DLSrawFile_2_e(DLSraw_file,Img2proc_mtlb, CDSFlag, CMAFlag,cols2C
     #
     if flagUseAlternPed:
         if APy3_GENfuns.notFound(alternPed_file): APy3_GENfuns.printErr('not found: '+alternPed_file)
-        PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(alternPed_file, '/data/data/')
+        PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(alternPed_file, '/data/data')
     #
     if verboseFlag: APy3_GENfuns.printcol('load DLSraw file','blue')
     if APy3_GENfuns.notFound(DLSraw_file): APy3_GENfuns.printErr('not found: '+DLSraw_file)
-    (auxNimgInFile,ignNRow,ignNCol)=APy3_GENfuns.size_1xh5(DLSraw_file, '/data/')
+    (auxNimgInFile,ignNRow,ignNCol)=APy3_GENfuns.size_1xh5(DLSraw_file, '/data')
     if verboseFlag: APy3_GENfuns.printcol('there are {0} images in {1}'.format(auxNimgInFile,DLSraw_file),'green')
     if Img2proc_mtlb in APy3_GENfuns.ALLlist: 
         Img2proc=numpy.arange(auxNimgInFile)
@@ -50,7 +50,7 @@ def versatile_1DLSrawFile_2_e(DLSraw_file,Img2proc_mtlb, CDSFlag, CMAFlag,cols2C
     else: 
         Img2proc=APy3_GENfuns.matlabLike_range(Img2proc_mtlb)
         if verboseFlag: APy3_GENfuns.printcol('will load {0}:{1} of them'.format(Img2proc[0],Img2proc[-1]),'green')
-    dataSmpl_DLSraw,dataRst_DLSraw= APy3_GENfuns.read_partial_2xh5(DLSraw_file, '/data/','/reset/', Img2proc[0],Img2proc[-1])
+    dataSmpl_DLSraw,dataRst_DLSraw= APy3_GENfuns.read_partial_2xh5(DLSraw_file, '/data','/reset', Img2proc[0],Img2proc[-1])
     #---
     if verboseFlag: APy3_GENfuns.printcol('elaborating data','blue')
     data_CMACDS_e= APy3_P2Mfuns.convert_DLSraw_2_e_wLatOvflw(dataSmpl_DLSraw,dataRst_DLSraw, CDSFlag, CMAFlag,cols2CMA,
@@ -732,7 +732,7 @@ if flagUseAlternPed:
     alternPed_multiSet= APy3_GENfuns.numpy_NaNs((len(alternPed_fileList),NRow,NCol))
     for iFile,this_alternPed_file in enumerate(alternPed_fileList):
         if APy3_GENfuns.notFound(alternPed_Folder+this_alternPed_file): APy3_GENfuns.printErr('not found: '+alternPed_Folder+this_alternPed_file)
-        alternPed_multiSet[iFile,:,:]= APy3_GENfuns.read_1xh5(alternPed_Folder+this_alternPed_file, '/data/data/')
+        alternPed_multiSet[iFile,:,:]= APy3_GENfuns.read_1xh5(alternPed_Folder+this_alternPed_file, '/data/data')
         if verboseFlag: APy3_GENfuns.printcol("  {0}".format(this_alternPed_file), 'green')
     PedestalADU_multiGn[0,:,:]= numpy.nanmean(alternPed_multiSet,axis=0)
     if verboseFlag: 
@@ -748,7 +748,7 @@ data_all_e= numpy.zeros((0,NRow,NCol))
 for iFile,this_data_file in enumerate(data_fileList):
     if verboseFlag: APy3_GENfuns.printcol(" {0}/{1}: {2}".format(iFile,len(data_fileList)-1,this_data_file), 'green')
     if APy3_GENfuns.notFound(data_Folder+this_data_file): APy3_GENfuns.printErr('not found: '+data_Folder+this_data_file)
-    dataSmpl_in,dataRst_in= APy3_GENfuns.read_partial_2xh5(data_Folder+this_data_file, '/data/','/reset/', Img2proc[0],Img2proc[-1])
+    dataSmpl_in,dataRst_in= APy3_GENfuns.read_partial_2xh5(data_Folder+this_data_file, '/data','/reset', Img2proc[0],Img2proc[-1])
     # 
     data_CMACDS_e= APy3_P2Mfuns.convert_DLSraw_2_e_wLatOvflw(dataSmpl_in,dataRst_in, CDSGn0Flag, CMAFlag,cols2CMA,
                                                 ADCparam_Smpl_crs_slope,ADCparam_Smpl_crs_offset,ADCparam_Smpl_fn_slope,ADCparam_Smpl_fn_offset,

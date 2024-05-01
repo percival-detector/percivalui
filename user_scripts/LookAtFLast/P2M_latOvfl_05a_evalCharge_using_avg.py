@@ -245,7 +245,7 @@ if APy3_GENfuns.notFound(multiGnCal_file): APy3_GENfuns.printErr('not found: '+m
 APy3_GENfuns.printcol("multiGnCal file read",'blue')
 if alternPed_flag:
     if APy3_GENfuns.notFound(alternPed_file): APy3_GENfuns.printErr('not found: '+alternPed_file)
-    PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(alternPed_file, '/data/data/')
+    PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(alternPed_file, '/data/data')
     APy3_GENfuns.printcol("alternate pedestal file read",'blue')
 #---
 #% read metadata file
@@ -269,7 +269,7 @@ alldata_e_4DAr= APy3_GENfuns.numpy_NaNs((3,NSets,NRow,NCol))
 
 for iSet in range(NSets):
     for jGn in range(3):
-        alldata_ADU_4DAr[jGn,iSet,:,:]= read_warn_1xh5(folder_data2process+fileList_all[iSet][jGn+1], '/data/data/') #jGn+1 because Gn0 is col 1, ...
+        alldata_ADU_4DAr[jGn,iSet,:,:]= read_warn_1xh5(folder_data2process+fileList_all[iSet][jGn+1], '/data/data') #jGn+1 because Gn0 is col 1, ...
 
 for jGn in range(3):
     alldata_ADU_4DAr[jGn,:,:,:]= numpy.copy(alldata_ADU_4DAr[jGn,:,:,:] - PedestalADU_multiGn[jGn,:,:])  
@@ -384,11 +384,11 @@ if fitFlag:
         for iSet in range(NSets):
             for jGn in range(3):
                 thisFileNameOut= fileList_all[iSet][jGn+1][:-3]+'_estCharge.h5'
-                APy3_GENfuns.write_1xh5(saveFolder+thisFileNameOut, datafitted_e_4D[jGn,iSet,:,:], '/data/data/')
+                APy3_GENfuns.write_1xh5(saveFolder+thisFileNameOut, datafitted_e_4D[jGn,iSet,:,:], '/data/data')
                 if verboseFlag: APy3_GENfuns.printcol('saved {0}'.format(saveFolder+thisFileNameOut),'green')
                 #
                 thisFileNameOut= fileList_all[iSet][jGn+1][:-3]+'_measCharge.h5'
-                APy3_GENfuns.write_1xh5(saveFolder+thisFileNameOut, alldata_e_4DAr[jGn,iSet,:,:], '/data/data/')
+                APy3_GENfuns.write_1xh5(saveFolder+thisFileNameOut, alldata_e_4DAr[jGn,iSet,:,:], '/data/data')
                 if verboseFlag: APy3_GENfuns.printcol('saved {0}'.format(saveFolder+thisFileNameOut),'green')
 #
 #%% that's all folks

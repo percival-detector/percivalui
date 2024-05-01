@@ -121,8 +121,8 @@ if verboseFlag: APy3_GENfuns.printcol("script operations beginning for real at {
 PedestalADU_multiGn= APy3_GENfuns.numpy_NaNs((NGn,NRow,NCol))
 e_per_ADU_multiGn= APy3_GENfuns.numpy_NaNs((NGn,NRow,NCol))
 
-PedestalADU_multiGn[0,:,:]= read_warn_1xh5(PedestalADU_Gn0_file, '/data/data/')
-e_per_ADU_multiGn[0,:,:]= read_warn_1xh5(e_per_ADU_Gn0_file, '/data/data/')
+PedestalADU_multiGn[0,:,:]= read_warn_1xh5(PedestalADU_Gn0_file, '/data/data')
+e_per_ADU_multiGn[0,:,:]= read_warn_1xh5(e_per_ADU_Gn0_file, '/data/data')
 
 if showFlag:
     for iGn in range(NGn):

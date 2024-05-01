@@ -7,8 +7,8 @@
 
 #using /asap3 files
 inFolder="/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010234/processed/example_of_data_processing/input_scrmbld/"
-suffix_fl0="000001.h5"
-suffix_fl1="000002.h5"
+suffix_fl0="000000.h5"
+suffix_fl1="000001.h5"
 suffixLength=${#suffix_fl0}
 #
 # note that 1st img is discarded so 248:499 will produce 249:499. 

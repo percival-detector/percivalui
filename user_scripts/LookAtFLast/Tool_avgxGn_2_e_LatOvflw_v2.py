@@ -589,15 +589,15 @@ if verboseFlag: APy3_GENfuns.printcol("multiGnCal file loaded {0}".format(multiG
 #
 if alternPedGn0Flag:
     if APy3_GENfuns.notFound(alternFile_Ped_Gn0_ADU): APy3_GENfuns.printErr('not found: '+alternFile_Ped_Gn0_ADU)
-    PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(alternFile_Ped_Gn0_ADU, '/data/data/')
+    PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(alternFile_Ped_Gn0_ADU, '/data/data')
     if verboseFlag: APy3_GENfuns.printcol("alternative Gn0 Pedestal ADU file loaded {0}".format(alternFile_Ped_Gn0_ADU),'green')
 if alternPedGn1Flag:
     if APy3_GENfuns.notFound(alternFile_Ped_Gn1_ADU): APy3_GENfuns.printErr('not found: '+alternFile_Ped_Gn1_ADU)
-    PedestalADU_multiGn[1,:,:]= APy3_GENfuns.read_1xh5(alternFile_Ped_Gn1_ADU, '/data/data/')
+    PedestalADU_multiGn[1,:,:]= APy3_GENfuns.read_1xh5(alternFile_Ped_Gn1_ADU, '/data/data')
     if verboseFlag: APy3_GENfuns.printcol("alternative Gn1 Pedestal ADU file loaded {0}".format(alternFile_Ped_Gn1_ADU),'green')
 if alternPedGn2Flag:
     if APy3_GENfuns.notFound(alternFile_Ped_Gn2_ADU): APy3_GENfuns.printErr('not found: '+alternFile_Ped_Gn2_ADU)
-    PedestalADU_multiGn[2,:,:]= APy3_GENfuns.read_1xh5(alternFile_Ped_Gn2_ADU, '/data/data/')
+    PedestalADU_multiGn[2,:,:]= APy3_GENfuns.read_1xh5(alternFile_Ped_Gn2_ADU, '/data/data')
     if verboseFlag: APy3_GENfuns.printcol("alternative Gn2 Pedestal ADU file loaded {0}".format(alternFile_Ped_Gn2_ADU),'green')
 #---
 #%% load data files
@@ -609,17 +609,17 @@ if ((avgGn0_data_file in APy3_GENfuns.NOlist)&(avgGn1_data_file in APy3_GENfuns.
 if (avgGn0_data_file in APy3_GENfuns.NOlist): data_ADU_avgxGn[0,:,:]= numpy.zeros((NRow,NCol))
 else: 
     if APy3_GENfuns.notFound(avgGn0_data_file): APy3_GENfuns.printERR('not found '+avgGn0_data_file)
-    data_ADU_avgxGn[0,:,:]= APy3_GENfuns.read_1xh5(avgGn0_data_file, '/data/data/')
+    data_ADU_avgxGn[0,:,:]= APy3_GENfuns.read_1xh5(avgGn0_data_file, '/data/data')
 
 if (avgGn1_data_file in APy3_GENfuns.NOlist): data_ADU_avgxGn[1,:,:]= numpy.zeros((NRow,NCol))
 else:
     if APy3_GENfuns.notFound(avgGn1_data_file): APy3_GENfuns.printERR('not found '+avgGn1_data_file)
-    data_ADU_avgxGn[1,:,:]= APy3_GENfuns.read_1xh5(avgGn1_data_file, '/data/data/')
+    data_ADU_avgxGn[1,:,:]= APy3_GENfuns.read_1xh5(avgGn1_data_file, '/data/data')
 
 if (avgGn2_data_file in APy3_GENfuns.NOlist): data_ADU_avgxGn[2,:,:]= numpy.zeros((NRow,NCol))
 else:
     if APy3_GENfuns.notFound(avgGn2_data_file): APy3_GENfuns.printERR('not found '+avgGn2_data_file)
-    data_ADU_avgxGn[2,:,:]= APy3_GENfuns.read_1xh5(avgGn2_data_file, '/data/data/')
+    data_ADU_avgxGn[2,:,:]= APy3_GENfuns.read_1xh5(avgGn2_data_file, '/data/data')
 #---
 #%% data: Gn,Crs,Fn => e
 APy3_GENfuns.printcol('data: ADU => e','blue')
@@ -648,13 +648,13 @@ if drkPedFlag:
     APy3_GENfuns.printcol("loading drk file",'blue')
     if (avgGn0_drk_file not in APy3_GENfuns.NOlist):
         if APy3_GENfuns.notFound(avgGn0_drk_file): APy3_GENfuns.printERR('not found '+avgGn0_drk_file)
-        drk_ADU_avgxGn[0,:,:]= APy3_GENfuns.read_1xh5(avgGn0_drk_file, '/data/data/')
+        drk_ADU_avgxGn[0,:,:]= APy3_GENfuns.read_1xh5(avgGn0_drk_file, '/data/data')
     if (avgGn1_drk_file not in APy3_GENfuns.NOlist):
         if APy3_GENfuns.notFound(avgGn1_drk_file): APy3_GENfuns.printERR('not found '+avgGn1_drk_file)
-        drk_ADU_avgxGn[1,:,:]= APy3_GENfuns.read_1xh5(avgGn1_drk_file, '/data/data/')
+        drk_ADU_avgxGn[1,:,:]= APy3_GENfuns.read_1xh5(avgGn1_drk_file, '/data/data')
     if (avgGn2_drk_file not in APy3_GENfuns.NOlist):
         if APy3_GENfuns.notFound(avgGn2_drk_file): APy3_GENfuns.printERR('not found '+avgGn2_drk_file)
-        drk_ADU_avgxGn[2,:,:]= APy3_GENfuns.read_1xh5(avgGn2_drk_file, '/data/data/')
+        drk_ADU_avgxGn[2,:,:]= APy3_GENfuns.read_1xh5(avgGn2_drk_file, '/data/data')
     #
     APy3_GENfuns.printcol('dark: ADU => e','blue')
     drk_e= APy3_GENfuns.numpy_NaNs((NRow,NCol))
