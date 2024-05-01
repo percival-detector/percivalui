@@ -313,7 +313,7 @@ else:
 #
 if alternPed:
     if APy3_GENfuns.notFound(alternFile_Ped_Gn0_ADU): APy3_GENfuns.printErr('not found: '+alternFile_Ped_Gn0_ADU)
-    PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(alternFile_Ped_Gn0_ADU, '/data/data/')
+    PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(alternFile_Ped_Gn0_ADU, '/data/data')
     if verboseFlag: APy3_GENfuns.printcol("alternative Pedestal ADU file loaded {0}".format(alternFile_Ped_Gn0_ADU),'green')
 #---
 #% list files
@@ -322,13 +322,13 @@ if verboseFlag: APy3_GENfuns.printcol('{0} files to be processed'.format(len(fil
 for iFile,thisFile in enumerate(fileList):
     if (verboseFlag): APy3_GENfuns.printcol("file {0}/{1}: {2}{3}".format(iFile,len(fileList)-1,folder_data2process,thisFile),'green')
     #
-    (aux_NImgInFile,ignNRow,ignNCol)= APy3_GENfuns.size_1xh5(folder_data2process+thisFile, '/data/')
+    (aux_NImgInFile,ignNRow,ignNCol)= APy3_GENfuns.size_1xh5(folder_data2process+thisFile, '/data')
     if (verboseFlag): APy3_GENfuns.printcol("  there are {0} images in this file".format(aux_NImgInFile),'green')
     if (verboseFlag): APy3_GENfuns.printcol("  will load {0}:{1}".format(fromImg,toImg),'green')
     if toImg >= aux_NImgInFile:
         APy3_GENfuns.printcol("there are only {0} images in the file: will load {1}:{2}".format(aux_NImgInFile, fromImg,aux_NImgInFile-1),'orange')
-        (Smpl_DLSraw,Rst_DLSraw) = APy3_GENfuns.read_partial_2xh5(folder_data2process+thisFile, '/data/','/reset/', fromImg,aux_NImgInFile-1)
-    else: (Smpl_DLSraw,Rst_DLSraw) = APy3_GENfuns.read_partial_2xh5(folder_data2process+thisFile, '/data/','/reset/', fromImg,toImg)
+        (Smpl_DLSraw,Rst_DLSraw) = APy3_GENfuns.read_partial_2xh5(folder_data2process+thisFile, '/data','/reset', fromImg,aux_NImgInFile-1)
+    else: (Smpl_DLSraw,Rst_DLSraw) = APy3_GENfuns.read_partial_2xh5(folder_data2process+thisFile, '/data','/reset', fromImg,toImg)
     #---
     # DLSraw => Gn,Crs,Fn
     if verboseFlag: APy3_GENfuns.printcol('DLSraw => Gn,Crs,Fn','blue')
@@ -391,21 +391,21 @@ for iFile,thisFile in enumerate(fileList):
         # save
         if (saveFlag & (avgItForGn[thisGn]==True) & (thisGn==0)):
             fileName_avg= thisFile[:(-len(inputFileSuffix))]+'Gn{0}_'.format(thisGn)+avgFileSuffix
-            APy3_GENfuns.write_1xh5(outFolder+fileName_avg, data_avg, '/data/data/')
+            APy3_GENfuns.write_1xh5(outFolder+fileName_avg, data_avg, '/data/data')
             if (verboseFlag): APy3_GENfuns.printcol("saved avg {0}{1}".format(outFolder,fileName_avg),'green')
             #
             if stdItFlag:
                 fileName_std= thisFile[:(-len(inputFileSuffix))]+'Gn{0}_'.format(thisGn)+stdFileSuffix
-                APy3_GENfuns.write_1xh5(outFolder+fileName_std, data_std, '/data/data/')
+                APy3_GENfuns.write_1xh5(outFolder+fileName_std, data_std, '/data/data')
                 if (verboseFlag): APy3_GENfuns.printcol("saved std {0}{1}".format(outFolder,fileName_std),'green')        
         elif (saveFlag & (avgItForGn[thisGn]==True) & (thisGn!=0)):
             fileName_avg= thisFile[:(-len(inputFileSuffix))]+'Gn{0}_'.format(thisGn)+avgFileSuffix_Gn12
-            APy3_GENfuns.write_1xh5(outFolder+fileName_avg, data_avg, '/data/data/')
+            APy3_GENfuns.write_1xh5(outFolder+fileName_avg, data_avg, '/data/data')
             if (verboseFlag): APy3_GENfuns.printcol("saved avg {0}{1}".format(outFolder,fileName_avg),'green')
             #
             if stdItFlag:
                 fileName_std= thisFile[:(-len(inputFileSuffix))]+'Gn{0}_'.format(thisGn)+stdFileSuffix_Gn12
-                APy3_GENfuns.write_1xh5(outFolder+fileName_std, data_std, '/data/data/')
+                APy3_GENfuns.write_1xh5(outFolder+fileName_std, data_std, '/data/data')
                 if (verboseFlag): APy3_GENfuns.printcol("saved std {0}{1}".format(outFolder,fileName_std),'green')
 
         if (verboseFlag): APy3_GENfuns.printcol("-",'green')    

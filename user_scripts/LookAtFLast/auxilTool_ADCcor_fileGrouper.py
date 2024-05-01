@@ -28,7 +28,7 @@ ERRDLSraw=APy3_P2Mfuns.ERRDLSraw #65535 # forbidden uint16, usable to track "pix
 
 def read_warn_1xh5(fileNamePath):
     if APy3_GENfuns.notFound(fileNamePath): APy3_GENfuns.printErr(fileNamePath+' not found')
-    out_data= APy3_GENfuns.read_1xh5(fileNamePath, '/data/data/')
+    out_data= APy3_GENfuns.read_1xh5(fileNamePath, '/data/data')
     return out_data
 
 

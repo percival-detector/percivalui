@@ -529,7 +529,7 @@ allData_GnCrsFn=  numpy.ones((meta_Nfiles,len(Img2proc),NSmplRst,NRow,NCol,NGnCr
 #
 for iFile,thisFile in enumerate(meta_fileNameList):
     if verboseFlag: APy3_GENfuns.printcol("processing lgh file {0}/{1}".format(iFile,meta_Nfiles-1),'green')
-    (dataSmpl_DLSraw,dataRst_DLSraw) = APy3_GENfuns.read_partial_2xh5(folder_data2process+thisFile, '/data/','/reset/', fromImg, toImg)
+    (dataSmpl_DLSraw,dataRst_DLSraw) = APy3_GENfuns.read_partial_2xh5(folder_data2process+thisFile, '/data','/reset', fromImg, toImg)
     data_GnCrsFn= APy3_P2Mfuns.convert_DLSraw_2_GnCrsFn(dataSmpl_DLSraw,dataRst_DLSraw, ERRDLSraw, ERRint16)
     allData_GnCrsFn[iFile,:,:,:,:,:]=numpy.copy(data_GnCrsFn).astype(int) 
     if cleanMemFlag: del dataSmpl_DLSraw; del dataRst_DLSraw

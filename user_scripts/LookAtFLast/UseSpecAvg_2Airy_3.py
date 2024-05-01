@@ -332,14 +332,14 @@ inDataAltPedGn0= APy3_GENfuns.numpy_NaNs((NRow,NCol))
 for thisGn in range(3):
     if flagUseGn[thisGn]: 
         if APy3_GENfuns.notFound(inFileADU_Gn[thisGn]): APy3_GENfuns.printErr('not found: '+inFileADU_Gn[thisGn])
-        inDataADU_Gn[thisGn,:,:]= APy3_GENfuns.read_1xh5(inFileADU_Gn[thisGn], '/data/data/')
+        inDataADU_Gn[thisGn,:,:]= APy3_GENfuns.read_1xh5(inFileADU_Gn[thisGn], '/data/data')
 #
 if APy3_GENfuns.notFound(multiGnCal_file): APy3_GENfuns.printErr('not found: '+multiGnCal_file)
 (PedestalADU_multiGn,e_per_ADU_multiGn)= APy3_GENfuns.read_2xh5(multiGnCal_file, '/Pedestal_ADU/', '/e_per_ADU/')
 #
 if flagUseAlternPed:
     if APy3_GENfuns.notFound(alternFile_Ped_Gn0_ADU): APy3_GENfuns.printErr('not found: '+alternFile_Ped_Gn0_ADU)
-    inDataAltPedGn0= APy3_GENfuns.read_1xh5(alternFile_Ped_Gn0_ADU, '/data/data/')
+    inDataAltPedGn0= APy3_GENfuns.read_1xh5(alternFile_Ped_Gn0_ADU, '/data/data')
 # ---
 if CMAFlag:
     APy3_GENfuns.printcol('CMA','blue')

@@ -373,7 +373,7 @@ APy3_GENfuns.printcol("script operations beginning for real at {0}".format(APy3_
 PedestalADU= numpy.zeros((NRow,NCol))
 if alternPed_flag: 
     APy3_GENfuns.printcol("reading Pedestal file",'blue')
-    PedestalADU= read_warn_1xh5(alternPed_file, '/data/data/')
+    PedestalADU= read_warn_1xh5(alternPed_file, '/data/data')
 else: PedestalADU= numpy.zeros((NRow,NCol))
 
 #---
@@ -392,8 +392,8 @@ alldata_3DAr= APy3_GENfuns.numpy_NaNs((2, NSets, NRow,NCol)) #estQ/ADU, Nsets, N
 j_estQ=0
 j_ADU=1
 for iSet in range(NSets):
-    alldata_3DAr[j_estQ,iSet,:,:]= read_warn_1xh5(estQ_folder +fileList_all[iSet][j_estQ], '/data/data/')
-    alldata_3DAr[j_ADU, iSet,:,:]= read_warn_1xh5(ADU_folder  +fileList_all[iSet][j_ADU],  '/data/data/') - PedestalADU
+    alldata_3DAr[j_estQ,iSet,:,:]= read_warn_1xh5(estQ_folder +fileList_all[iSet][j_estQ], '/data/data')
+    alldata_3DAr[j_ADU, iSet,:,:]= read_warn_1xh5(ADU_folder  +fileList_all[iSet][j_ADU],  '/data/data') - PedestalADU
     APy3_GENfuns.dot_every10th(iSet,NSets)
 #
 #---
@@ -422,7 +422,7 @@ if (interactiveShowFlag==False):
          png_histo1D(aux2histo(fullwellQ_2DAr.flatten()), 100, False, 'full well [e]','pixels','full well({0},{1})'.format(Rows2proc_mtlb,Cols2proc_mtlb), saveFolder+'fullwell({0},{1})_1Dhisto.png'.format(Rows2proc_mtlb,Cols2proc_mtlb) )
          #
          APy3_GENfuns.printcol('saved images in {0}'.format(saveFolder),'green')
-         #APy3_GENfuns.write_1xh5(saveFolder+'fullwell_2D.h5', fullwellQ_2DAr,'/data/data/')
+         #APy3_GENfuns.write_1xh5(saveFolder+'fullwell_2D.h5', fullwellQ_2DAr,'/data/data')
          #APy3_GENfuns.printcol('saved data: {0}'.format(saveFolder+'fullwell_2D.h5'),'green')
 else:
     #---

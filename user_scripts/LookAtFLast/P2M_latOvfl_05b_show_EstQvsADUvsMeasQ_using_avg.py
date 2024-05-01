@@ -236,7 +236,7 @@ APy3_GENfuns.printcol("reading ADU Pedestals",'blue')
 if APy3_GENfuns.notFound(multiGnCal_file): APy3_GENfuns.printErr('not found: '+multiGnCal_file)
 (PedestalADU_multiGn,e_per_ADU_multiGn)= APy3_GENfuns.read_2xh5(multiGnCal_file, '/Pedestal_ADU/', '/e_per_ADU/')
 if alternPed_flag: 
-    PedestalADU_multiGn[0,:,:]= read_warn_1xh5(alternPed_file, '/data/data/')
+    PedestalADU_multiGn[0,:,:]= read_warn_1xh5(alternPed_file, '/data/data')
 #
 #%% list files
 estQ_Gn0_fileList= APy3_GENfuns.list_files(estQ_folder, '*', estQ_suffixList[0])
@@ -252,20 +252,20 @@ measQdata_4DAr= APy3_GENfuns.numpy_NaNs((3, NSets, NRow,NCol)) #Gn, Nsets, NRow,
 ADUdata_4DAr=   APy3_GENfuns.numpy_NaNs((3, NSets, NRow,NCol)) #Gn, Nsets, NRow,NCol
 #
 for iSet in range(NSets):
-    estQdata_4DAr[0,iSet,:,:]= read_warn_1xh5(estQ_folder+estQ_Gn0_fileList[iSet], '/data/data/')
+    estQdata_4DAr[0,iSet,:,:]= read_warn_1xh5(estQ_folder+estQ_Gn0_fileList[iSet], '/data/data')
     lensuffix=len(estQ_suffixList[0])
-    measQdata_4DAr[0,iSet,:,:]= read_warn_1xh5(measQ_folder+ estQ_Gn0_fileList[iSet][:-lensuffix]+measQ_suffixList[0], '/data/data/')
-    ADUdata_4DAr[0,iSet,:,:]   = read_warn_1xh5(ADU_folder+ estQ_Gn0_fileList[iSet][:-lensuffix]+ADU_suffixList[0], '/data/data/')
+    measQdata_4DAr[0,iSet,:,:]= read_warn_1xh5(measQ_folder+ estQ_Gn0_fileList[iSet][:-lensuffix]+measQ_suffixList[0], '/data/data')
+    ADUdata_4DAr[0,iSet,:,:]   = read_warn_1xh5(ADU_folder+ estQ_Gn0_fileList[iSet][:-lensuffix]+ADU_suffixList[0], '/data/data')
     #
-    estQdata_4DAr[1,iSet,:,:]= read_warn_1xh5(estQ_folder+estQ_Gn1_fileList[iSet], '/data/data/')
+    estQdata_4DAr[1,iSet,:,:]= read_warn_1xh5(estQ_folder+estQ_Gn1_fileList[iSet], '/data/data')
     lensuffix=len(estQ_suffixList[1])
-    measQdata_4DAr[1,iSet,:,:]= read_warn_1xh5(measQ_folder+ estQ_Gn1_fileList[iSet][:-lensuffix]+measQ_suffixList[1], '/data/data/')
-    ADUdata_4DAr[1,iSet,:,:]   = read_warn_1xh5(ADU_folder+ estQ_Gn1_fileList[iSet][:-lensuffix]+ADU_suffixList[1], '/data/data/')
+    measQdata_4DAr[1,iSet,:,:]= read_warn_1xh5(measQ_folder+ estQ_Gn1_fileList[iSet][:-lensuffix]+measQ_suffixList[1], '/data/data')
+    ADUdata_4DAr[1,iSet,:,:]   = read_warn_1xh5(ADU_folder+ estQ_Gn1_fileList[iSet][:-lensuffix]+ADU_suffixList[1], '/data/data')
     #
-    estQdata_4DAr[2,iSet,:,:]= read_warn_1xh5(estQ_folder+estQ_Gn2_fileList[iSet], '/data/data/')
+    estQdata_4DAr[2,iSet,:,:]= read_warn_1xh5(estQ_folder+estQ_Gn2_fileList[iSet], '/data/data')
     lensuffix=len(estQ_suffixList[2])
-    measQdata_4DAr[2,iSet,:,:]= read_warn_1xh5(measQ_folder+ estQ_Gn2_fileList[iSet][:-lensuffix]+measQ_suffixList[2], '/data/data/')
-    ADUdata_4DAr[2,iSet,:,:]   = read_warn_1xh5(ADU_folder+ estQ_Gn2_fileList[iSet][:-lensuffix]+ADU_suffixList[2], '/data/data/')
+    measQdata_4DAr[2,iSet,:,:]= read_warn_1xh5(measQ_folder+ estQ_Gn2_fileList[iSet][:-lensuffix]+measQ_suffixList[2], '/data/data')
+    ADUdata_4DAr[2,iSet,:,:]   = read_warn_1xh5(ADU_folder+ estQ_Gn2_fileList[iSet][:-lensuffix]+ADU_suffixList[2], '/data/data')
     #
     APy3_GENfuns.dot()
 APy3_GENfuns.printcol(" ",'blue')

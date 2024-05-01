@@ -42,12 +42,12 @@ verboseFlag= True
 #%% data from here
 mainFolder='/gpfs/cfel/fsds/labs/percival/2019/calibration/20190613_000_FSI01_Tm20_ADCcorrection/processed/2019.06.13_FSI01_ADCsweep_dmuxSELsw/scrmbld/'
 if mainFolder[-1]!='/': mainFolder+='/'
-#expected_suffix_fl0= '000001.h5'
-#expected_suffix_fl1= '000002.h5'
+#expected_suffix_fl0= '000000.h5'
+#expected_suffix_fl1= '000001.h5'
 #expected_suffix_metadata= 'meta.dat'
 #
-expected_suffix_fl0= '2019.06.14_15.48.xx_FSI01_Tm20_dmuxSELsw_0802g_PGAB_VRSTscan_fn_300x10_000001.h5'
-expected_suffix_fl1= '2019.06.14_15.48.xx_FSI01_Tm20_dmuxSELsw_0802g_PGAB_VRSTscan_fn_300x10_000002.h5'
+expected_suffix_fl0= '2019.06.14_15.48.xx_FSI01_Tm20_dmuxSELsw_0802g_PGAB_VRSTscan_fn_300x10_000000.h5'
+expected_suffix_fl1= '2019.06.14_15.48.xx_FSI01_Tm20_dmuxSELsw_0802g_PGAB_VRSTscan_fn_300x10_000001.h5'
 expected_suffix_metadata= '2019.06.14_15.48.xx_FSI01_Tm20_dmuxSELsw_0802g_PGAB_VRSTscan_fn_300x10_meta.dat'
 #
 fromImg=0; toImg=-1 # negative==all

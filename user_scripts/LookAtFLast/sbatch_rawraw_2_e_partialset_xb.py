@@ -31,8 +31,7 @@ if dflt_mainFolder[-1]!='/': dflt_mainFolder+='/'
 #expected_prefix_fl='2019.05.17_xx.xx.xx_BSI02_Tm20_0802i_dmuxSELHigh_Gn0_PGAB_GrndGls_ODx.x_t200_500drk_'
 expected_prefix_fl=sys.argv[2]
 #
-#dflt_suffix_fl0= '000001.h5'
-#dflt_suffix_fl1= '000002.h5'
+
 dflt_suffix_fl0= sys.argv[3]
 dflt_suffix_fl1= sys.argv[4]
 #
@@ -67,7 +66,7 @@ dflt_outGnCrsFn_FileNamePath= dflt_outFolder+expected_prefix_fl+ labelImg+'_GnCr
 #%% functs
 #
 def read_partial_2xh5(filenamepath, path1_2read, path2_2read, fromImg, toImg):
-    ''' read 2xXD h5 file (paths_2read: '/data/','/reset/' ) '''
+    ''' read 2xXD h5 file (paths_2read: '/data','/reset' ) '''
     my5hfile= h5py.File(filenamepath, 'r')
     myh5dataset=my5hfile[path1_2read]
     if myh5dataset.shape[0] <= toImg: my5hfile.close(); APy3_GENfuns.printErr('only {0} img in fl0 file'.format(myh5dataset.shape[0]))
@@ -90,8 +89,8 @@ def loadSomeImagesFromFile(mainFolder, name_fl0, name_fl1,
     
     if img2proc_str in ['all','All','ALL',':','*','-1']: 
         if verboseFlag: APy3_GENfuns.printcol("will read all Img", 'green')
-        (dataSmpl_fl0, dataRst_fl0) = APy3_GENfuns.read_2xh5(mainFolder+name_fl0, '/data/','/reset/')
-        (dataSmpl_fl1, dataRst_fl1) = APy3_GENfuns.read_2xh5(mainFolder+name_fl1, '/data/','/reset/')
+        (dataSmpl_fl0, dataRst_fl0) = APy3_GENfuns.read_2xh5(mainFolder+name_fl0, '/data','/reset')
+        (dataSmpl_fl1, dataRst_fl1) = APy3_GENfuns.read_2xh5(mainFolder+name_fl1, '/data','/reset')
     else:
         img2proc= APy3_GENfuns.matlabLike_range(img2proc_str)
         fromImg_fl01= img2proc[0]//2
@@ -99,8 +98,8 @@ def loadSomeImagesFromFile(mainFolder, name_fl0, name_fl1,
         if verboseFlag:
             APy3_GENfuns.printcol("will read img {0} to {1} in both files".format(fromImg_fl01,toImg_fl01), 'green')
             APy3_GENfuns.printcol("corresponding overall to img {0}".format(str(img2proc)), 'green')
-        (dataSmpl_fl0, dataRst_fl0) = read_partial_2xh5(mainFolder+name_fl0, '/data/','/reset/', fromImg_fl01,toImg_fl01)
-        (dataSmpl_fl1, dataRst_fl1) = read_partial_2xh5(mainFolder+name_fl1, '/data/','/reset/', fromImg_fl01,toImg_fl01)
+        (dataSmpl_fl0, dataRst_fl0) = read_partial_2xh5(mainFolder+name_fl0, '/data','/reset', fromImg_fl01,toImg_fl01)
+        (dataSmpl_fl1, dataRst_fl1) = read_partial_2xh5(mainFolder+name_fl1, '/data','/reset', fromImg_fl01,toImg_fl01)
     #
     (NImg_fl0, aux_NRow, aux_NCol) = dataSmpl_fl0.shape
     (NImg_fl1, aux_NRow, aux_NCol) = dataSmpl_fl1.shape
@@ -404,7 +403,7 @@ else:
 #
 if alternPed:
     if APy3_GENfuns.notFound(alternFile_Ped_Gn0_ADU): APy3_GENfuns.printErr('not found: '+alternFile_Ped_Gn0_ADU)
-    PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(alternFile_Ped_Gn0_ADU, '/data/data/')
+    PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(alternFile_Ped_Gn0_ADU, '/data/data')
     #if verboseFlag: APy3_GENfuns.printcol("alternative Pedestal ADU file loaded {0}".format(alternFile_Ped_Gn0_ADU),'green')
 #---
 #%% to e
@@ -423,11 +422,11 @@ dataout_GnCrsFn[:,APy3_P2Mfuns.iRst,:,:,:]= data_GnCrsFn[:(-1),APy3_P2Mfuns.iRst
 
 #---
 if saveFlag:
-    #APy3_GENfuns.write_2xh5(outFileNamePath, DLSraw_Smpl, '/data/', DLSraw_Rst, '/reset/')
-    APy3_GENfuns.write_1xh5(outFileNamePath, data_e, '/data/data/')
+    #APy3_GENfuns.write_2xh5(outFileNamePath, DLSraw_Smpl, '/data', DLSraw_Rst, '/reset')
+    APy3_GENfuns.write_1xh5(outFileNamePath, data_e, '/data/data')
     if verboseFlag: APy3_GENfuns.printcol("e data saved to {0}".format(outFileNamePath), 'green')
     #
-    APy3_GENfuns.write_1xh5(outGnCrsFn_FileNamePath, dataout_GnCrsFn, '/data/data/')
+    APy3_GENfuns.write_1xh5(outGnCrsFn_FileNamePath, dataout_GnCrsFn, '/data/data')
     if verboseFlag: APy3_GENfuns.printcol("GnCrsFn data saved to {0}".format(outGnCrsFn_FileNamePath), 'green')
 #%% that's all folks
 #---    

@@ -91,11 +91,11 @@ def descrambleLast(mainFolder,
     ADCcorrFolder= '/home/prcvlusr/PercAuxiliaryTools/LookAtFLast/LookAtFLast_CalibParam/ADUcorr/'
     if ADCcorrFolder[-1]!='/': ADCcorrFolder+='/'
     if ADCcorrFlag:
-        ADCparam_validMap= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_ADCproc_Map.h5', '/data/data/').astype(bool)
-        ADCparam_crs_slope= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_crs_slope.h5', '/data/data/')
-        ADCparam_crs_offset= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_crs_offset.h5', '/data/data/')
-        ADCparam_fn_slope= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_fn_slope.h5', '/data/data/')        
-        ADCparam_fn_offset= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_fn_offset.h5', '/data/data/')
+        ADCparam_validMap= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_ADCproc_Map.h5', '/data/data').astype(bool)
+        ADCparam_crs_slope= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_crs_slope.h5', '/data/data')
+        ADCparam_crs_offset= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_crs_offset.h5', '/data/data')
+        ADCparam_fn_slope= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_fn_slope.h5', '/data/data')        
+        ADCparam_fn_offset= APy3_GENfuns.read_1xh5(ADCcorrFolder+'ADCcor_fn_offset.h5', '/data/data')
         APy3_GENfuns.printcol("ADCcor files: {0}ADCcor _ADCproc_Map / _crs/fn _slope/offset.h5".format(ADCcorrFolder), 'green')
         #
         # modify load ADCparam to avoid /0
@@ -108,7 +108,7 @@ def descrambleLast(mainFolder,
     pedestalFolder= '/home/prcvlusr/PercAuxiliaryTools/LookAtFLast/LookAtFLast_CalibParam/Pedestal/'
     if pedestalFolder[-1]!='/': pedestalFolder+='/'
     if pedSubtractFlag:
-        data_pedestal= APy3_GENfuns.read_1xh5(pedestalFolder+'Pedestal.h5', '/data/data/') 
+        data_pedestal= APy3_GENfuns.read_1xh5(pedestalFolder+'Pedestal.h5', '/data/data') 
         APy3_GENfuns.printcol("pedestal: {0}Pedestal.h5".format(pedestalFolder), 'green')
     #---
     #%% find file 
@@ -125,8 +125,8 @@ def descrambleLast(mainFolder,
     if APy3_GENfuns.notFound(inputFiles[0]): APy3_GENfuns.printErr(inputFiles[0]+' not found')
     if APy3_GENfuns.notFound(inputFiles[1]): APy3_GENfuns.printErr(inputFiles[1]+' not found')
     
-    (dataSmpl_fl0, dataRst_fl0) = APy3_GENfuns.read_2xh5(inputFiles[0], '/data/','/reset/')
-    (dataSmpl_fl1, dataRst_fl1) = APy3_GENfuns.read_2xh5(inputFiles[1], '/data/','/reset/')
+    (dataSmpl_fl0, dataRst_fl0) = APy3_GENfuns.read_2xh5(inputFiles[0], '/data','/reset')
+    (dataSmpl_fl1, dataRst_fl1) = APy3_GENfuns.read_2xh5(inputFiles[1], '/data','/reset')
     (NImg_fl0, aux_NRow, aux_NCol) = dataSmpl_fl0.shape
     (NImg_fl1, aux_NRow, aux_NCol) = dataSmpl_fl1.shape
     NImg = NImg_fl0 + NImg_fl0
@@ -286,7 +286,7 @@ def descrambleLast(mainFolder,
         #
         APy3_GENfuns.printcol("saving descrambled file", 'blue')
         outFile=inputFiles[0][:-6]+"dscrmbld_DLSraw.h5"
-        APy3_GENfuns.write_2xh5(outFile, Smpl_DLSraw,'/data/', Rst_DLSraw,'/reset/')
+        APy3_GENfuns.write_2xh5(outFile, Smpl_DLSraw,'/data', Rst_DLSraw,'/reset')
         APy3_GENfuns.printcol("descrambled data saved in {0}".format(outFile), 'green')
     # - - -
     #
@@ -383,7 +383,7 @@ def descrambleLast(mainFolder,
             if saveAvgFlag:
                 APy3_GENfuns.printcol("saving CDS averaged file", 'blue')
                 outFile_CDS=inputFiles[0][:-6]+"CDS_avg.h5"
-                APy3_GENfuns.write_1xh5(outFile_CDS, data_avg, '/data/data/')
+                APy3_GENfuns.write_1xh5(outFile_CDS, data_avg, '/data/data')
                 APy3_GENfuns.printcol("CDS averaged data saved in {0}".format(outFile_CDS), 'green')
     #---
     #

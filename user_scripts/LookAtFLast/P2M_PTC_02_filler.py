@@ -92,7 +92,7 @@ startTime = time.time()
 APy3_GENfuns.printcol("script operations beginning for real at {0}".format(APy3_GENfuns.whatTimeIsIt()),'green')
 #---
 #% read data files
-indata= read_warn_1xh5(file2interpolate, '/data/data/')
+indata= read_warn_1xh5(file2interpolate, '/data/data')
 
 def aux_copyvals(indata, Rows2proc,Cols2proc):
     ''' from indata to interpData:
@@ -470,7 +470,7 @@ while nextstep not in ['e','E','q','Q']:
     #
     elif nextstep in ['f','F']: 
         outFileNamePath=file2interpolate+'_{0}interpol.h5'.format(totInterpCounter)
-        APy3_GENfuns.write_1xh5(outFileNamePath, interpData, '/data/data/')
+        APy3_GENfuns.write_1xh5(outFileNamePath, interpData, '/data/data')
         APy3_GENfuns.printcol("interp file saved: {0}".format(outFileNamePath), 'black')
     #
     elif nextstep in ['l','L']:

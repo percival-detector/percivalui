@@ -425,7 +425,7 @@ def read_warn_1xh5(filenamepath, path_2read):
     return dataout
 #
 def read_2xh5(filenamepath, path1_2read, path2_2read):
-    ''' read 2xXD h5 file (paths_2read: '/data/','/reset/' ) '''
+    ''' read 2xXD h5 file (paths_2read: '/data','/reset' ) '''
     my5hfile= h5py.File(filenamepath, 'r')
     myh5dataset=my5hfile[path1_2read]
     my_data1= numpy.array(myh5dataset)
@@ -435,7 +435,7 @@ def read_2xh5(filenamepath, path1_2read, path2_2read):
     return (my_data1,my_data2)
 #
 def read_partial_2xh5(filenamepath, path1_2read, path2_2read, fromImg, toImg):
-    ''' read 2xXD h5 file (paths_2read: '/data/','/reset/' ) '''
+    ''' read 2xXD h5 file (paths_2read: '/data','/reset' ) '''
     my5hfile= h5py.File(filenamepath, 'r')
     myh5dataset=my5hfile[path1_2read]
     if myh5dataset.shape[0] <= toImg: my5hfile.close(); printErr('only {0} img in file (path1)'.format(myh5dataset.shape[0]))
@@ -449,7 +449,7 @@ def read_partial_2xh5(filenamepath, path1_2read, path2_2read, fromImg, toImg):
 def write_2xh5(filenamepath, 
                data1_2write, path1_2write, 
                data2_2write, path2_2write):
-    ''' write 2xXD h5 file (paths_2write: '/data/','/reset/' ) '''
+    ''' write 2xXD h5 file (paths_2write: '/data','/reset' ) '''
     my5hfile= h5py.File(filenamepath, 'w')
     my5hfile.create_dataset(path1_2write, data=data1_2write) #
     my5hfile.create_dataset(path2_2write, data=data2_2write) #
@@ -807,7 +807,7 @@ def plot_histo1d(array_2plot, histobins, logScaleFlag, label_x,label_y,label_tit
 def histo1Dx2(Smpl,Rst, histobins, logScaleFlag, label_x1,label_x2, label_y, label_title1,label_title2, label_titleFig):
     """ 2x1d histo """ 
     fig = matplotlib.pyplot.figure()
-    fig.canvas.set_window_title(label_titleFig) 
+    fig.canvas.manager.set_window_title(label_titleFig) 
     #
     matplotlib.pyplot.subplot(1,2,1)
     matplotlib.pyplot.hist(Smpl, bins=histobins)

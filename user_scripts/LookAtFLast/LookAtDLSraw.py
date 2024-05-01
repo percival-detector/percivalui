@@ -63,10 +63,10 @@ if verboseFlag:
 if APy3_GENfuns.notFound(file2show): APy3_GENfuns.printErr('not found: '+file2show)
 if verboseFlag:  APy3_GENfuns.printcol('reading all images from file'.format(img2proc_str),'blue')
 if img2proc_str in APy3_GENfuns.ALLlist: 
-    (inSmpl,inRst)= APy3_GENfuns.read_2xh5(file2show, '/data/', '/reset/')
+    (inSmpl,inRst)= APy3_GENfuns.read_2xh5(file2show, '/data', '/reset')
 else:
     aux_img2proc= APy3_GENfuns.matlab_like_range(img2proc_str)
-    (inSmpl,inRst)= APy3_GENfuns.read_partial_2xh5(file2show, '/data/', '/reset/', aux_img2proc[0], aux_img2proc[-1])
+    (inSmpl,inRst)= APy3_GENfuns.read_partial_2xh5(file2show, '/data', '/reset', aux_img2proc[0], aux_img2proc[-1])
 (NImg,ignNRow,ignNCol)= inSmpl.shape
 if verboseFlag: APy3_GENfuns.printcol('{0} image read from file'.format(NImg),'green')
 # ---

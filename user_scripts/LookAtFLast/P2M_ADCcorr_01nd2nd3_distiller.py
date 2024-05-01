@@ -259,7 +259,7 @@ for thisColl in range(len(CollList)):
     thisCollFile= folder_data2process+CollList[thisColl]+dflt_inputFileSuffix
     thisCollId_nameFromFile= idCollList[thisColl]
     if (verboseFlag): APy3_GENfuns.printcol('reading file {0}'.format(thisCollFile),'green')
-    (thisSmpl,thisRst)= APy3_GENfuns.read_2xh5(thisCollFile, '/data/', '/reset/')
+    (thisSmpl,thisRst)= APy3_GENfuns.read_2xh5(thisCollFile, '/data', '/reset')
     dataSmpl2proc[thisColl,:,:,:,:]= APy3_P2Mfuns.convert_DLSraw_2_GnCrsFn(thisSmpl,thisRst, ERRDLSraw,ERRint16)[Img2proc,iSmpl,:,:,:] # [coll,Img,row,col,gn/cs/fn] <- [Img,SmplRst,row,col,gn/cs/fn]
     dataRst2proc[thisColl,:,:,:,:] = APy3_P2Mfuns.convert_DLSraw_2_GnCrsFn(thisSmpl,thisRst, ERRDLSraw,ERRint16)[Img2proc,iRst ,:,:,:] # [coll,Img,row,col,gn/cs/fn] <- [Img,SmplRst,row,col,gn/cs/fn]
     Id_allData[thisColl,:]= float(idCollList[thisColl])

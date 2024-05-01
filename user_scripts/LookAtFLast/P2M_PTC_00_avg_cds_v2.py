@@ -164,7 +164,7 @@ fileList= APy3_GENfuns.list_files(folder_data2process, '*', inputFileSuffix)
 if verboseFlag: APy3_GENfuns.printcol('{0} files to be processed'.format(len(fileList)),'green')
 for iFile,thisFile in enumerate(fileList):
     if (verboseFlag): APy3_GENfuns.printcol("file {0}/{1}: {2}{3}".format(iFile,len(fileList)-1,folder_data2process,thisFile),'green')
-    (Smpl_DLSraw,Rst_DLSraw) = APy3_GENfuns.read_partial_2xh5(folder_data2process+thisFile, '/data/','/reset/', fromImg,toImg)
+    (Smpl_DLSraw,Rst_DLSraw) = APy3_GENfuns.read_partial_2xh5(folder_data2process+thisFile, '/data','/reset', fromImg,toImg)
     #
     # DLSraw => Gn,Crs,Fn
     if verboseFlag: APy3_GENfuns.printcol('DLSraw => Gn,Crs,Fn','blue')
@@ -216,8 +216,8 @@ for iFile,thisFile in enumerate(fileList):
     if saveFlag:
         fileName_avg= thisFile[:(-len(inputFileSuffix))]+avgFileSuffix
         fileName_std= thisFile[:(-len(inputFileSuffix))]+stdFileSuffix
-        APy3_GENfuns.write_1xh5(outFolder+fileName_avg, data2PTC_avg, '/data/data/')
-        APy3_GENfuns.write_1xh5(outFolder+fileName_std, data2PTC_std, '/data/data/')
+        APy3_GENfuns.write_1xh5(outFolder+fileName_avg, data2PTC_avg, '/data/data')
+        APy3_GENfuns.write_1xh5(outFolder+fileName_std, data2PTC_std, '/data/data')
         if (verboseFlag): APy3_GENfuns.printcol("saving avg {0}{1}".format(outFolder,fileName_avg),'green')
         if (verboseFlag): APy3_GENfuns.printcol("saving std {0}{1}".format(outFolder,fileName_std),'green')
     if (verboseFlag): APy3_GENfuns.printcol("--  --  --  --",'green')

@@ -311,13 +311,13 @@ APy3_GENfuns.printcol("script operations beginning for real at {0}".format(APy3_
 APy3_GENfuns.printcol('loading param and meta files:','blue')
 if APy3_GENfuns.notFound(multiGnCal_file_Gnknown): APy3_GENfuns.printErr('not found: '+multiGnCal_file_Gnknown)
 (PedestalADU_multiGn_Gnknown,e_per_ADU_multiGn_Gnknown)= APy3_GENfuns.read_2xh5(multiGnCal_file_Gnknown, '/Pedestal_ADU/', '/e_per_ADU/')
-if alternPedFlag_Gnknown: PedestalADU_multiGn_Gnknown[0,:,:]= APy3_GENfuns.read_warn_1xh5(alternPed_file_Gnknown, '/data/data/')
+if alternPedFlag_Gnknown: PedestalADU_multiGn_Gnknown[0,:,:]= APy3_GENfuns.read_warn_1xh5(alternPed_file_Gnknown, '/data/data')
 PedestalADU_multiGn_Gnknown[1:3,:,:]= numpy.NaN
 e_per_ADU_multiGn_Gnknown[1:3,:,:]= numpy.NaN
 #
 PedestalADU_multiGn_Gnunkwn= APy3_GENfuns.numpy_NaNs((3,NRow,NCol))
 e_per_ADU_multiGn_Gnunkwn=   APy3_GENfuns.numpy_NaNs((3,NRow,NCol))
-PedestalADU_multiGn_Gnunkwn[0,:,:]= APy3_GENfuns.read_warn_1xh5(alternPed_file_Gnunkwn, '/data/data/')
+PedestalADU_multiGn_Gnunkwn[0,:,:]= APy3_GENfuns.read_warn_1xh5(alternPed_file_Gnunkwn, '/data/data')
 #
 if APy3_GENfuns.notFound(folder_Gnknown+metaFile_avg_Gnknown): APy3_GENfuns.printErr('not found: '+folder_Gnknown+metaFile_avg_Gnknown)
 fileContent_avg_Gnknown= APy3_GENfuns.read_tst(folder_Gnknown+metaFile_avg_Gnknown)
@@ -369,8 +369,8 @@ NSets_Gnknown= len(fileList_avg_Gnknown)
 dataADU_avg_Gnknown_3DAr= APy3_GENfuns.numpy_NaNs((NSets_Gnknown,NRow,NCol))
 dataADU_std_Gnknown_3DAr= APy3_GENfuns.numpy_NaNs_like(dataADU_avg_Gnknown_3DAr)
 for iFile in range(NSets_Gnknown):
-    dataADU_avg_Gnknown_3DAr[iFile,:,:]=  APy3_GENfuns.read_warn_1xh5(folder_Gnknown+fileList_avg_Gnknown[iFile], '/data/data/')
-    dataADU_std_Gnknown_3DAr[iFile,:,:]=  APy3_GENfuns.read_warn_1xh5(folder_Gnknown+fileList_std_Gnknown[iFile], '/data/data/')
+    dataADU_avg_Gnknown_3DAr[iFile,:,:]=  APy3_GENfuns.read_warn_1xh5(folder_Gnknown+fileList_avg_Gnknown[iFile], '/data/data')
+    dataADU_std_Gnknown_3DAr[iFile,:,:]=  APy3_GENfuns.read_warn_1xh5(folder_Gnknown+fileList_std_Gnknown[iFile], '/data/data')
     APy3_GENfuns.dot_every10th(iFile,NSets_Gnknown)
 dataADU_avg_Gnknown_3DAr= numpy.copy(dataADU_avg_Gnknown_3DAr- PedestalADU_multiGn_Gnknown[0,:,:]) # note it is always 0, as it is fixGn
 #
@@ -379,8 +379,8 @@ NSets_Gnunkwn= len(fileList_avg_Gnunkwn)
 dataADU_avg_Gnunkwn_3DAr= APy3_GENfuns.numpy_NaNs((NSets_Gnunkwn,NRow,NCol))
 dataADU_std_Gnunkwn_3DAr= APy3_GENfuns.numpy_NaNs_like(dataADU_avg_Gnunkwn_3DAr)
 for iFile in range(NSets_Gnunkwn):
-    dataADU_avg_Gnunkwn_3DAr[iFile,:,:]=  APy3_GENfuns.read_warn_1xh5(folder_Gnunkwn+fileList_avg_Gnunkwn[iFile], '/data/data/')
-    dataADU_std_Gnunkwn_3DAr[iFile,:,:]=  APy3_GENfuns.read_warn_1xh5(folder_Gnunkwn+fileList_std_Gnunkwn[iFile], '/data/data/')
+    dataADU_avg_Gnunkwn_3DAr[iFile,:,:]=  APy3_GENfuns.read_warn_1xh5(folder_Gnunkwn+fileList_avg_Gnunkwn[iFile], '/data/data')
+    dataADU_std_Gnunkwn_3DAr[iFile,:,:]=  APy3_GENfuns.read_warn_1xh5(folder_Gnunkwn+fileList_std_Gnunkwn[iFile], '/data/data')
     APy3_GENfuns.dot_every10th(iFile,NSets_Gnunkwn)
 dataADU_avg_Gnunkwn_3DAr= numpy.copy(dataADU_avg_Gnunkwn_3DAr- PedestalADU_multiGn_Gnunkwn[0,:,:]) # note it is always 0, as it is fixGn
 #

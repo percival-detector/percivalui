@@ -411,7 +411,7 @@ if APy3_GENfuns.notFound(multiGnCal_file): APy3_GENfuns.printErr('not found: '+m
 #
 if altPedestalGn0_Flag: 
     if APy3_GENfuns.notFound(altPedestalGn0_file): APy3_GENfuns.printErr('not found: '+altPedestalGn0_file)
-    PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(altPedestalGn0_file, '/data/data/')
+    PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(altPedestalGn0_file, '/data/data')
 #
 if APy3_GENfuns.notFound(folder_data2process+meta_file): APy3_GENfuns.printErr('not found: '+folder_data2process+meta_file)
 meta_content= APy3_GENfuns.read_tst(folder_data2process+meta_file)
@@ -439,11 +439,11 @@ for iFile in range(meta_Nfiles):
     for jGn in range(3):
         thisFile= meta_fileNameList[jGn][iFile]
         if APy3_GENfuns.notFound(folder_data2process+thisFile): APy3_GENfuns.printErr('not found: '+folder_data2process+thisFile)
-        allData_ADU_avg[jGn,iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+thisFile, '/data/data/')
+        allData_ADU_avg[jGn,iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+thisFile, '/data/data')
         #
         if errbFlag:
             if APy3_GENfuns.notFound(folder_data2process+meta_std_fileNameList[jGn][iFile]): APy3_GENfuns.printErr('not found: '+folder_data2process+meta_std_fileNameList[jGn][iFile]) 
-            allData_ADU_std[jGn,iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+meta_std_fileNameList[jGn][iFile], '/data/data/')
+            allData_ADU_std[jGn,iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+meta_std_fileNameList[jGn][iFile], '/data/data')
     #
     APy3_GENfuns.dot_every10th(iFile,meta_Nfiles)
     #

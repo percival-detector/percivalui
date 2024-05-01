@@ -245,7 +245,7 @@ APy3_GENfuns.printcol("script operations beginning for real at {0}".format(APy3_
 APy3_GENfuns.printcol('loading param files:','blue')
 if APy3_GENfuns.notFound(multiGnCal_file): APy3_GENfuns.printErr('not found: '+multiGnCal_file)
 (PedestalADU_multiGn,e_per_ADU_multiGn)= APy3_GENfuns.read_2xh5(multiGnCal_file, '/Pedestal_ADU/', '/e_per_ADU/')
-if alternPedFlag: PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_warn_1xh5(alternPed_file, '/data/data/')
+if alternPedFlag: PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_warn_1xh5(alternPed_file, '/data/data')
 #---
 #%% data files
 APy3_GENfuns.printcol('loading data files:','blue')
@@ -255,7 +255,7 @@ data_e_3D= APy3_GENfuns.numpy_NaNs( (len(fileList),NRow,NCol) )
 evalFullWell= APy3_GENfuns.numpy_NaNs( (NRow,NCol) )
 
 for iFile,thisFile in enumerate(fileList):
-    thisADU= APy3_GENfuns.read_warn_1xh5(datafolder+thisFile, '/data/data/')
+    thisADU= APy3_GENfuns.read_warn_1xh5(datafolder+thisFile, '/data/data')
     data_e_3D[iFile,:,:]= (thisADU - PedestalADU_multiGn[0,:,:])*e_per_ADU_multiGn[0,:,:]
     del thisADU
     APy3_GENfuns.dot_every10th(iFile,len(fileList))
@@ -273,7 +273,7 @@ else:
 #---
 #%% save
 if saveFile:
-    APy3_GENfuns.write_1xh5(saveFile, evalFullWell, '/data/data/')
+    APy3_GENfuns.write_1xh5(saveFile, evalFullWell, '/data/data')
     APy3_GENfuns.printcol("data saved to {0}".format(saveFile),'blue')
 #---
 #%% that's all folks

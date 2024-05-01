@@ -142,13 +142,13 @@ APy3_GENfuns.printcol("-",'blue')
 #---
 ##% load files
 APy3_GENfuns.printcol("loading files",'blue')
-fullWell_e= APy3_GENfuns.read_warn_1xh5(fullWell_file, '/data/data/')
+fullWell_e= APy3_GENfuns.read_warn_1xh5(fullWell_file, '/data/data')
 APy3_GENfuns.printcol("loaded fullwell file {0}".format(fullWell_file),'green')
 #
-data_e= APy3_GENfuns.read_warn_1xh5(folder_data2process+e_file, '/data/data/')
+data_e= APy3_GENfuns.read_warn_1xh5(folder_data2process+e_file, '/data/data')
 APy3_GENfuns.printcol("loaded electron file {0}".format(folder_data2process+e_file),'green')
 #
-data_GnCrsFn= APy3_GENfuns.read_warn_1xh5(folder_data2process+GnCrsFn_file, '/data/data/')
+data_GnCrsFn= APy3_GENfuns.read_warn_1xh5(folder_data2process+GnCrsFn_file, '/data/data')
 APy3_GENfuns.printcol("loaded raw data file {0}".format(folder_data2process+GnCrsFn_file),'green')
 APy3_GENfuns.printcol("-",'blue')
 #
@@ -167,7 +167,7 @@ APy3_GENfuns.printcol("{0} pixels are saturated in this file".format(numpy.sum(d
 ##%% save data
 if saveFlag:
     saturatedFile= e_file[:(-4)]+"Saturated.h5"
-    APy3_GENfuns.write_1xh5(folder_data2process+saturatedFile, data_Saturated, '/data/data/')
+    APy3_GENfuns.write_1xh5(folder_data2process+saturatedFile, data_Saturated, '/data/data')
     APy3_GENfuns.printcol("Saturation map saved as {0}".format(folder_data2process+saturatedFile),'green')
 #
 #---

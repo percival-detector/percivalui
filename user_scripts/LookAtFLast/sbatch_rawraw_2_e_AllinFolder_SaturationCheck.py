@@ -146,7 +146,7 @@ if (verboseFlag):
 #---
 #%% load fullwell files
 if (verboseFlag): APy3_GENfuns.printcol("loading files",'blue')
-fullWell_e= APy3_GENfuns.read_warn_1xh5(fullWell_file, '/data/data/')
+fullWell_e= APy3_GENfuns.read_warn_1xh5(fullWell_file, '/data/data')
 if (verboseFlag): APy3_GENfuns.printcol("loaded fullwell file {0}".format(fullWell_file),'green')
 #%% list file
 eFileList= APy3_GENfuns.list_files(folder_data2process, '*', filesuffix)
@@ -159,9 +159,9 @@ for iFile,this_e_file in enumerate(eFileList):
     if (verboseFlag): APy3_GENfuns.printcol("file {0}/{1}".format(iFile,len(eFileList)-1),'green')
     this_GnCrsFn_file= this_e_file[:-(lenfilesuffix)]+GnCrsFn_filesuffix
     saturatedFile= this_e_file[:-(lenfilesuffix)]+Saturated_filesuffix
-    data_e= APy3_GENfuns.read_warn_1xh5(folder_data2process+this_e_file, '/data/data/')
+    data_e= APy3_GENfuns.read_warn_1xh5(folder_data2process+this_e_file, '/data/data')
     if (verboseFlag): APy3_GENfuns.printcol("  loaded electron file {0}".format(folder_data2process+this_e_file),'green')
-    data_GnCrsFn= APy3_GENfuns.read_warn_1xh5(folder_data2process+this_GnCrsFn_file, '/data/data/')
+    data_GnCrsFn= APy3_GENfuns.read_warn_1xh5(folder_data2process+this_GnCrsFn_file, '/data/data')
     if (verboseFlag): APy3_GENfuns.printcol("  loaded raw data file {0}".format(folder_data2process+this_GnCrsFn_file),'green')
     #
     ##% eval saturation
@@ -177,7 +177,7 @@ for iFile,this_e_file in enumerate(eFileList):
     #
     ##%% save data
     if saveFlag:
-        APy3_GENfuns.write_1xh5(folder_data2process+saturatedFile, data_Saturated, '/data/data/')
+        APy3_GENfuns.write_1xh5(folder_data2process+saturatedFile, data_Saturated, '/data/data')
         if (verboseFlag): APy3_GENfuns.printcol("  Saturation map saved as {0}".format(folder_data2process+saturatedFile),'green')
     if (verboseFlag): APy3_GENfuns.printcol("-",'blue')
 #---

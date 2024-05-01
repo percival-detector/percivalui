@@ -306,10 +306,10 @@ def read_warn_1xh5(filenamepath, path_2read):
     return dataout
 
 for iSet in range(NSets):
-    alldata_4DAr[i_light_avg,iSet,:,:]= read_warn_1xh5(folder_data2process+fileList_all[iSet][i_light_avg], '/data/data/')
-    alldata_4DAr[i_light_std,iSet,:,:]= read_warn_1xh5(folder_data2process+fileList_all[iSet][i_light_std], '/data/data/')
-    alldata_4DAr[i_drk_avg,iSet,:,:]=   read_warn_1xh5(folder_data2process+fileList_all[iSet][i_drk_avg], '/data/data/')
-    alldata_4DAr[i_drk_std,iSet,:,:]=   read_warn_1xh5(folder_data2process+fileList_all[iSet][i_drk_std], '/data/data/')
+    alldata_4DAr[i_light_avg,iSet,:,:]= read_warn_1xh5(folder_data2process+fileList_all[iSet][i_light_avg], '/data/data')
+    alldata_4DAr[i_light_std,iSet,:,:]= read_warn_1xh5(folder_data2process+fileList_all[iSet][i_light_std], '/data/data')
+    alldata_4DAr[i_drk_avg,iSet,:,:]=   read_warn_1xh5(folder_data2process+fileList_all[iSet][i_drk_avg], '/data/data')
+    alldata_4DAr[i_drk_std,iSet,:,:]=   read_warn_1xh5(folder_data2process+fileList_all[iSet][i_drk_std], '/data/data')
 #
 subdata_4DAr[i_avg,:,:,:]= alldata_4DAr[i_light_avg,:,:,:]-alldata_4DAr[i_drk_avg,:,:,:]
 subdata_4DAr[i_std,:,:,:]= numpy.sqrt(numpy.abs((alldata_4DAr[i_light_std,:,:,:]**2) - (alldata_4DAr[i_drk_std,:,:,:]**2)))
@@ -594,7 +594,7 @@ elif PTCmethod== 'per X pixels in same row':
 #
 if saveFlag: 
     outFileName=outPrefix+'_ADU2e.h5'
-    APy3_GENfuns.write_1xh5(outFolder+outFileName, out_fitADU2e_Array, '/data/data/')
+    APy3_GENfuns.write_1xh5(outFolder+outFileName, out_fitADU2e_Array, '/data/data')
     APy3_GENfuns.printcol('e/ADU values saved in {0}'.format(outFolder+outFileName),'green') 
 #
 APy3_GENfuns.plot_2D_all(out_fitADU2e_Array, False, 'col','row','{0} [e/ADU]'.format(outPrefix), True); matplotlib.pyplot.show(block=True)

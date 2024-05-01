@@ -341,9 +341,9 @@ allData_std_Gnunknw= APy3_GENfuns.numpy_NaNs((meta_Nfiles,NRow,NCol))
 APy3_GENfuns.printcol("reading files",'blue')
 for iFile in range(meta_Nfiles):
     thisFile= meta_fileNameList[Gn_to_calculate][iFile]
-    allData_Gnunknw[iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+thisFile, '/data/data/')
+    allData_Gnunknw[iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+thisFile, '/data/data')
     #
-    allData_std_Gnunknw[iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+meta_std_fileNameList[Gn_to_calculate][iFile],   '/data/data/')
+    allData_std_Gnunknw[iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+meta_std_fileNameList[Gn_to_calculate][iFile],   '/data/data')
     #
     APy3_GENfuns.dot_every10th(iFile,meta_Nfiles)
     #
@@ -474,7 +474,7 @@ elif (showFlag & fitFlag & pngFlag & (~interactiveFlag)):
     APy3_GENfuns.printcol("png saved in"+saveInsteadOfPlotting_Folder,'green')
 #---
 if (saveFlag & (~interactiveFlag)):
-    APy3_GENfuns.write_1xh5(file_out, PedestalADU_2DA, '/data/data/')
+    APy3_GENfuns.write_1xh5(file_out, PedestalADU_2DA, '/data/data')
     APy3_GENfuns.printcol("data saved in {0}".format(file_out),'green')
 #---
 #%% that's all folks

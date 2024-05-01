@@ -587,7 +587,7 @@ if APy3_GENfuns.notFound(ADUcorr_file): APy3_GENfuns.printErr('not found: '+ADUc
 if APy3_GENfuns.notFound(multiGnCal_file): APy3_GENfuns.printErr('not found: '+multiGnCal_file)
 (PedestalADU_multiGn,e_per_ADU_multiGn)= APy3_GENfuns.read_2xh5(multiGnCal_file, '/Pedestal_ADU/', '/e_per_ADU/')
 if APy3_GENfuns.notFound(folder_data2process+infile): APy3_GENfuns.printErr('not found: '+folder_data2process+infile)
-(drkSmpl_DLSraw,drkRst_DLSraw) = APy3_GENfuns.read_partial_2xh5(folder_data2process+infile, '/data/','/reset/', fromImg,toImg)
+(drkSmpl_DLSraw,drkRst_DLSraw) = APy3_GENfuns.read_partial_2xh5(folder_data2process+infile, '/data','/reset', fromImg,toImg)
 #---
 #%% DLSraw => Gn,Crs,Fn
 if verboseFlag: APy3_GENfuns.printcol('DLSraw => Gn,Crs,Fn','blue')
