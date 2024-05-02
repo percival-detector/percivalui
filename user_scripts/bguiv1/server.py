@@ -86,7 +86,7 @@ class myServer:
 
     def __del__(self):
         print("closing server");
-        if self._mythread and self._mythread.isAlive():
+        if self._mythread and self._mythread.is_alive():
             self._mythread.join();
         self._sock.close();
 

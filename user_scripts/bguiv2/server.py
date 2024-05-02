@@ -62,7 +62,7 @@ class myServer:
 
     def __del__(self):
         print("closing server");
-        if self._mythread and self._mythread.isAlive():
+        if self._mythread and self._mythread.is_alive():
             self._mythread.join();
         self._sock.close();
 
@@ -97,7 +97,7 @@ class myServer:
                           cmd = "start";
 
                   #    print "TASK ", cmd, task;
-                      if self._mythread.isAlive() == False:
+                      if self._mythread.is_alive() == False:
                         if cmd=="start":
                             self._mythread = threading.Thread(target=self.defcon_.doTask, args=(task,));
                             self._mythread.daemon = True; # thread dies when prog exits
