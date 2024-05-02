@@ -114,15 +114,16 @@ def main():
       # of the range. The coarse ADC outputs 31 to 0 as we set the DAC in [10k,34k].
       # The width of this scan should be 1500 because moving the DAC by 750 moves the coarse-ADC by
       # 1 unit, and we expect some overlap.
-      paramValues=numpy.arange(18300,21290+1,10).astype(int);
+      paramValues=numpy.arange(18300,21290+1,10).tolist();
       out_suffix= 'fnramp'
     elif args.pattern == "coarse":
       logger.info("doing coarse scan");
-      paramValues=numpy.arange(10000,33920+1,80).astype(int);
+      # tolist() converts from numpy-types to python types which json needs.
+      paramValues=numpy.arange(10000,33920+1,80).tolist();
       out_suffix= 'crsramp'
     elif args.pattern == "test":
       logger.info("doing test scan");
-      paramValues=numpy.arange(10000,31001,10000).astype(int);
+      paramValues=numpy.arange(10000,31001,10000).tolist();
       out_suffix= 'testramp'
     else:
       logger.error("unknown pattern %s", args.pattern);
