@@ -1080,7 +1080,7 @@ class PercivalDetector(object):
                 self._active_command.complete(success=True)
             elif command.command_name in str(PercivalCommandNames.cmd_update_monitors):
                 # Force a read of the monitors.  This will result in values being written to db
-                self.update_status()
+                self.update_monitors()
                 self._active_command.complete(success=True)
             elif command.command_name in str(PercivalCommandNames.cmd_initialise_channels):
                 # Initialise the channels on the Percival hardware
@@ -1121,6 +1121,8 @@ class PercivalDetector(object):
         Turn on or off global monitoring.  This sends two system commands; enable_global_monitoring and
         enable_device_level_safety_controls.
         It also sets the internal monitoring flag to either True or False.
+        This seems to be some debug function that is dubious. I don't know why you would want to
+          disable it here.
 
         :param state: Turn global monitoring on (True) or off (False)
         :type state: bool
@@ -1366,7 +1368,7 @@ class PercivalDetector(object):
 
         return reply
 
-    def update_status(self):
+    def update_monitors(self):
         """
         Return the status of the monitor devices. Seems to take ~150ms.
         """

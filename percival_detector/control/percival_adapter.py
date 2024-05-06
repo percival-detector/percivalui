@@ -41,14 +41,15 @@ class PercivalAdapter(ApiAdapter):
 
         self._detector = PercivalDetector(ini_file, False, False)
         self._detector.set_global_monitoring(True)
-        self._auto_read = False
+
+        self._auto_read_monitors = False
         self.status_update(0.9)
 
     @run_on_executor
     def status_update(self, task_interval):
         if self._detector:
-            if self._auto_read:
-                self._detector.update_status()
+            if self._auto_read_monitors:
+                self._detector.update_monitors()
         time.sleep(task_interval)
         IOLoop.instance().add_callback(self.status_update, task_interval)
 
@@ -72,7 +73,7 @@ class PercivalAdapter(ApiAdapter):
 
         # If the driver status has been requested append the auto_read status
         if "driver" in cmd.command_name:
-            response["auto_read"] = self._auto_read
+            response["auto_read"] = self._auto_read_monitors
 
         status_code = 200
 
@@ -108,10 +109,10 @@ class PercivalAdapter(ApiAdapter):
             response['param_names'] = cmd.param_names
             response['parameters'] = cmd.parameters
             response['time'] = cmd.command_time
-            if 'start' in cmd.command_name:
-                self._auto_read = True
-            elif 'stop' in cmd.command_name:
-                self._auto_read = False
+            if 'auto_read_start' in cmd.command_name:
+                self._auto_read_monitors = True
+            elif 'auto_read_stop' in cmd.command_name:
+                self._auto_read_monitors = False
             else:
                 #cmd_response = self._detector.execute_command(cmd)
                 self._detector.queue_command(cmd)

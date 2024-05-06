@@ -172,7 +172,7 @@ class TestMapField(unittest.TestCase):
     def TestValue(self):
         self.assertEqual(self.dut.value, None)
         with self.assertRaises(ValueError):
-            self.dut.insert_field_value([0x00, 0x00])
+            self.dut.get_field_value_into([0x00, 0x00])
         self.dut.value = 45
         self.assertEqual(self.dut.value, 45)
         self.assertEqual(self.dut._value, 45)
@@ -207,7 +207,7 @@ class TestUARTRegister(unittest.TestCase):
 
 class TestRegister(unittest.TestCase):
     def setUp(self):
-        addr = const.CONTROL_SETTINGS_CARRIER.start_address
+        addr = const.CONTROL_CHANNELS_CARRIER.start_address
         self.addr_word = [
             (addr + 0, 0x000A),
             (addr + 1, 0x00A0),

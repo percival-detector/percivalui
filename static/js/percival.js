@@ -280,10 +280,10 @@ $( document ).ready(function()
     reconnect_db();
   });
   $('#server-ar-start').click(function(){
-    auto_read('start');
+    auto_read('auto_read_start');
   });
   $('#server-ar-stop').click(function(){
-    auto_read('stop');
+    auto_read('auto_read_stop');
   });
   $('#server-sys-cmd').click(function(){
     send_system_command();
@@ -365,7 +365,7 @@ function reconnect_db()
 
 function auto_read(action)
 {
-    $.put('/api/' + api_version + '/percival/auto_read/' + action, function(response){});
+    $.put('/api/' + api_version + '/percival/' + action, function(response){});
 }
 
 function send_refresh_monitors_command()

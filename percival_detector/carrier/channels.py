@@ -47,11 +47,11 @@ class Channel(object):
         self.uart_device_address = channel_ini.UART_address
         self._log.debug("Channel device address: %d", self.uart_device_address)
 
-        self._reg_command = UARTRegister(const.COMMAND)
-        self._reg_command.initialize_map([0,0,0])
-        self._reg_command.fields.device_type = self._device_family_features.function.value
+        self._reg_uart = UARTRegister(const.COMMAND)
+        self._reg_uart.initialize_map([0,0,0])
+        self._reg_uart.fields.device_type = self._device_family_features.function.value
         # this renaming of channel_index to device_index is dubious.
-        self._reg_command.fields.device_index = self.channel_index
+        self._reg_uart.fields.device_index = self.channel_index
 
         self._reg_echo = UARTRegister(const.READ_ECHO_WORD)
 
@@ -81,9 +81,9 @@ class Channel(object):
         """
         if not self._device_family_features.supports_cmd(cmd):
             raise TypeError("Device family does not support command %s"%cmd)
-        self._reg_command.fields.device_cmd = cmd.value
-        self._log.debug(self._reg_command.fields)
-        cmd_msg = self._reg_command.get_write_cmd_msg(eom=True)[0]
+        self._reg_uart.fields.device_cmd = cmd.value
+        self._log.debug(self._reg_uart.fields)
+        cmd_msg = self._reg_uart.get_write_cmd_msg(eom=True)[0]
         return cmd_msg
 
     def command(self, cmd):

@@ -35,7 +35,7 @@ class PercivalStandalone(object):
 
     def update_status(self):
         status_msg = IpcMessage(IpcMessage.MSG_TYPE_NOTIFY, IpcMessage.MSG_VAL_CMD_STATUS)
-        status_msg.set_param("status", self._detector.update_status())
+        status_msg.set_param("status", self._detector.update_monitors())
         # self._log.debug("Publishing: %s", status_msg.encode())
         self._status_channel.send(status_msg.encode())
 

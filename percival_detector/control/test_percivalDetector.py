@@ -49,7 +49,7 @@ class TestPercivalDetector(TestCase):
 
     def test_update_status(self):
         pcvl = PercivalDetector(initialise_hardware=True)
-        result = pcvl.update_status()
+        result = pcvl.update_monitors()
         self.assertIsInstance(result, dict)
         pcvl.cleanup()
 

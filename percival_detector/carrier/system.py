@@ -29,8 +29,8 @@ class SystemCommand(object):
         """
         self._log = logging.getLogger(self.__class__.__name__)
         self._txrx = txrx
-        self._reg_command = UARTRegister(const.COMMAND)
-        self._reg_command.initialize_map([0,0,0])
+        self._reg_uart = UARTRegister(const.COMMAND)
+        self._reg_uart.initialize_map([0,0,0])
 
     def _get_command_msg(self, cmd):
         """
@@ -46,8 +46,8 @@ class SystemCommand(object):
         """
         if type(cmd) != const.SystemCmd:
             raise TypeError("Command %s is not a SystemCommand"%cmd)
-        self._reg_command.fields.system_cmd = cmd.value
-        cmd_msg = self._reg_command.get_write_cmd_msg(eom=True)[2]
+        self._reg_uart.fields.system_cmd = cmd.value
+        cmd_msg = self._reg_uart.get_write_cmd_msg(eom=True)[2]
         return cmd_msg
 
     def _command(self, cmd):
@@ -198,8 +198,8 @@ class SystemSettings(object):
         :type  txrx: TxRx
         """
         self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
-        self._reg_command = UARTRegister(const.SYSTEM_SETTINGS)
-        self._reg_command.initialize_map([0, 0, 0, 0, 0, 0, 0, 0,
+        self._reg_uart = UARTRegister(const.SYSTEM_SETTINGS)
+        self._reg_uart.initialize_map([0, 0, 0, 0, 0, 0, 0, 0,
                                           0, 0, 0, 0, 0, 0, 0, 0,
                                           0, 0])
         self._txrx = None
@@ -227,8 +227,8 @@ class SystemSettings(object):
             # Now set the attributes within the UART Register
             for item in map:
                 try:
-                    if hasattr(self._reg_command.fields, item):
-                        setattr(self._reg_command.fields, item, int(map[item]))
+                    if hasattr(self._reg_uart.fields, item):
+                        setattr(self._reg_uart.fields, item, int(map[item]))
                     else:
                         self._log.debug("No register found for ini file setting %s", item)
                 except:
@@ -254,7 +254,7 @@ class SystemSettings(object):
         :param cmd: command to encode
         :type  cmd: SystemCmd
         """
-        cmd_msgs = self._reg_command.get_write_cmd_msg(eom=True)
+        cmd_msgs = self._reg_uart.get_write_cmd_msg(eom=True)
         for cmd_msg in cmd_msgs:
             self._txrx.send_recv_message(cmd_msg)
 
@@ -264,26 +264,26 @@ class SystemSettings(object):
 
     @property
     def settings(self):
-        return self._reg_command.fields.map_fields
+        return self._reg_uart.fields.map_fields
 
     def set_number_of_frames(self, no_of_frames):
-        self._reg_command.fields.ACQUISITION_Number_of_frames = no_of_frames
+        self._reg_uart.fields.ACQUISITION_Number_of_frames = no_of_frames
         self._send_to_carrier()
 
     def set_acquisition_mode(self, acquisition_mode):
-        self._reg_command.fields.ACQUISITION_Acquisition_mode = acquisition_mode
+        self._reg_uart.fields.ACQUISITION_Acquisition_mode = acquisition_mode
         self._send_to_carrier()
 
     def set_continuous_acquisition(self, continuous_mode):
-        self._reg_command.fields.ACQUISITION_Acquisition_mode = continuous_mode
+        self._reg_uart.fields.ACQUISITION_Acquisition_mode = continuous_mode
         self._send_to_carrier()
 
     def set_sensor_type(self, sensor_type):
-        self._reg_command.fields.REGION_OF_INTEREST_Sensor_type = sensor_type
+        self._reg_uart.fields.REGION_OF_INTEREST_Sensor_type = sensor_type
         self._send_to_carrier()
 
     def set_illumination(self, illumination):
-        self._reg_command.fields.REGION_OF_INTEREST_Illumination = illumination
+        self._reg_uart.fields.REGION_OF_INTEREST_Illumination = illumination
         self._send_to_carrier()
 
     def set_value(self, setting, value):
@@ -294,8 +294,8 @@ class SystemSettings(object):
             elif 'true' in value.lower():
                 value = 1
         try:
-            if hasattr(self._reg_command.fields, setting):
-                setattr(self._reg_command.fields, setting, int(value))
+            if hasattr(self._reg_uart.fields, setting):
+                setattr(self._reg_uart.fields, setting, int(value))
                 self._send_to_carrier()
             else:
                 self._log.debug("No system register found for %s", setting)
@@ -316,8 +316,8 @@ class SystemSettings(object):
         for item in params:
             full_name = section + item
             try:
-                if hasattr(self._reg_command.fields, full_name):
-                    setattr(self._reg_command.fields, full_name, int(params[item]))
+                if hasattr(self._reg_uart.fields, full_name):
+                    setattr(self._reg_uart.fields, full_name, int(params[item]))
                 else:
                     self._log.debug("No system register found for %s", full_name)
                     raise PercivalSystemCommandError("No system register found for {}".format(full_name))
@@ -392,8 +392,8 @@ class ClockSettings(object):
         :type  txrx: TxRx
         """
         self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
-        self._reg_command = UARTRegister(const.CLOCK_SETTINGS)
-        self._reg_command.initialize_map([0, 0, 0, 0, 0, 0, 0, 0])
+        self._reg_uart = UARTRegister(const.CLOCK_SETTINGS)
+        self._reg_uart.initialize_map([0, 0, 0, 0, 0, 0, 0, 0])
         self._txrx = None
         self._settings_ini = None
         if settings_ini:
@@ -419,8 +419,8 @@ class ClockSettings(object):
             # Now set the attributes within the UART Register
             for item in map:
                 try:
-                    if hasattr(self._reg_command.fields, item):
-                        setattr(self._reg_command.fields, item, int(map[item]))
+                    if hasattr(self._reg_uart.fields, item):
+                        setattr(self._reg_uart.fields, item, int(map[item]))
                     else:
                         self._log.debug("No register found for ini file setting %s", item)
                 except:
@@ -446,7 +446,7 @@ class ClockSettings(object):
         :param cmd: command to encode
         :type  cmd: SystemCmd
         """
-        cmd_msgs = self._reg_command.get_write_cmd_msg(eom=True)
+        cmd_msgs = self._reg_uart.get_write_cmd_msg(eom=True)
         for cmd_msg in cmd_msgs:
             self._txrx.send_recv_message(cmd_msg)
 
