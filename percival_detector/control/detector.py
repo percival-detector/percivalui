@@ -512,7 +512,7 @@ class PercivalDetector(object):
         self._initialise_hardware = initialise_hardware
         self._txrx = None
         self._db = None
-        self._global_monitoring = False
+        self._global_monitoring = True
         self._log.info("Executing detector constructor")
         self._percival_params = PercivalParameters(ini_file)
         self._board_settings = {}
@@ -1289,6 +1289,7 @@ class PercivalDetector(object):
             for name, tmp in list(const.SystemCmd.__members__.items()):
                 reply["commands"].append(name)
 
+        # this is a misnomer as it returns the keys of the system-settings
         elif getcmd == "system_values":
             reply = {}
             reply["system_values"] = self._system_settings.settings
@@ -1358,6 +1359,23 @@ class PercivalDetector(object):
             for (name, device) in self._control_chs.items():
               vals[name] = device.get_value()
             reply = { 'channel_values' : vals }
+
+        elif getcmd == "system_settings":
+            vals = self._system_settings._reg_uart.fields.as_dict();
+            reply = { 'system_settings' : vals }
+
+        elif getcmd == "clock_settings":
+            vals = self._clock_settings._reg_uart.fields.as_dict();
+            reply = { 'clock_settings' : vals }
+
+        elif getcmd == "chip_readout_settings":
+            vals = self._chip_readout_settings._reg_uart.fields.as_dict();
+            reply = { 'chip_readout_settings' : vals }
+
+        elif getcmd == "sensor_debug":
+            reply = {'sensor_debug' : None};
+            if self._percival_params.sensor_debug_params:
+                reply['sensor_debug'] = self._percival_params.sensor_debug_params.value_map
 
         # Check to see if the getcmd is a monitoring device that we own
         elif getcmd in self._monitors:

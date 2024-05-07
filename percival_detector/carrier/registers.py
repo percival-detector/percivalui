@@ -59,6 +59,12 @@ class RegisterMap(object):
             logger.debug("generate_map: words: %s", str(words))
         return words
 
+    def as_dict(self):
+        ret = {};
+        for key in self._mem_map.keys():
+          ret[key] = self._mem_map[key].value;
+        return ret;
+
     @property
     def map_fields(self):
         return list(self._mem_map.keys())
