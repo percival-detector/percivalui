@@ -40,7 +40,6 @@ class PercivalAdapter(ApiAdapter):
             ini_file = kwargs['config_file']
 
         self._detector = PercivalDetector(ini_file, False, False)
-        self._detector.set_global_monitoring(True)
 
         self._auto_read_monitors = False
         PeriodicCallback(
