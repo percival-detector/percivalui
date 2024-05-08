@@ -1,5 +1,10 @@
-#! /home/prcvlusr/percival/percivalui/venv27/bin/python
+#!/usr/bin/env python3
 
+""" This script was originally written by Toko Hirono, Desy.
+    It is a complex acquisition script that also gathers settings from the detector
+    and saves them in an h5 file. It supports doing several acquisitions to scan
+    over a range of values.
+"""
 from __future__ import print_function
 
 import sys
@@ -13,9 +18,9 @@ import json
 import requests
 import socket 
 
-from percival.carrier import const
-from percival.scripts.util import DAQClient
-from percival.scripts.util import PercivalClient
+from percival_detector.carrier import const
+from percival_detector.scripts.util import DAQClient
+from percival_detector.scripts.util import PercivalClient
 
 SCRIPT_NAME = os.path.basename(__file__)
 
@@ -32,10 +37,10 @@ def options():
     parser = argparse.ArgumentParser(description=desc, formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("-a", "--address", action="store", default="127.0.0.1:8888",
                         help="Odin server address (default 127.0.0.1:8888)")
-    parser.add_argument("-f", "--fname", default="", help="additional prefix for the file name. File name=<time stamp>_[this arg]_<scan index>_<000001|000002>.h5 default=''")
+    parser.add_argument("-f", "--fname", default="", help="additional prefix for the file name. File name=<time stamp>_[this arg]_<scan index>_<000000|000001>.h5 default=''")
     parser.add_argument("-n", "--nimages", default=10, help="images for each acquisition: default=10")
     parser.add_argument("-t", "--integration", default="1199999", 
-                        help="integration time. if 'ms' after float value, then the value will be cauculated into 100MHzclk and subtracted by 1. min is 12ms and max is 300ms : e.g. 12ms, 29999999, defualt=1199999")
+                        help="integration time. if 'ms' after float value, then the value will be calculated into 100MHzclk and subtracted by 1. min is 12ms and max is 300ms : e.g. 12ms, 29999999, default=1199999")
     parser.add_argument("-p", "--param", default="",
                         help="Scan Parameter: e.g. TRIGGERING_Repetition_rate, VS_Vref_spare")
     parser.add_argument("-s", "--scan", default="", 
@@ -44,7 +49,7 @@ def options():
                         help="outfile directory: e.g. /ramdisk/current/raw (<100GB) /gpfs/current/processed (>100GB) default=/home/prcvlusr/PercAuxiliaryTools/temp_data")
     parser.add_argument("--timeout", default=0, help="timeout in sec: default=60s for Untrig, for Triggered mode, inf")
     parser.add_argument("--nblocks", default=100, help="blocks_per_file: default=100, 0=no file splitting)")
-    parser.add_argument("--savemeta", default='every', help="all=settings&monitors, nomonitor=w/o monitors(~3sec faster), org=original odin, every=all+settings@each step")
+ # try to delete this.   parser.add_argument("--savemeta", default='every', help="dont know all=settings&monitors, every=all+settings@each step")
     parser.add_argument("--debug", default=0, help="debug flg")
     parser.add_argument("--plsgen", default=False, help="is plsgen there? default=False")
     parser.add_argument("--p04sock", default=None, help="Address:Port e.g. 'haspp04g01:48123' default=None")
@@ -84,8 +89,30 @@ def options():
 
     return args
 
+############## This convenience function gets several status items from the adapter
+### and amalgamates them into a dictionary. Monitors come with get_status().
+def get_all_settings(pc):
+    pc.send_command("cmd_update_monitors", wait=False)
+    pc.wait_for_command_completion(0.1)  # this takes about 3s
+
+    all_settings = {};
+    res = pc.get_status("system_settings");
+    all_settings.update(res);
+    res = pc.get_status("clock_settings");
+    all_settings.update(res);
+    res = pc.get_status("chip_readout_settings");
+    all_settings.update(res);
+    res = pc.get_status("sensor_debug");
+    all_settings.update(res);
+    res = pc.get_status("channel_values");
+    all_settings.update(res);
+    res = pc.get_status("status");
+    all_settings.update(res);
+    return all_settings;
+
+
 ################ h5 meta file
-def creat_metafile(fname, t0, status, cname, scan_len, everystep=False):
+def create_metafile(fname, t0, status, scan_param, scan_len, everystep=False):
     with h5py.File(fname, "w") as f:
         meta = f.create_group("meta_data")
         moni = meta.create_group("monitor")
@@ -131,14 +158,14 @@ def creat_metafile(fname, t0, status, cname, scan_len, everystep=False):
                 v_array[0][k] = v
             tbl[0]= v_array[0]
         meta.create_dataset('scan', (scan_len,), 
-                          dtype=np.dtype([('time', 'f8'),(cname,'i'),('fname','S128')]),
+                          dtype=np.dtype([('time', 'f8'),(scan_param,'i'),('fname','S128')]),
                           compression='gzip')
 
-def append_metafile(fname, idx, t, value, outFileName, status=None):
+def append_metafile(fname, idx, tme, scan_value, outFileName, status=None):
     with h5py.File(fname, "a") as f:
       # meta_data/scan is indexed triples (time, fieldname, filename).
-      f['/meta_data/scan'][idx,'time'] = t
-      f['/meta_data/scan'][idx, f['/meta_data/scan'].dtype.names[1]] = value
+      f['/meta_data/scan'][idx,'time'] = tme
+      f['/meta_data/scan'][idx, f['/meta_data/scan'].dtype.names[1]] = scan_value
       f['/meta_data/scan'][idx, 'fname'] = outFileName
       if status is not None:
           # this stores under metadata/status_class, a row for each idx, containing
@@ -148,7 +175,7 @@ def append_metafile(fname, idx, t, value, outFileName, status=None):
             tname = '/meta_data/{0:s}'.format(kk)
             if tname in f:
                 v_array = np.zeros(1,dtype=f[tname].dtype)
-                v_array[0]['time'] = t
+                v_array[0]['time'] = tme
                 v_array[0]['id'] = idx
                 for k, v in vv.items():
                     if isinstance(v, type(u'')):
@@ -169,21 +196,21 @@ def parse_response(response):
         print("Error Message:", response['error'])
         sys.exit(-1)
 
-def wait_for_writing(dc, waitting_status, timeout=60., interval=0.2):
+def wait_for_writing(dc, waiting_status, timeout=60., interval=0.2):
         read_count = 0
         while read_count<(timeout/interval) or timeout<0: 
             response = dc.get_status()
             fps = response['value']
-            writing = [waitting_status]
+            writing = [waiting_status]
             for fp in fps:
                 writing.append(fp['hdf']['writing'])
             if all(writing) or not any(writing):
                 return response
-            #print("DAQ ready ?", "wait for", waitting_status, "read_count", read_count, writing, "<", timeout/interval)
+            #print("DAQ ready ?", "wait for", waiting_status, "read_count", read_count, writing, "<", timeout/interval)
             time.sleep(interval)
             read_count = read_count + 1
         ## stop writting
-        response['error']="timeout, waiting for busy"+str(waitting_status)
+        response['error']="timeout, waiting for busy"+str(waiting_status)
         return response
 
 def get_fr_status(addr="127.0.0.1:8888"):
@@ -259,29 +286,17 @@ def send_plsgen(cmd_list):
 ################ Main
 def main():
 
-    t0 = time.time()
+    start_tme = time.time()
 
     args = options()
     dc = DAQClient(args.address)
     pc = PercivalClient(args.address)
-    status = {}
+    BIG_status_lookup = {}
 
     # Reset DAQ
     parse_response(dc.send_command('hdf/write', '0'))
     dc.send_reset_stats()
-    res = wait_for_writing(dc, waitting_status=False)
-
-    # update settings/status of FPGA
-    if args.savemeta != "org":
-        pc.send_command("cmd_update_settings", wait=False)
-
-    # set "master"
-    if "percival2" in res['value'][0]['plugins']['names']:
-       parse_response(dc.send_command('hdf/master', 'reset'))
-       dcr=True
-    else:
-       parse_response(dc.send_command('hdf/master', 'data')) 
-       dcr=False
+    res = wait_for_writing(dc, waiting_status=False)
 
     # set blocks_per_file
     parse_response(dc.send_command('hdf/process/blocks_per_file', 
@@ -290,23 +305,23 @@ def main():
     parse_response(dc.set_file_path(args.directory))
 
     # get config/status
-    status['fp0'] = res['value'][0]
-    status['fp1'] = res['value'][1]
+    BIG_status_lookup['fp0'] = res['value'][0]
+    BIG_status_lookup['fp1'] = res['value'][1]
     res = get_frfp_config(args.address)
-    status['frfp0_config'] = res['value'][0]
-    status['frfp1_config'] = res['value'][1]
+    BIG_status_lookup['frfp0_config'] = res['value'][0]
+    BIG_status_lookup['frfp1_config'] = res['value'][1]
     res = get_fr_status(args.address)
-    status['fr0'] = res['value'][0]
-    status['fr1'] = res['value'][1]
+    BIG_status_lookup['fr0'] = res['value'][0]
+    BIG_status_lookup['fr1'] = res['value'][1]
     pc.wait_for_command_completion(0.01)
-    res = pc.get_status("all_settings")
-    status.update(res)
+    res = get_all_settings(pc);
+    BIG_status_lookup.update(res)
 
     ############# get config from plsgen
     npls = 0
-    if status['system_settings']['TRIGGERING_Trigger_source']:
-      if status['system_settings']['TRIGGERING_Trigger_mode']==1:
-          npls = status['system_settings']['TRIGGERING_number_of_frames_per_trigger']
+    if BIG_status_lookup['system_settings']['TRIGGERING_Trigger_source']:
+      if BIG_status_lookup['system_settings']['TRIGGERING_Trigger_mode']==1:
+          npls = BIG_status_lookup['system_settings']['TRIGGERING_number_of_frames_per_trigger']
       else:
           npls = 1
       if args.plsgen:
@@ -318,12 +333,12 @@ def main():
             print(res_plsgen)
             print('!!!!!!!!!!!!ERROR pulse gen!!!!!!!!!!!!!!')
             sys.exit()
-        status['plsgen'] = {}
-        status['plsgen']['C1'] = res_plsgen
+        BIG_status_lookup['plsgen'] = {}
+        BIG_status_lookup['plsgen']['C1'] = res_plsgen
     #############
 
     # set nimages
-    if not status['system_settings']['ACQUISITION_Continuous_acquisition']:
+    if not BIG_status_lookup['system_settings']['ACQUISITION_Continuous_acquisition']:
         parse_response(pc.send_command(
           'cmd_system_setting',
           SCRIPT_NAME,
@@ -334,45 +349,39 @@ def main():
     # set exposure time
     if args.param == 'TRIGGERING_Repetition_rate':
        pass
-    elif status['system_settings']['TRIGGERING_Trigger_mode']:
-        if status['system_settings']['TRIGGERING_Burst_period'] != int(args.integration):
+    elif BIG_status_lookup['system_settings']['TRIGGERING_Trigger_mode']:
+        if BIG_status_lookup['system_settings']['TRIGGERING_Burst_period'] != int(args.integration):
             pc.wait_for_command_completion(0.01)
             parse_response(pc.send_command(
-     	         'cmd_system_setting',
-     	         SCRIPT_NAME,
-     	         arguments={'setting': 'TRIGGERING_Burst_period', 'value':int(args.integration)},
-     	         wait=False))
-    elif status['system_settings']['TRIGGERING_Repetition_rate'] != int(args.integration):
+               'cmd_system_setting',
+               SCRIPT_NAME,
+               arguments={'setting': 'TRIGGERING_Burst_period', 'value':int(args.integration)},
+               wait=False))
+    elif BIG_status_lookup['system_settings']['TRIGGERING_Repetition_rate'] != int(args.integration):
         pc.wait_for_command_completion(0.01)
         parse_response(pc.send_command(
-     	     'cmd_system_setting',
-     	     SCRIPT_NAME,
-     	     arguments={'setting': 'TRIGGERING_Repetition_rate', 'value':int(args.integration)},
-     	     wait=False))
+           'cmd_system_setting',
+           SCRIPT_NAME,
+           arguments={'setting': 'TRIGGERING_Repetition_rate', 'value':int(args.integration)},
+           wait=False))
     ## set timeout
     if args.timeout==0:
-        if status['system_settings']['TRIGGERING_Trigger_mode']:
+        if BIG_status_lookup['system_settings']['TRIGGERING_Trigger_mode']:
             timeout = -1
         else:
             timeout = 60
     else:
         timeout = args.timeout
 
-    if args.savemeta!="nomonitor":
-       pc.send_command("cmd_update_monitors", wait=False)
-       pc.wait_for_command_completion(0.1)  # this takes about 3s
-       res = pc.get_status("status")
-       status.update(res)
-
     # save to meta file
-    fname_meta = os.path.join(args.directory, args.fname+"_meta.h5")
+    meta_filename = os.path.join(args.directory, args.fname+"_meta.h5")
     if args.param=='':
-       cname = 'scan'
+       scan_param = 'scan'
     else:
-       cname = args.param
-    creat_metafile(fname_meta, t0, status, cname, len(args.scan), everystep=(args.savemeta == "every"))
+       scan_param = args.param
+    create_metafile(meta_filename, start_tme, BIG_status_lookup, scan_param, len(args.scan), everystep=True)
     if int(args.nimages) > 100:
-        os.system('scp {0:s} prcvlusr@cfeld-percival02:{1:s}tmp.h5'.format(fname_meta,fname_meta[:-3]))
+        os.system('scp {0:s} prcvlusr@cfeld-percival02:{1:s}tmp.h5'.format(meta_filename,meta_filename[:-3]))
 
     print("-----------------------------------")
     print("Output directory:", args.directory)
@@ -383,26 +392,26 @@ def main():
     print("Descramble:", dcr)
     print("Scan parameter:", args.param)
     print("Scan range: #=",len(args.scan),"range=",args.scan)
-    print("Tigger mode:", "Triggered ({0:d}frame/trig)".format(npls) if status['system_settings']['TRIGGERING_Trigger_source'] else "Untirggered")
-    print("-----------------------------------{0:.2f}s".format(time.time()-t0))
+    print("Tigger mode:", "Triggered ({0:d}frame/trig)".format(npls) if BIG_status_lookup['system_settings']['TRIGGERING_Trigger_source'] else "Untirggered")
+    print("-----------------------------------{0:.2f}s".format(time.time()-start_tme))
     
     # start scan
-    for idx, value in enumerate(args.scan):
+    for (scanidx, scanvalue) in enumerate(args.scan):
         # set output filename
-        outFileName= args.fname +"_{0:06d}".format(idx)
+        outFileName= args.fname +"_{0:06d}".format(scanidx)
         parse_response(dc.set_file_name(outFileName))
         parse_response(dc.send_command('hdf/write', '1'))
-        # set value
+        # set scanvalue
         if args.param!="":
-		    parse_response(pc.send_command(
-		         'cmd_system_setting' if args.param=='TRIGGERING_Repetition_rate' else 'cmd_set_channel',
-		         SCRIPT_NAME,
-		         arguments={'setting' if args.param=='TRIGGERING_Repetition_rate' else 'channel': args.param, 'value': value},
-		         wait=False))
+          parse_response(pc.send_command(
+             'cmd_system_setting' if args.param=='TRIGGERING_Repetition_rate' else 'cmd_set_channel',
+             SCRIPT_NAME,
+             arguments={'setting' if args.param=='TRIGGERING_Repetition_rate' else 'channel': args.param, 'value': scanvalue},
+             wait=False));
 
-             pc.wait_for_command_completion(0.01)
+          pc.wait_for_command_completion(0.01)
 
-             parse_response(wait_for_writing(dc, waitting_status=True, timeout=timeout))
+          parse_response(wait_for_writing(dc, waiting_status=True, timeout=timeout))
         
         # send to P04socket-server
         if not args.p04sock is None:
@@ -416,53 +425,50 @@ def main():
             send_p04sock(cmd_p04sock, p04host, p04port)
 
         # acquire
-        t = time.time()
-        if not status['system_settings']['ACQUISITION_Continuous_acquisition']:
+        tme = time.time()
+        if not BIG_status_lookup['system_settings']['ACQUISITION_Continuous_acquisition']:
             result = pc.send_system_command(const.SystemCmd['start_acquisition'], SCRIPT_NAME, wait=False)
             pc.wait_for_command_completion(0.01)
-        if status['system_settings']['TRIGGERING_Trigger_source']:
+        if BIG_status_lookup['system_settings']['TRIGGERING_Trigger_source']:
             result = pc.send_system_command(const.SystemCmd['assert_MARKER_OUT_0'], SCRIPT_NAME, wait=False)
             pc.wait_for_command_completion(0.01)
-            print("DAQ is ready, inject trigger. {}....h5: {} {}s".format(outFileName, idx, t-t0))
+            print("DAQ is ready, inject trigger. {}....h5: {} {}s".format(outFileName, scanidx, tme-start_tme))
         else:
-            print("Acq started. {}....h5: {} {}s".format(outFileName, idx, t-t0))
+            print("Acq started. {}....h5: {} {}s".format(outFileName, scanidx, tme-start_tme))
 
         # wait DAQ
         if args.param == 'TRIGGERING_Repetition_rate':
-             args.integration = value
-        wait = max(float(args.integration)*int(args.nimages)/100000000.-1+t-time.time(), 0)
+             args.integration = scanvalue
+        wait = max(float(args.integration)*int(args.nimages)/100000000.-1+tme-time.time(), 0)
         time.sleep(wait)
-        res_fp = wait_for_writing(dc, waitting_status=False, timeout=timeout)
+        res_fp = wait_for_writing(dc, waiting_status=False, timeout=timeout)
         
         # deassert marker if DAQ is triggered
-        if status['system_settings']['TRIGGERING_Trigger_source']:
+        if BIG_status_lookup['system_settings']['TRIGGERING_Trigger_source']:
             pc.send_system_command(const.SystemCmd['deassert_MARKER_OUT_0'], SCRIPT_NAME, wait=True)
 
         # write to meta
-        if args.savemeta=='every':
-            pc.send_command("cmd_update_settings", wait=False)
-            pc.wait_for_command_completion(0.01)
-            status=pc.get_status("all_settings")
-            status['fp0']=res_fp['value'][0]
-            status['fp1']=res_fp['value'][1]
-            res_fr = get_fr_status(args.address)
-            status['fr0'] = res_fr['value'][0]
-            status['fr1'] = res_fr['value'][1]
-        else:
-            status=None
-        append_metafile(fname_meta, idx, t, value, outFileName, status)
+
+        BIG_status_lookup=get_all_settings(pc);
+        BIG_status_lookup['fp0']=res_fp['value'][0]
+        BIG_status_lookup['fp1']=res_fp['value'][1]
+        res_fr = get_fr_status(args.address)
+        BIG_status_lookup['fr0'] = res_fr['value'][0]
+        BIG_status_lookup['fr1'] = res_fr['value'][1]
+
+        append_metafile(meta_filename, scanidx, tme, scanvalue, outFileName, BIG_status_lookup)
 
         # check error & reset
         parse_response(res_fp)
         dc.send_reset_stats()
-    print("DONE: {}s".format(time.time()-t0))
-    os.system('scp {0:s} prcvlusr@cfeld-percival02:{0:s}'.format(fname_meta))
+    print("DONE: {}s".format(time.time()-start_tme))
+    os.system('scp {0:s} prcvlusr@cfeld-percival02:{0:s}'.format(meta_filename))
     #if int(args.nimages) > 100:
-    #    os.system('ssh prcvlusr@cfeld-percival02 rm {0:s}tmp.h5'.format(fname_meta[:-3]))
+    #    os.system('ssh prcvlusr@cfeld-percival02 rm {0:s}tmp.h5'.format(meta_filename[:-3]))
 
     if args.debug=='hironoto':
-        print('CMD: scp prcvlusr@cfeld-percival02:{0:s}* hironoto@max-fsg:/home/hironoto/11013723/processed/temp_data/'.format(fname_meta[:-7]))
-        os.system('scp prcvlusr@cfeld-percival02:{0:s}* hironoto@max-fsg:/home/hironoto/11013723/processed/temp_data/'.format(fname_meta[:-7]))
+        print('CMD: scp prcvlusr@cfeld-percival02:{0:s}* hironoto@max-fsg:/home/hironoto/11013723/processed/temp_data/'.format(meta_filename[:-7]))
+        os.system('scp prcvlusr@cfeld-percival02:{0:s}* hironoto@max-fsg:/home/hironoto/11013723/processed/temp_data/'.format(meta_filename[:-7]))
 
 
 if __name__ == '__main__':
