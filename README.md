@@ -10,6 +10,8 @@ Please see the central user and developer documentation on the [percival-detecto
 
 The percivalui project allow users and detector engineers to control the Percival detector system from a python based user interface. The userinterface is simply a python class where properties and methods can be manipulated to control the detector.
 
+It is released under the Apache License 2.0.
+
 
 ## Dependencies ##
 

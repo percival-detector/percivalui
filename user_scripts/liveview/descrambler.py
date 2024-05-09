@@ -151,7 +151,7 @@ def aggregate_to_GnCrsFn(raw_dset):
     gain_bits = decode_dataset_8bit(arr_in=raw_dset,
                                     bit_mask=0x6000,
                                     bit_shift=5+8)  # 0x6000->0110000000000000
-    return coarse_adc, fine_adc, gain_bits
+    return gain_bits, coarse_adc, fine_adc
 
 
 # P2M specific descrambling
@@ -185,7 +185,7 @@ def reorder_pixels_GnCrsFn_par(disord_6DAr, NADC, NColInRowBlk):
     return ord_7DAr
 
 
-def descramble_to_crs_fn_gn(scrmblShot,
+def descramble_to_gn_crs_fn(scrmblShot,
                             refColH1_0_Flag,
                             cleanMemFlag,
                             verboseFlag):
@@ -291,7 +291,12 @@ def descramble_to_crs_fn_gn(scrmblShot,
                                     NSmplRst,
                                     NRow,
                                     auxNCol), dtype='uint16') * ERRDLSraw
-    data2srcmbl_noRefCol[:, iSmpl, :, :] = convert_odin_daq_2_mezzanine(scrmblShot_byteSwap)
+    # in the old days, the rhs was convert_odin_daq_2_mezzanine(scrmblShot_byteSwap), for use
+    # with PercivalProcessPlugin; we keep the function in case we need to rescue an old
+    # acquisition, but don't use it.
+    # data2srcmbl_noRefCol[:, iSmpl, :, :] = convert_odin_daq_2_mezzanine(scrmblShot_byteSwap)
+    data2srcmbl_noRefCol[:, iSmpl, :, :] = scrmblShot_byteSwap
+
     if cleanMemFlag:
         del scrmblShot_byteSwap
 
@@ -353,7 +358,7 @@ def descramble_to_crs_fn_gn(scrmblShot,
 
     theseImg_bitted = theseImg_bitted.reshape((NImg*NSmplRst*NGrp*NDataPad*NADC*NColInBlk,
                                                NbitPerPix))
-    (aux_coarse, aux_fine, aux_gain) = aggregate_to_GnCrsFn(convert_bits_2_uint16_Ar(theseImg_bitted[:, ::-1]))
+    (aux_gain, aux_coarse, aux_fine) = aggregate_to_GnCrsFn(convert_bits_2_uint16_Ar(theseImg_bitted[:, ::-1]))
     multiImgWithRefCol[..., 1:, :, iGn] = aux_gain.reshape((NImg,
                                                             NSmplRst,
                                                             NGrp,
@@ -423,5 +428,5 @@ def descramble_to_crs_fn_gn(scrmblShot,
     fine = dscrmbld_GnCrsFn[0, 0, :, 32:, iFn].astype('uint16')
     gain = dscrmbld_GnCrsFn[0, 0, :, 32:, iGn].astype('uint16')
 
-    return (coarse, fine, gain)
+    return (gain, coarse, fine)
 

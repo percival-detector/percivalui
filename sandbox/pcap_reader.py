@@ -45,6 +45,25 @@ def process_pcap2(file_name):
 
     print("packet count: ", count);
 
+def print_packets(file_name):
+    print('Opening {} for packet dump'.format(file_name))
+    myreader = PcapReader(file_name);
+    last_time = 0.0;
+    ip2name = {"196.254.1.8" : "d83", "196.254.1.9" : "d84"};
+    for (pkt) in myreader:
+        payload = pkt[UDP].payload.load;
+        packet_number = int.from_bytes(payload[8:10], "big");
+        frame_number = int.from_bytes(payload[4:8], "big");
+        packet_dest = pkt[IP].dst;
+        if packet_dest in ip2name:
+          packet_dest = ip2name[packet_dest];
+        if(packet_number < 1):
+          print(frame_number, (pkt[UDP].time), packet_dest);
+          if pkt[UDP].time < last_time:
+            print("TIME DECREMENTING");
+          last_time = pkt[UDP].time;
+
+
 def process_pcap(file_name):
     print('Opening {}'.format(file_name))
     frame_num2packet_count = {};
@@ -65,6 +84,7 @@ def process_pcap(file_name):
         datablock_size = int.from_bytes(payload[0:2], "big");
         frame_number = int.from_bytes(payload[4:8], "big");
         packet_number = int.from_bytes(payload[8:10], "big");
+
        # print(count, frame_number, packet_number);
         key = "{}".format(frame_number);
 
@@ -91,7 +111,7 @@ def main():
       if args.count:
         process_pcap2(args.file);
       else:
-        process_pcap(args.file);
+        print_packets(args.file);
     else:
       print("could not open ", args.file);
 

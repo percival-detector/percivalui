@@ -263,22 +263,23 @@ class LiveViewer(object):
         header = convert_unicode_to_string(header)
         logging.debug("Got image with header: %s", header)
 
-        self.frame_num = header['frame_num'];
-        # Extract the type of the image data from the header. If the type is float, coerce to
-        # float32 since the native float in HDF5 is 32-bit vs 64-bit in python and numpy.
-        dtype = header['dtype']
-        if dtype == 'float':
-            dtype = 'float32'
+        if header['dataset'] == "data":
+          self.frame_num = header['frame_num'];
+          # Extract the type of the image data from the header. If the type is float, coerce to
+          # float32 since the native float in HDF5 is 32-bit vs 64-bit in python and numpy.
+          dtype = header['dtype']
+          if dtype == 'float':
+              dtype = 'float32'
 
-        # this line belongs in the FP plugins, but since there are 3 of them, we'll put it here temporarily
-        dtype = "uint16";
-        # create a np array of the image data, of type specified in the frame header
-        img_data = np.fromstring(msg[1], dtype=np.dtype(dtype))
+          # this line belongs in the FP plugins, but since there are 3 of them, we'll put it here temporarily
+          dtype = "uint16";
+          # create a np array of the image data, of type specified in the frame header
+          img_data = np.fromstring(msg[1], dtype=np.dtype(dtype))
 
-        self.img_data = img_data.reshape([int(header["shape"][0]), int(header["shape"][1])])
-        self.header = header
+          self.img_data = img_data.reshape([int(header["shape"][0]), int(header["shape"][1])])
+          self.header = header
 
-        self.render_image();
+          self.render_image();
 
     def render_image(self):
         # we choose to show row 1 and drop the others because in no-crosstalk mode of the detector, only
