@@ -40,19 +40,21 @@ Instructions for installing InfluxDB can be found [here](https://portal.influxda
     cd ~
     mkdir -p packages
     cd packages
-    wget https://dl.influxdata.com/influxdb/releases/influxdb-1.2.4.x86_64.rpm
-    sudo yum localinstall influxdb-1.2.4.x86_64.rpm
+    wget https://dl.influxdata.com/influxdb/releases/influxdb2-2.7.6-1.x86_64.rpm
+    sudo yum localinstall influxdb-1.8.10.x86_64.rpm
 
-The database is run as a service and can be set to automatically run when the machine boots.  It is also possible to install linux binaries or install from source, visit the link for further information and instructions.
+The database is run as a service and can be set to automatically run when the machine boots.  It is also possible to install linux binaries or install from source, visit the link for further information and instructions. If possible, also see the page at confluence.desy.de.
 
-### Installing Grafana ###
+### Installing Grafana OSS ###
 
-Full instructions for installing Grafana can be found [here](https://grafana.com/grafana/download).  It is recommended that the analytics platform be installed as a package for you specific OS.  To install on CentOS the following steps are appropriate:
+You may not need grafana as Influxdb2 has its own graphing capability. It appears here for legacy reasons.
+Full instructions for installing Grafana can be found [here](https://grafana.com/grafana/download).  To install on CentOS the following steps are appropriate:
 
     cd ~
     mkdir -p packages
     cd packages
-    wget https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-4.3.2-1.x86_64.rpm
+    wget https://dl.grafana.com/oss/release/grafana-8.2.0.linux-amd64.tar.gz
+    tar -zxvf grafana-8.2.0.linux-amd64.tar.gz
     sudo yum localinstall grafana-4.3.2-1.x86_64.rpm
 
 The platform is run as a service and can be set to automatically run when the machine boots.  It is also possible to install linux binaries or install from source, visit the link for further information and instructions.

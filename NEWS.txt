@@ -1,9 +1,11 @@
 
-???? -- wnichols
+2024-06-01 -- version 0.0.5 wnichols
 
+  * migrate to InfluxDB2
+  * Remove calls to convert_odin_daq_2_mezzanine()
+  * liveview1 supports CDS and add liveview2
   * json transport instituted in messages; please refresh your browser cache.
   * percival-hl-set-channel has -r option to read channel-values.
-
 
 
 2023-10-27 -- version 0.0.4 -- wnichols
