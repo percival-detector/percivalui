@@ -23,7 +23,7 @@ from percival_detector.carrier import const
 from percival_detector.carrier.buffer import BufferCommand, SensorBufferCommand
 from percival_detector.carrier.channels import ControlChannel, MonitoringChannel
 from percival_detector.carrier.devices import DeviceFactory
-from percival_detector.carrier.database import InfluxDB
+from percival_detector.carrier.database import InfluxDB2
 from percival_detector.carrier.registers import generate_register_maps, BoardValueRegisters
 from percival_detector.carrier.sensor import Sensor
 from percival_detector.carrier.settings import BoardSettings
@@ -542,8 +542,7 @@ class PercivalDetector(object):
         self._setpoint_control.start_scan_loop()
         self._log.info("Calling load_ini for detector")
         self.load_ini()
-        self._log.info("Setting up database connection to influxdb")
-        self.setup_db()
+        self._setup_db()
         self._log.info("Setting up control interface")
         self.setup_control()
         self.connect()
@@ -559,7 +558,7 @@ class PercivalDetector(object):
         while self._run_status_loop:
             try:
                 self._system_status.read_values()
-                if self._db:
+                if self._db.connected():
                     time_now = datetime.utcnow()
                     data = self._system_status.get_status()
                     point = {}
@@ -667,7 +666,7 @@ class PercivalDetector(object):
             self._log.info("Auto-downloading sensor DACs from default ini file")
             self._sensor.apply_dac_values(self._percival_params.sensor_dac_params.value_map)
 
-    def setup_db(self):
+    def _setup_db(self):
         """
         Provide a DB interface for logging data from the detector.
         This will store the DB object for use when reading status.
@@ -679,13 +678,13 @@ class PercivalDetector(object):
         :param db:
         :return:
         """
-        self._db = InfluxDB(self._percival_params.database["address"],
+        self._log.info("Setting up database client to influxdb")
+        self._db = InfluxDB2(self._percival_params.database["address"],
                             self._percival_params.database["port"],
                             self._percival_params.database["name"]
                             )
-        self._connect_db()
 
-    def _connect_db(self):
+    def connect_db(self):
         # Attempt connection to the database
         self._db.connect()
 
@@ -923,7 +922,7 @@ class PercivalDetector(object):
                 self._active_command.complete(success=True)
             if command.command_name in str(PercivalCommandNames.cmd_connect_db):
                 # No parameters required for this command
-                self.setup_db()
+                self.connect_db()
                 self._active_command.complete(success=True)
             if command.command_name in str(PercivalCommandNames.cmd_apply_roi):
                 # No parameters required for this command
@@ -1419,7 +1418,7 @@ class PercivalDetector(object):
             if name in self._monitors:
                 self._monitors[name].update(read_maps[offset])
                 status_msg[name] = self._monitors[name].status
-                if self._db:
+                if self._db.connected():
                     self._db.log_point(time_now, name, self._monitors[name].status)
 
         return status_msg
