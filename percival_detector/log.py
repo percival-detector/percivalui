@@ -96,7 +96,7 @@ percival_log_config = {
             'level': 'INFO',
             'propagate': False,
         },
-        'percival_detector.carrier.database.InfluxDB': {
+        'percival_detector.carrier.database.InfluxDB2': {
             'handlers': ['log_file'],
             'level': 'INFO',
             'propagate': False,
