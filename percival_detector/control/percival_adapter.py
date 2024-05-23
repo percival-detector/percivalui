@@ -10,7 +10,7 @@ from odin.adapters.adapter import ApiAdapter, ApiAdapterResponse, request_types,
 from percival_detector.control.detector import PercivalDetector
 from percival_detector.control.command import Command
 from concurrent import futures
-from tornado.ioloop import IOLoop
+from tornado.ioloop import IOLoop, PeriodicCallback
 from tornado.concurrent import run_on_executor
 
 
@@ -43,15 +43,20 @@ class PercivalAdapter(ApiAdapter):
         self._detector.set_global_monitoring(True)
 
         self._auto_read_monitors = False
-        self.status_update(0.9)
+        self._periodic_caller = PeriodicCallback(
+            callback=self.status_update_runner,
+            callback_time=1000 # ms
+        ).start()
 
     @run_on_executor
-    def status_update(self, task_interval):
-        if self._detector:
-            if self._auto_read_monitors:
-                self._detector.update_monitors()
-        time.sleep(task_interval)
-        IOLoop.instance().add_callback(self.status_update, task_interval)
+    def status_update(self):
+      if self._detector:
+        self._detector.update_monitors()
+
+    def status_update_runner(self):
+      # this needs tornado 5.0
+      if(self._auto_read_monitors and PercivalAdapter.executor._work_queue.qsize()==0):
+        IOLoop.current().run_in_executor(PercivalAdapter.executor, self.status_update())
 
     @request_types('application/json')
     @response_types('application/json', default='application/json')

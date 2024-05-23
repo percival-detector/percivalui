@@ -1372,7 +1372,7 @@ class PercivalDetector(object):
         """
         Return the status of the monitor devices. Seems to take ~150ms.
         """
-        self._log.info("Update status callback called")
+        self._log.debug("Update monitors callback called")
         status_msg = {}
         if self._global_monitoring:
             try:
