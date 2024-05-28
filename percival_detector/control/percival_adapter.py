@@ -42,19 +42,20 @@ class PercivalAdapter(ApiAdapter):
         self._detector = PercivalDetector(ini_file, False, False)
 
         self._auto_read_monitors = False
-        PeriodicCallback(
+        self._periodic_caller = PeriodicCallback(
             callback=self.status_update_runner,
             callback_time=1000 # ms
         ).start()
 
     @run_on_executor
     def status_update(self):
-        if self._detector:
-            if self._auto_read_monitors:
-                self._detector.update_monitors()
+      if self._detector:
+        self._detector.update_monitors()
 
     def status_update_runner(self):
-      IOLoop.current().run_in_executor(PercivalAdapter.executor, self.status_update())
+      # this needs tornado 5.0
+      if(self._auto_read_monitors and PercivalAdapter.executor._work_queue.qsize()==0):
+        IOLoop.current().run_in_executor(PercivalAdapter.executor, self.status_update())
 
     @request_types('application/json')
     @response_types('application/json', default='application/json')
