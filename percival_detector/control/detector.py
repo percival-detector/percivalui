@@ -23,7 +23,7 @@ from percival_detector.carrier import const
 from percival_detector.carrier.buffer import BufferCommand, SensorBufferCommand
 from percival_detector.carrier.channels import ControlChannel, MonitoringChannel
 from percival_detector.carrier.devices import DeviceFactory
-from percival_detector.carrier.database import InfluxDB
+from percival_detector.carrier.database import InfluxDB2
 from percival_detector.carrier.registers import generate_register_maps, BoardValueRegisters
 from percival_detector.carrier.sensor import Sensor
 from percival_detector.carrier.settings import BoardSettings
@@ -512,7 +512,7 @@ class PercivalDetector(object):
         self._initialise_hardware = initialise_hardware
         self._txrx = None
         self._db = None
-        self._global_monitoring = False
+        self._global_monitoring = True
         self._log.info("Executing detector constructor")
         self._percival_params = PercivalParameters(ini_file)
         self._board_settings = {}
@@ -542,8 +542,7 @@ class PercivalDetector(object):
         self._setpoint_control.start_scan_loop()
         self._log.info("Calling load_ini for detector")
         self.load_ini()
-        self._log.info("Setting up database connection to influxdb")
-        self.setup_db()
+        self._setup_db()
         self._log.info("Setting up control interface")
         self.setup_control()
         self.connect()
@@ -559,7 +558,7 @@ class PercivalDetector(object):
         while self._run_status_loop:
             try:
                 self._system_status.read_values()
-                if self._db:
+                if self._db.connected():
                     time_now = datetime.utcnow()
                     data = self._system_status.get_status()
                     point = {}
@@ -667,7 +666,7 @@ class PercivalDetector(object):
             self._log.info("Auto-downloading sensor DACs from default ini file")
             self._sensor.apply_dac_values(self._percival_params.sensor_dac_params.value_map)
 
-    def setup_db(self):
+    def _setup_db(self):
         """
         Provide a DB interface for logging data from the detector.
         This will store the DB object for use when reading status.
@@ -679,13 +678,13 @@ class PercivalDetector(object):
         :param db:
         :return:
         """
-        self._db = InfluxDB(self._percival_params.database["address"],
+        self._log.info("Setting up database client to influxdb")
+        self._db = InfluxDB2(self._percival_params.database["address"],
                             self._percival_params.database["port"],
                             self._percival_params.database["name"]
                             )
-        self._connect_db()
 
-    def _connect_db(self):
+    def connect_db(self):
         # Attempt connection to the database
         self._db.connect()
 
@@ -923,7 +922,7 @@ class PercivalDetector(object):
                 self._active_command.complete(success=True)
             if command.command_name in str(PercivalCommandNames.cmd_connect_db):
                 # No parameters required for this command
-                self.setup_db()
+                self.connect_db()
                 self._active_command.complete(success=True)
             if command.command_name in str(PercivalCommandNames.cmd_apply_roi):
                 # No parameters required for this command
@@ -1080,7 +1079,7 @@ class PercivalDetector(object):
                 self._active_command.complete(success=True)
             elif command.command_name in str(PercivalCommandNames.cmd_update_monitors):
                 # Force a read of the monitors.  This will result in values being written to db
-                self.update_status()
+                self.update_monitors()
                 self._active_command.complete(success=True)
             elif command.command_name in str(PercivalCommandNames.cmd_initialise_channels):
                 # Initialise the channels on the Percival hardware
@@ -1121,6 +1120,8 @@ class PercivalDetector(object):
         Turn on or off global monitoring.  This sends two system commands; enable_global_monitoring and
         enable_device_level_safety_controls.
         It also sets the internal monitoring flag to either True or False.
+        This seems to be some debug function that is dubious. I don't know why you would want to
+          disable it here.
 
         :param state: Turn global monitoring on (True) or off (False)
         :type state: bool
@@ -1287,6 +1288,7 @@ class PercivalDetector(object):
             for name, tmp in list(const.SystemCmd.__members__.items()):
                 reply["commands"].append(name)
 
+        # this is a misnomer as it returns the keys of the system-settings
         elif getcmd == "system_values":
             reply = {}
             reply["system_values"] = self._system_settings.settings
@@ -1357,6 +1359,23 @@ class PercivalDetector(object):
               vals[name] = device.get_value()
             reply = { 'channel_values' : vals }
 
+        elif getcmd == "system_settings":
+            vals = self._system_settings._reg_uart.fields.as_dict();
+            reply = { 'system_settings' : vals }
+
+        elif getcmd == "clock_settings":
+            vals = self._clock_settings._reg_uart.fields.as_dict();
+            reply = { 'clock_settings' : vals }
+
+        elif getcmd == "chip_readout_settings":
+            vals = self._chip_readout_settings._reg_uart.fields.as_dict();
+            reply = { 'chip_readout_settings' : vals }
+
+        elif getcmd == "sensor_debug":
+            reply = {'sensor_debug' : None};
+            if self._percival_params.sensor_debug_params:
+                reply['sensor_debug'] = self._percival_params.sensor_debug_params.value_map
+
         # Check to see if the getcmd is a monitoring device that we own
         elif getcmd in self._monitors:
             reply = { getcmd : self._monitors[getcmd].status }
@@ -1366,11 +1385,11 @@ class PercivalDetector(object):
 
         return reply
 
-    def update_status(self):
+    def update_monitors(self):
         """
         Return the status of the monitor devices. Seems to take ~150ms.
         """
-        self._log.info("Update status callback called")
+        self._log.debug("Update monitors callback called")
         status_msg = {}
         if self._global_monitoring:
             try:
@@ -1399,7 +1418,7 @@ class PercivalDetector(object):
             if name in self._monitors:
                 self._monitors[name].update(read_maps[offset])
                 status_msg[name] = self._monitors[name].status
-                if self._db:
+                if self._db.connected():
                     self._db.log_point(time_now, name, self._monitors[name].status)
 
         return status_msg

@@ -163,7 +163,7 @@ startTime = time.time()
 APy3_GENfuns.printcol("script operations beginning for real at {0}".format(APy3_GENfuns.whatTimeIsIt()),'green')
 #---
 #% read data files
-(dataSmpl_in,dataRst_in)= APy3_GENfuns.read_partial_2xh5(DLSraw_infile, '/data/','/reset/', thisImg, thisImg+1)
+(dataSmpl_in,dataRst_in)= APy3_GENfuns.read_partial_2xh5(DLSraw_infile, '/data','/reset', thisImg, thisImg+1)
 
 dscrmbld_GnCrsFn= APy3_P2Mfuns.convert_DLSraw_2_GnCrsFn(dataSmpl_in,dataRst_in, ERRDLSraw,ERRint16)
 

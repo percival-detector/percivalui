@@ -14,8 +14,8 @@ class ChipReadoutSettings(object):
         :type  txrx: TxRx
         """
         self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
-        self._reg_command = UARTRegister(const.CHIP_READOUT_SETTINGS)
-        self._reg_command.initialize_map([0, 0, 0, 0, 0, 0, 0, 0,
+        self._reg_uart = UARTRegister(const.CHIP_READOUT_SETTINGS)
+        self._reg_uart.initialize_map([0, 0, 0, 0, 0, 0, 0, 0,
                                           0, 0, 0, 0, 0, 0, 0, 0,
                                           0, 0, 0, 0, 0, 0, 0, 0,
                                           0, 0, 0, 0, 0, 0, 0, 0])
@@ -44,8 +44,8 @@ class ChipReadoutSettings(object):
             # Now set the attributes within the UART Register
             for item in map:
                 try:
-                    if hasattr(self._reg_command.fields, item):
-                        setattr(self._reg_command.fields, item, int(map[item]))
+                    if hasattr(self._reg_uart.fields, item):
+                        setattr(self._reg_uart.fields, item, int(map[item]))
                     else:
                         self._log.debug("No register found for ini file setting %s", item)
                 except:
@@ -71,7 +71,7 @@ class ChipReadoutSettings(object):
         :param cmd: command to encode
         :type  cmd: SystemCmd
         """
-        cmd_msgs = self._reg_command.get_write_cmd_msg(eom=True)
+        cmd_msgs = self._reg_uart.get_write_cmd_msg(eom=True)
         for cmd_msg in cmd_msgs:
             self._txrx.send_recv_message(cmd_msg)
 

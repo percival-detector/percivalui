@@ -184,6 +184,58 @@
 
   ],
 
+"snake_fsi10_fixGnVeryHi" : 
+
+  [
+      {
+        "description" : "turn on wiener",
+        "onscript"  : "./user_scripts/wiener/mainswitchON.sh",
+        "offscript" : "./user_scripts/wiener/mainswitchOFF.sh"
+      },
+
+      { 
+        "description" : "power to PwB",
+        "onscript"  : "./user_scripts/wiener/pwb_UP.sh",
+        "offscript" : "./user_scripts/wiener/pwb_DOWN.sh"
+      },
+
+      { 
+        "description" : "check voltages1",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -pwbon"
+      },
+
+      { 
+        "description" : "power to head",
+        "onscript"  : "./DESY/W3C3/user_scripts/POWERUP_000_unix.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/POWERDOWN_000_unix.sh"
+      },
+
+      { 
+        "description" : "check voltages2",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      },
+
+      { 
+        "description" : "head into FixGnVeryHi (125MHz)",
+        "onscript"  : "./DESY/W3C3/user_scripts/DLS_FSI10_FromSysPowON_ToSeq_3T_PGA6_10Img_12ms_PLL125MHz_ADC25MHz.sh",
+        "offscript" : "./DESY/W3C3/user_scripts/FromSeq_ToSysPowON.sh --setpoint FSI10_FixGnAll"
+      },
+
+      { 
+        "description" : "check voltages3",
+        "onscript"  : "./user_scripts/wiener/checkcurrents.py -voltages -headon",
+        "offscript" : "./user_scripts/wiener/checkcurrents.py -voltages -headon"
+      },
+
+      {
+        "description" : "Capture",
+        "onscript"  : "./user_scripts/tool_acquire_timestamp.py -o /dls/detectors/Percival/captures",
+        "action" : "True"
+      }
+
+  ],
 
 "snake_fsi10_fixGnHi" : 
 

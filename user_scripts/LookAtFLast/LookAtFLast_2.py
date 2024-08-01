@@ -95,7 +95,7 @@ def percDebug_plot_interactive_wCMA_2(data_GnCrsFn,data_CDSavg,data_CDSCMAavg, m
 #dflt_mainFolder='/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010234/scratch_bl/'
 #
 dflt_mainFolder='/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010254/raw/'
-dflt_mainFolder='/dls/detectors/Percival/captures/friday/'
+dflt_mainFolder='/dls/detectors/Percival/captures/'
 #dflt_mainFolder='/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010254/scratch_bl/'
 #
 if dflt_mainFolder[-1]!='/': dflt_mainFolder+='/'
@@ -137,7 +137,7 @@ dflt_outFile=dflt_mainFolder+'aux_CDS_avg.h5'
 #%% functs
 #
 def read_partial_2xh5(filenamepath, path1_2read, path2_2read, fromImg, toImg):
-    ''' read 2xXD h5 file (paths_2read: '/data/','/reset/' ) '''
+    ''' read 2xXD h5 file (paths_2read: '/data','/reset' ) '''
     my5hfile= h5py.File(filenamepath, 'r')
     myh5dataset=my5hfile[path1_2read]
     if myh5dataset.shape[0] <= toImg: my5hfile.close(); APy3_GENfuns.printErr('only {0} img in fl0 file'.format(myh5dataset.shape[0]))
@@ -170,8 +170,8 @@ def loadSomeImagesFromlast(mainFolder, img2proc_str,
     
     if img2proc_str in ['all','All','ALL',':','*','-1']: 
         if verboseFlag: APy3_GENfuns.printcol("will read all Img", 'green')
-        (dataSmpl_fl0, dataRst_fl0) = APy3_GENfuns.read_2xh5(inputFiles[0], '/data/','/reset/')
-        (dataSmpl_fl1, dataRst_fl1) = APy3_GENfuns.read_2xh5(inputFiles[1], '/data/','/reset/')
+        (dataSmpl_fl0, dataRst_fl0) = APy3_GENfuns.read_2xh5(inputFiles[0], '/data','/reset')
+        (dataSmpl_fl1, dataRst_fl1) = APy3_GENfuns.read_2xh5(inputFiles[1], '/data','/reset')
     else:
         img2proc= APy3_GENfuns.matlabLike_range(img2proc_str)
         fromImg_fl01= img2proc[0]//2
@@ -179,8 +179,8 @@ def loadSomeImagesFromlast(mainFolder, img2proc_str,
         if verboseFlag:
             APy3_GENfuns.printcol("will read img {0} to {1} in both files".format(fromImg_fl01,toImg_fl01), 'green')
             APy3_GENfuns.printcol("corresponding overall to img {0}".format(str(img2proc)), 'green')
-        (dataSmpl_fl0, dataRst_fl0) = read_partial_2xh5(inputFiles[0], '/data/','/reset/', fromImg_fl01,toImg_fl01)
-        (dataSmpl_fl1, dataRst_fl1) = read_partial_2xh5(inputFiles[1], '/data/','/reset/', fromImg_fl01,toImg_fl01)
+        (dataSmpl_fl0, dataRst_fl0) = read_partial_2xh5(inputFiles[0], '/data','/reset', fromImg_fl01,toImg_fl01)
+        (dataSmpl_fl1, dataRst_fl1) = read_partial_2xh5(inputFiles[1], '/data','/reset', fromImg_fl01,toImg_fl01)
     #
     (NImg_fl0, aux_NRow, aux_NCol) = dataSmpl_fl0.shape
     (NImg_fl1, aux_NRow, aux_NCol) = dataSmpl_fl1.shape
@@ -281,8 +281,8 @@ def descrambleSome(scrmblSmpl,scrmblRst,
         return aux_reordered
     #
     data2srcmbl_noRefCol= numpy.ones((NImg,NSmplRst,NRow,aux_NCol), dtype='uint16') * ERRDLSraw
-    data2srcmbl_noRefCol[:,iSmpl,:,:]= convert_odin_daq_2_mezzanine(scrmblSmpl_byteSwap)
-    data2srcmbl_noRefCol[:,iRst,:,:] = convert_odin_daq_2_mezzanine(scrmblRst_byteSwap)
+    data2srcmbl_noRefCol[:,iSmpl,:,:]= scrmblSmpl_byteSwap
+    data2srcmbl_noRefCol[:,iRst,:,:] = scrmblRst_byteSwap
     if cleanMemFlag: del scrmblSmpl_byteSwap; del scrmblRst_byteSwap
     #
     data2srcmbl_noRefCol= data2srcmbl_noRefCol.reshape((NImg,NSmplRst,NGrp,NADC,aux_NCol))
@@ -517,7 +517,7 @@ if ADCcorrFlag:
     if pedSubtractFlag:
         if verboseFlag: APy3_GENfuns.printcol("pedestal", 'blue')
         if APy3_GENfuns.notFound(pedestalCDSFile): APy3_GENfuns.printErr(pedestalCDSFile+' not found')
-        data_pedestal_CDS= APy3_GENfuns.read_1xh5(pedestalCDSFile, '/data/data/') 
+        data_pedestal_CDS= APy3_GENfuns.read_1xh5(pedestalCDSFile, '/data/data') 
         #
         data_CDS= data_CDS-data_pedestal_CDS
         data_pedestal_CDSCMA= CMA(data_pedestal_CDS.reshape((1,NRow,NCol)),cols2CMA).reshape((NRow,NCol))

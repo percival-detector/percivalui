@@ -74,50 +74,50 @@ class Simulator(object):
                               ShortcutRegister(HEADER_SETTINGS_LEFT.start_address,
                                                HEADER_SETTINGS_LEFT.entries *
                                                HEADER_SETTINGS_LEFT.words_per_entry),
-                          READBACK_CONTROL_SETTINGS_LEFT.start_address:
-                              ShortcutRegister(CONTROL_SETTINGS_LEFT.start_address,
-                                               CONTROL_SETTINGS_LEFT.entries *
-                                               CONTROL_SETTINGS_LEFT.words_per_entry),
-                          READBACK_MONITORING_SETTINGS_LEFT.start_address:
-                              ShortcutRegister(MONITORING_SETTINGS_LEFT.start_address,
-                                               MONITORING_SETTINGS_LEFT.entries *
-                                               MONITORING_SETTINGS_LEFT.words_per_entry),
+                          READBACK_CONTROL_CHANNELS_LEFT.start_address:
+                              ShortcutRegister(CONTROL_CHANNELS_LEFT.start_address,
+                                               CONTROL_CHANNELS_LEFT.entries *
+                                               CONTROL_CHANNELS_LEFT.words_per_entry),
+                          READBACK_MONITORING_CHANNELS_LEFT.start_address:
+                              ShortcutRegister(MONITORING_CHANNELS_LEFT.start_address,
+                                               MONITORING_CHANNELS_LEFT.entries *
+                                               MONITORING_CHANNELS_LEFT.words_per_entry),
                           READBACK_HEADER_SETTINGS_BOTTOM.start_address:
                               ShortcutRegister(HEADER_SETTINGS_BOTTOM.start_address,
                                                HEADER_SETTINGS_BOTTOM.entries *
                                                HEADER_SETTINGS_BOTTOM.words_per_entry),
-                          READBACK_CONTROL_SETTINGS_BOTTOM.start_address:
-                              ShortcutRegister(CONTROL_SETTINGS_BOTTOM.start_address,
-                                               CONTROL_SETTINGS_BOTTOM.entries *
-                                               CONTROL_SETTINGS_BOTTOM.words_per_entry),
-                          READBACK_MONITORING_SETTINGS_BOTTOM.start_address:
-                              ShortcutRegister(MONITORING_SETTINGS_BOTTOM.start_address,
-                                               MONITORING_SETTINGS_BOTTOM.entries *
-                                               MONITORING_SETTINGS_BOTTOM.words_per_entry),
+                          READBACK_CONTROL_CHANNELS_BOTTOM.start_address:
+                              ShortcutRegister(CONTROL_CHANNELS_BOTTOM.start_address,
+                                               CONTROL_CHANNELS_BOTTOM.entries *
+                                               CONTROL_CHANNELS_BOTTOM.words_per_entry),
+                          READBACK_MONITORING_CHANNELS_BOTTOM.start_address:
+                              ShortcutRegister(MONITORING_CHANNELS_BOTTOM.start_address,
+                                               MONITORING_CHANNELS_BOTTOM.entries *
+                                               MONITORING_CHANNELS_BOTTOM.words_per_entry),
                           READBACK_HEADER_SETTINGS_CARRIER.start_address:
                               ShortcutRegister(HEADER_SETTINGS_CARRIER.start_address,
                                                HEADER_SETTINGS_CARRIER.entries *
                                                HEADER_SETTINGS_CARRIER.words_per_entry),
-                          READBACK_CONTROL_SETTINGS_CARRIER.start_address:
-                              ShortcutRegister(CONTROL_SETTINGS_CARRIER.start_address,
-                                               CONTROL_SETTINGS_CARRIER.entries *
-                                               CONTROL_SETTINGS_CARRIER.words_per_entry),
-                          READBACK_MONITORING_SETTINGS_CARRIER.start_address:
-                              ShortcutRegister(MONITORING_SETTINGS_CARRIER.start_address,
-                                               MONITORING_SETTINGS_CARRIER.entries *
-                                               MONITORING_SETTINGS_CARRIER.words_per_entry),
+                          READBACK_CONTROL_CHANNELS_CARRIER.start_address:
+                              ShortcutRegister(CONTROL_CHANNELS_CARRIER.start_address,
+                                               CONTROL_CHANNELS_CARRIER.entries *
+                                               CONTROL_CHANNELS_CARRIER.words_per_entry),
+                          READBACK_MONITORING_CHANNELS_CARRIER.start_address:
+                              ShortcutRegister(MONITORING_CHANNELS_CARRIER.start_address,
+                                               MONITORING_CHANNELS_CARRIER.entries *
+                                               MONITORING_CHANNELS_CARRIER.words_per_entry),
                           READBACK_HEADER_SETTINGS_PLUGIN.start_address:
                               ShortcutRegister(HEADER_SETTINGS_PLUGIN.start_address,
                                                HEADER_SETTINGS_PLUGIN.entries *
                                                HEADER_SETTINGS_PLUGIN.words_per_entry),
-                          READBACK_CONTROL_SETTINGS_PLUGIN.start_address:
-                              ShortcutRegister(CONTROL_SETTINGS_PLUGIN.start_address,
-                                               CONTROL_SETTINGS_PLUGIN.entries *
-                                               CONTROL_SETTINGS_PLUGIN.words_per_entry),
-                          READBACK_MONITORING_SETTINGS_PLUGIN.start_address:
-                              ShortcutRegister(MONITORING_SETTINGS_PLUGIN.start_address,
-                                               MONITORING_SETTINGS_PLUGIN.entries *
-                                               MONITORING_SETTINGS_PLUGIN.words_per_entry),
+                          READBACK_CONTROL_CHANNELS_PLUGIN.start_address:
+                              ShortcutRegister(CONTROL_CHANNELS_PLUGIN.start_address,
+                                               CONTROL_CHANNELS_PLUGIN.entries *
+                                               CONTROL_CHANNELS_PLUGIN.words_per_entry),
+                          READBACK_MONITORING_CHANNELS_PLUGIN.start_address:
+                              ShortcutRegister(MONITORING_CHANNELS_PLUGIN.start_address,
+                                               MONITORING_CHANNELS_PLUGIN.entries *
+                                               MONITORING_CHANNELS_PLUGIN.words_per_entry),
                           READBACK_CHIP_READOUT_SETTINGS.start_address:
                               ShortcutRegister(CHIP_READOUT_SETTINGS.start_address,
                                                CHIP_READOUT_SETTINGS.entries *
@@ -298,19 +298,19 @@ class Simulator(object):
                         slogger.info("Sending registers")
                         client_sock.send(encode_message(a, self.registers[a]))
 
-                if CONTROL_SETTINGS_CARRIER.start_address <= a < MONITORING_SETTINGS_CARRIER.start_address:
+                if CONTROL_CHANNELS_CARRIER.start_address <= a < MONITORING_CHANNELS_CARRIER.start_address:
                     slogger.debug("***** SETTING VALUE: 0x%04X = 0x%04X", a, w)
                     self.registers[READ_ECHO_WORD.start_address] = w&0xFFFF
 
-                if CONTROL_SETTINGS_BOTTOM.start_address <= a < MONITORING_SETTINGS_BOTTOM.start_address:
+                if CONTROL_CHANNELS_BOTTOM.start_address <= a < MONITORING_CHANNELS_BOTTOM.start_address:
                     slogger.debug("***** SETTING VALUE: 0x%04X = 0x%04X", a, w)
                     self.registers[READ_ECHO_WORD.start_address] = w&0xFFFF
 
-                if CONTROL_SETTINGS_LEFT.start_address <= a < MONITORING_SETTINGS_LEFT.start_address:
+                if CONTROL_CHANNELS_LEFT.start_address <= a < MONITORING_CHANNELS_LEFT.start_address:
                     slogger.debug("***** SETTING VALUE: 0x%04X = 0x%04X", a, w)
                     self.registers[READ_ECHO_WORD.start_address] = w&0xFFFF
 
-                if CONTROL_SETTINGS_PLUGIN.start_address <= a < MONITORING_SETTINGS_PLUGIN.start_address:
+                if CONTROL_CHANNELS_PLUGIN.start_address <= a < MONITORING_CHANNELS_PLUGIN.start_address:
                     slogger.debug("***** SETTING VALUE: 0x%04X = 0x%04X", a, w)
                     self.registers[READ_ECHO_WORD.start_address] = w&0xFFFF
 

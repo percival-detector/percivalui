@@ -10,7 +10,7 @@ from odin.adapters.adapter import ApiAdapter, ApiAdapterResponse, request_types,
 from percival_detector.control.detector import PercivalDetector
 from percival_detector.control.command import Command
 from concurrent import futures
-from tornado.ioloop import IOLoop
+from tornado.ioloop import IOLoop, PeriodicCallback
 from tornado.concurrent import run_on_executor
 
 
@@ -40,17 +40,22 @@ class PercivalAdapter(ApiAdapter):
             ini_file = kwargs['config_file']
 
         self._detector = PercivalDetector(ini_file, False, False)
-        self._detector.set_global_monitoring(True)
-        self._auto_read = False
-        self.status_update(0.9)
+
+        self._auto_read_monitors = False
+        self._periodic_caller = PeriodicCallback(
+            callback=self.status_update_runner,
+            callback_time=1000 # ms
+        ).start()
 
     @run_on_executor
-    def status_update(self, task_interval):
-        if self._detector:
-            if self._auto_read:
-                self._detector.update_status()
-        time.sleep(task_interval)
-        IOLoop.instance().add_callback(self.status_update, task_interval)
+    def status_update(self):
+      if self._detector:
+        self._detector.update_monitors()
+
+    def status_update_runner(self):
+      # this needs tornado 5.0
+      if(self._auto_read_monitors and PercivalAdapter.executor._work_queue.qsize()==0):
+        IOLoop.current().run_in_executor(PercivalAdapter.executor, self.status_update())
 
     @request_types('application/json')
     @response_types('application/json', default='application/json')
@@ -72,7 +77,7 @@ class PercivalAdapter(ApiAdapter):
 
         # If the driver status has been requested append the auto_read status
         if "driver" in cmd.command_name:
-            response["auto_read"] = self._auto_read
+            response["auto_read"] = self._auto_read_monitors
 
         status_code = 200
 
@@ -108,10 +113,10 @@ class PercivalAdapter(ApiAdapter):
             response['param_names'] = cmd.param_names
             response['parameters'] = cmd.parameters
             response['time'] = cmd.command_time
-            if 'start' in cmd.command_name:
-                self._auto_read = True
-            elif 'stop' in cmd.command_name:
-                self._auto_read = False
+            if 'auto_read_start' in cmd.command_name:
+                self._auto_read_monitors = True
+            elif 'auto_read_stop' in cmd.command_name:
+                self._auto_read_monitors = False
             else:
                 #cmd_response = self._detector.execute_command(cmd)
                 self._detector.queue_command(cmd)

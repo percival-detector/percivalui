@@ -637,12 +637,12 @@ allData_std_Gnunknw= APy3_GENfuns.numpy_NaNs((meta_Nfiles,NRow,NCol))
 APy3_GENfuns.printcol("reading files",'blue')
 for iFile in range(meta_Nfiles):
     thisFile= meta_fileNameList[Gn_to_calculate-1][iFile]
-    allData_Gnknown[iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+thisFile, '/data/data/')
+    allData_Gnknown[iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+thisFile, '/data/data')
     thisFile= meta_fileNameList[Gn_to_calculate][iFile]
-    allData_Gnunknw[iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+thisFile, '/data/data/')
+    allData_Gnunknw[iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+thisFile, '/data/data')
     #
-    allData_std_Gnknown[iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+meta_std_fileNameList[Gn_to_calculate-1][iFile], '/data/data/')
-    allData_std_Gnunknw[iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+meta_std_fileNameList[Gn_to_calculate][iFile],   '/data/data/')
+    allData_std_Gnknown[iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+meta_std_fileNameList[Gn_to_calculate-1][iFile], '/data/data')
+    allData_std_Gnunknw[iFile,:,:]= APy3_GENfuns.read_1xh5(folder_data2process+meta_std_fileNameList[Gn_to_calculate][iFile],   '/data/data')
     #
     APy3_GENfuns.dot_every10th(iFile,meta_Nfiles)
     #

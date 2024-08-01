@@ -290,8 +290,8 @@ def descramble_odinDAQ_2links(dataSmpl_fl0,dataRst_fl0,dataSmpl_fl1,dataRst_fl1,
         return aux_reordered
     #
     data2srcmbl_noRefCol= numpy.ones((NImg,NSmplRst,NRow,aux_NCol), dtype='uint16') * ERRDLSraw
-    data2srcmbl_noRefCol[:,iSmpl,:,:]= convert_odin_daq_2_mezzanine(scrmblSmpl_byteSwap)
-    data2srcmbl_noRefCol[:,iRst,:,:] = convert_odin_daq_2_mezzanine(scrmblRst_byteSwap)
+    data2srcmbl_noRefCol[:,iSmpl,:,:]= (scrmblSmpl_byteSwap)
+    data2srcmbl_noRefCol[:,iRst,:,:] = (scrmblRst_byteSwap)
     if cleanMemFlag: del scrmblSmpl_byteSwap; del scrmblRst_byteSwap
     #
     data2srcmbl_noRefCol= data2srcmbl_noRefCol.reshape((NImg,NSmplRst,NGrp,NADC,aux_NCol))
@@ -485,7 +485,7 @@ def percDebug_plot_6x2D(GnSmpl,CrsSmpl,FnSmpl, GnRst,CrsRst,FnRst, label_title,E
     cmap.set_under(color='white') 
     #fig = matplotlib.pyplot.figure(figsize=(18,12))
     fig = matplotlib.pyplot.figure()
-    fig.canvas.set_window_title(label_title) 
+    fig.canvas.manager.set_window_title(label_title) 
     label_x="col"; label_y="row"
     #
     matplotlib.pyplot.subplot(2,3,1)
@@ -549,7 +549,7 @@ def percDebug_plot_2x2D_map(ShtLeft,ShtRight,goodPixMap, label_titleLeft,label_t
     cmap = matplotlib.pyplot.cm.jet
     #cmap.set_over(color='white') 
     fig = matplotlib.pyplot.figure()
-    fig.canvas.set_window_title(label_titleAll)
+    fig.canvas.manager.set_window_title(label_titleAll)
     label_x="col"; label_y="row"
     #
     badPixMap= (goodPixMap==False)
@@ -745,15 +745,15 @@ def UseDLSraw_versatile(mainFolder, # where data is
     #
     if ADCcorrCDSFlag:
         if APy3_GENfuns.notFound(ADCfile_validMap): APy3_GENfuns.printErr(ADCfile_validMap+' not found')
-        ADCparam_validMap= APy3_GENfuns.read_1xh5(ADCfile_validMap, '/data/data/').astype(bool)
+        ADCparam_validMap= APy3_GENfuns.read_1xh5(ADCfile_validMap, '/data/data').astype(bool)
         if APy3_GENfuns.notFound(ADCfile_crs_slope): APy3_GENfuns.printErr(ADCfile_crs_slope+' not found')
-        ADCparam_crs_slope= APy3_GENfuns.read_1xh5(ADCfile_crs_slope, '/data/data/')
+        ADCparam_crs_slope= APy3_GENfuns.read_1xh5(ADCfile_crs_slope, '/data/data')
         if APy3_GENfuns.notFound(ADCfile_crs_offset): APy3_GENfuns.printErr(ADCfile_crs_offset+' not found')
-        ADCparam_crs_offset= APy3_GENfuns.read_1xh5(ADCfile_crs_offset, '/data/data/')
+        ADCparam_crs_offset= APy3_GENfuns.read_1xh5(ADCfile_crs_offset, '/data/data')
         if APy3_GENfuns.notFound(ADCfile_fn_slope): APy3_GENfuns.printErr(ADCfile_fn_slope+' not found')
-        ADCparam_fn_slope= APy3_GENfuns.read_1xh5(ADCfile_fn_slope, '/data/data/')
+        ADCparam_fn_slope= APy3_GENfuns.read_1xh5(ADCfile_fn_slope, '/data/data')
         if APy3_GENfuns.notFound(ADCfile_fn_offset): APy3_GENfuns.printErr(ADCfile_fn_offset+' not found')
-        ADCparam_fn_offset= APy3_GENfuns.read_1xh5(ADCfile_fn_offset, '/data/data/')
+        ADCparam_fn_offset= APy3_GENfuns.read_1xh5(ADCfile_fn_offset, '/data/data')
         if verboseFlag: APy3_GENfuns.printcol("ADCcor files loaded", 'green')
         #
         # modify load ADCparam to avoid /0
@@ -770,7 +770,7 @@ def UseDLSraw_versatile(mainFolder, # where data is
         #
         if pedSubtractFlag:
             if APy3_GENfuns.notFound(ADCfile_validMap): APy3_GENfuns.printErr(pedestalCDSFile+' not found')
-            data_pedestal_CDS= APy3_GENfuns.read_1xh5(pedestalCDSFile, '/data/data/') 
+            data_pedestal_CDS= APy3_GENfuns.read_1xh5(pedestalCDSFile, '/data/data') 
             if verboseFlag: APy3_GENfuns.printcol("pedestal file loaded", 'green')
     if verboseFlag: APy3_GENfuns.printcol("--  --  --  --", 'blue')
     #
@@ -785,7 +785,7 @@ def UseDLSraw_versatile(mainFolder, # where data is
     for ifile,file_in in enumerate(filelist_in):
         APy3_GENfuns.printcol("collection {0}/{1}:".format(ifile,len(filelist_in)-1), 'blue')
         if verboseFlag: APy3_GENfuns.printcol(mainFolder+file_in, 'green')
-        (dataSmpl_in,dataRst_in) = APy3_GENfuns.read_2xh5(mainFolder+file_in, '/data/','/reset/')
+        (dataSmpl_in,dataRst_in) = APy3_GENfuns.read_2xh5(mainFolder+file_in, '/data','/reset')
         (NImg, aux_NRow, aux_NCol) = dataSmpl_in.shape
         if verboseFlag: APy3_GENfuns.printcol("{0} Img read from file".format(NImg), 'green')
         # ---
@@ -859,10 +859,10 @@ def UseDLSraw_versatile(mainFolder, # where data is
             auxN= len(in_1file_suffix)*(-1)
             fileCDS_out=  file_in[:auxN] + out_AvgCDSfile_suffix
             if CMAFlag:
-                APy3_GENfuns.write_1xh5(outFolder+fileCDS_out, data_CDSCMAavg, '/data/data/')
+                APy3_GENfuns.write_1xh5(outFolder+fileCDS_out, data_CDSCMAavg, '/data/data')
                 if verboseFlag: APy3_GENfuns.printcol("CDS CMA avg saved as {0}".format(outFolder+fileCDS_out), 'green')
             else:
-                APy3_GENfuns.write_1xh5(outFolder+fileCDS_out, data_CDSavg, '/data/data/')
+                APy3_GENfuns.write_1xh5(outFolder+fileCDS_out, data_CDSavg, '/data/data')
                 if verboseFlag: APy3_GENfuns.printcol("CDS avg saved as {0}".format(outFolder+fileCDS_out), 'green')
         # ---
         if verboseFlag: APy3_GENfuns.printcol("--  --  --  --", 'blue')
@@ -970,7 +970,7 @@ def UseDLSraw_versatile_SmplRst(mainFolder, # where data is
     #
     def aux_readh5(fileNamePath):
         if APy3_GENfuns.notFound(fileNamePath): APy3_GENfuns.printErr(fileNamePath+' not found')
-        out_data= APy3_GENfuns.read_1xh5(fileNamePath, '/data/data/')
+        out_data= APy3_GENfuns.read_1xh5(fileNamePath, '/data/data')
         return out_data
     #
     if ADCcorrCDSFlag:
@@ -991,7 +991,7 @@ def UseDLSraw_versatile_SmplRst(mainFolder, # where data is
         #
         if pedSubtractFlag:
             if APy3_GENfuns.notFound(pedestalCDSFile): APy3_GENfuns.printErr(pedestalCDSFile+' not found')
-            data_pedestal_CDS= APy3_GENfuns.read_1xh5(pedestalCDSFile, '/data/data/') 
+            data_pedestal_CDS= APy3_GENfuns.read_1xh5(pedestalCDSFile, '/data/data') 
             if verboseFlag: APy3_GENfuns.printcol("pedestal file loaded", 'green')
     if verboseFlag: APy3_GENfuns.printcol("--  --  --  --", 'blue')
     #
@@ -1006,7 +1006,7 @@ def UseDLSraw_versatile_SmplRst(mainFolder, # where data is
     for ifile,file_in in enumerate(filelist_in):
         APy3_GENfuns.printcol("collection {0}/{1}:".format(ifile,len(filelist_in)-1), 'blue')
         if verboseFlag: APy3_GENfuns.printcol(mainFolder+file_in, 'green')
-        (dataSmpl_in,dataRst_in) = APy3_GENfuns.read_2xh5(mainFolder+file_in, '/data/','/reset/')
+        (dataSmpl_in,dataRst_in) = APy3_GENfuns.read_2xh5(mainFolder+file_in, '/data','/reset')
         (NImg, aux_NRow, aux_NCol) = dataSmpl_in.shape
         if verboseFlag: APy3_GENfuns.printcol("{0} Img read from file".format(NImg), 'green')
         # ---
@@ -1088,10 +1088,10 @@ def UseDLSraw_versatile_SmplRst(mainFolder, # where data is
             auxN= len(in_1file_suffix)*(-1)
             fileCDS_out=  file_in[:auxN] + out_AvgCDSfile_suffix
             if CMAFlag:
-                APy3_GENfuns.write_1xh5(outFolder+fileCDS_out, data_CDSCMAavg, '/data/data/')
+                APy3_GENfuns.write_1xh5(outFolder+fileCDS_out, data_CDSCMAavg, '/data/data')
                 if verboseFlag: APy3_GENfuns.printcol("CDS CMA avg saved as {0}".format(outFolder+fileCDS_out), 'green')
             else:
-                APy3_GENfuns.write_1xh5(outFolder+fileCDS_out, data_CDSavg, '/data/data/')
+                APy3_GENfuns.write_1xh5(outFolder+fileCDS_out, data_CDSavg, '/data/data')
                 if verboseFlag: APy3_GENfuns.printcol("CDS avg saved as {0}".format(outFolder+fileCDS_out), 'green')
         # ---
         if verboseFlag: APy3_GENfuns.printcol("--  --  --  --", 'blue')
@@ -1139,14 +1139,14 @@ def UseDLSraw_ADCcor_SmplRst(mainFolder,
     if APy3_GENfuns.notFound(ADCfile_Rst_fn_slope):   APy3_GENfuns.printErr(ADCfile_Rst_fn_slope+' not found')
     if APy3_GENfuns.notFound(ADCfile_Rst_fn_offset):  APy3_GENfuns.printErr(ADCfile_Rst_fn_offset+' not found')
     #
-    ADCparam_Smpl_crs_slope= APy3_GENfuns.read_1xh5(ADCfile_Smpl_crs_slope, '/data/data/')
-    ADCparam_Smpl_crs_offset= APy3_GENfuns.read_1xh5(ADCfile_Smpl_crs_offset, '/data/data/')
-    ADCparam_Smpl_fn_slope= APy3_GENfuns.read_1xh5(ADCfile_Smpl_fn_slope, '/data/data/')        
-    ADCparam_Smpl_fn_offset= APy3_GENfuns.read_1xh5(ADCfile_Smpl_fn_offset, '/data/data/')    
-    ADCparam_Rst_crs_slope= APy3_GENfuns.read_1xh5(ADCfile_Rst_crs_slope, '/data/data/')
-    ADCparam_Rst_crs_offset= APy3_GENfuns.read_1xh5(ADCfile_Rst_crs_offset, '/data/data/')
-    ADCparam_Rst_fn_slope= APy3_GENfuns.read_1xh5(ADCfile_Rst_fn_slope, '/data/data/')        
-    ADCparam_Rst_fn_offset= APy3_GENfuns.read_1xh5(ADCfile_Rst_fn_offset, '/data/data/')
+    ADCparam_Smpl_crs_slope= APy3_GENfuns.read_1xh5(ADCfile_Smpl_crs_slope, '/data/data')
+    ADCparam_Smpl_crs_offset= APy3_GENfuns.read_1xh5(ADCfile_Smpl_crs_offset, '/data/data')
+    ADCparam_Smpl_fn_slope= APy3_GENfuns.read_1xh5(ADCfile_Smpl_fn_slope, '/data/data')        
+    ADCparam_Smpl_fn_offset= APy3_GENfuns.read_1xh5(ADCfile_Smpl_fn_offset, '/data/data')    
+    ADCparam_Rst_crs_slope= APy3_GENfuns.read_1xh5(ADCfile_Rst_crs_slope, '/data/data')
+    ADCparam_Rst_crs_offset= APy3_GENfuns.read_1xh5(ADCfile_Rst_crs_offset, '/data/data')
+    ADCparam_Rst_fn_slope= APy3_GENfuns.read_1xh5(ADCfile_Rst_fn_slope, '/data/data')        
+    ADCparam_Rst_fn_offset= APy3_GENfuns.read_1xh5(ADCfile_Rst_fn_offset, '/data/data')
     #
     #find DLSraw file 
     inputFile= APy3_GENfuns.last_file(mainFolder, "*"+in_1file_suffix)
@@ -1155,7 +1155,7 @@ def UseDLSraw_ADCcor_SmplRst(mainFolder,
     #read file
     if verboseFlag: APy3_GENfuns.printcol("reading files", 'blue')
     if APy3_GENfuns.notFound(inputFile): APy3_GENfuns.printErr(inputFile+' not found')
-    (dataSmpl_DLSraw, dataRst_DLSraw) = APy3_GENfuns.read_2xh5(inputFile, '/data/','/reset/')
+    (dataSmpl_DLSraw, dataRst_DLSraw) = APy3_GENfuns.read_2xh5(inputFile, '/data','/reset')
     (NImg, aux_NRow, aux_NCol) = dataSmpl_DLSraw.shape
     if verboseFlag: APy3_GENfuns.printcol("{0} Img read from files".format(NImg), 'green')
     #---

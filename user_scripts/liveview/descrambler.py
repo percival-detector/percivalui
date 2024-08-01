@@ -153,6 +153,23 @@ def aggregate_to_GnCrsFn(raw_dset):
                                     bit_shift=5+8)  # 0x6000->0110000000000000
     return gain_bits, coarse_adc, fine_adc
 
+def descramble_to_GnCrsFn(raw_dset):
+    """ a helpful public function that will descramble a 3d array of several frames """
+    startshp = (0, raw_dset.shape[1], raw_dset.shape[2]);
+    gain = np.zeros(startshp, dtype='uint8');
+    crs = np.zeros(startshp, dtype='uint8');
+    fine = np.zeros(startshp, dtype='uint8');
+
+    for i in range(0, raw_dset.shape[0]):
+      (g, c, f) = descramble_to_gn_crs_fn(raw_dset[i], False, True, False);
+      g = np.reshape(g, (1, g.shape[0], g.shape[1]));
+      c = np.reshape(c, (1, c.shape[0], c.shape[1]));
+      f = np.reshape(f, (1, f.shape[0], f.shape[1]));
+      gain = np.append(gain, g, axis=0);
+      crs = np.append(crs, c, axis=0);
+      fine = np.append(fine, f, axis=0);
+
+    return (gain, crs, fine);
 
 # P2M specific descrambling
 def reorder_pixels_GnCrsFn_par(disord_6DAr, NADC, NColInRowBlk):

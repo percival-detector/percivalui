@@ -1,9 +1,12 @@
 
-???? -- wnichols
+2024-06-01 -- version 0.0.5 wnichols
 
+  * migrate to InfluxDB2
+  * fix regular reading of monitor channels; need tornado>5.0
+  * Remove calls to convert_odin_daq_2_mezzanine()
+  * liveview1 supports CDS, and add liveview2
   * json transport instituted in messages; please refresh your browser cache.
   * percival-hl-set-channel has -r option to read channel-values.
-
 
 
 2023-10-27 -- version 0.0.4 -- wnichols
@@ -15,8 +18,6 @@
 2023-05-17 -- version 0.0.3 -- wnichols
 
   * The python installs newer versions of odin, but the DAQ-software is unaffected.
-
   * The script sandbox/pcap_reader.py can be run on a pcap of Percival packets, and
       allows you to do things like check there are enough packets every frame etc.
-
   * Scripts added to enter FixGain1 and FixGain2 modes.

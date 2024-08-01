@@ -296,7 +296,7 @@ if APy3_GENfuns.notFound(multiGnCal_file): APy3_GENfuns.printErr('not found: '+m
 APy3_GENfuns.printcol("multiGnCal file read",'blue')
 if alternPed_flag:
     if APy3_GENfuns.notFound(alternPed_file): APy3_GENfuns.printErr('not found: '+alternPed_file)
-    PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(alternPed_file, '/data/data/')
+    PedestalADU_multiGn[0,:,:]= APy3_GENfuns.read_1xh5(alternPed_file, '/data/data')
     APy3_GENfuns.printcol("alternate pedestal file read",'blue')
 #---
 #% read metadata file
@@ -317,7 +317,7 @@ intTimes_ms= numpy.array(intTimes_ms)
 
 alldata_3DAr= APy3_GENfuns.numpy_NaNs((NSets,NRow,NCol))
 for iSet in range(NSets):
-    alldata_3DAr[iSet,:,:]= read_warn_1xh5(folder_data2process+fileList_all[iSet][1], '/data/data/')
+    alldata_3DAr[iSet,:,:]= read_warn_1xh5(folder_data2process+fileList_all[iSet][1], '/data/data')
 
 alldata_ADU= (alldata_3DAr-PedestalADU_multiGn[useGn,:,:])
 alldata_e= (alldata_3DAr-PedestalADU_multiGn[useGn,:,:])*e_per_ADU_multiGn[useGn,:,:]
@@ -432,11 +432,11 @@ if fitFlag:
         APy3_GENfuns.printcol('saving estimated (fitted) collected charge in {0}'.format(saveFolder),'blue')
         for iSet in range(NSets):
             thisFileNameOut= fileList_all[iSet][1][:-3]+'_estCharge.h5'
-            APy3_GENfuns.write_1xh5(saveFolder+thisFileNameOut, datafitted_e[iSet,:,:], '/data/data/')
+            APy3_GENfuns.write_1xh5(saveFolder+thisFileNameOut, datafitted_e[iSet,:,:], '/data/data')
             if verboseFlag: APy3_GENfuns.printcol('saved {0}'.format(saveFolder+thisFileNameOut),'green')
 
             thisFileNameOut= fileList_all[iSet][1][:-3]+'_measCharge.h5'
-            APy3_GENfuns.write_1xh5(saveFolder+thisFileNameOut, alldata_e[iSet,:,:], '/data/data/')
+            APy3_GENfuns.write_1xh5(saveFolder+thisFileNameOut, alldata_e[iSet,:,:], '/data/data')
             if verboseFlag: APy3_GENfuns.printcol('saved {0}'.format(saveFolder+thisFileNameOut),'green')
 
 

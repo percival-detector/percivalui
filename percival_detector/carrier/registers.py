@@ -44,7 +44,7 @@ class RegisterMap(object):
         map_fields = [f for (k, f) in sorted(list(self._mem_map.items()),
                       key=lambda key_field: key_field[1].word_index, reverse=True)]
         for map_field in map_fields:
-            map_field.extract_field_value(words)
+            map_field.set_field_value_from(words)
 
     def parse_map_from_tuples(self, tuples):
         words = [value for (addr, value) in tuples]
@@ -55,9 +55,15 @@ class RegisterMap(object):
         logger.debug("map: %s", str(self._mem_map))
         for (key, field) in list(self._mem_map.items()):  # pylint: disable=W0612
             logger.debug("field: %s", str(field))
-            field.insert_field_value(words)
+            field.get_field_value_into(words)
             logger.debug("generate_map: words: %s", str(words))
         return words
+
+    def as_dict(self):
+        ret = {};
+        for key in self._mem_map.keys():
+          ret[key] = self._mem_map[key].value;
+        return ret;
 
     @property
     def map_fields(self):
@@ -126,13 +132,14 @@ class MapField(object):
         self._log.debug("setting value = %s (was = %s)", str(value), str(self._value))
         self._value = value
 
-    def extract_field_value(self, words):
+    def set_field_value_from(self, words):
         self._value = (words[self._word_index] & self.mask) >> self._bit_offset
         return self._value
 
-    def insert_field_value(self, words):
-        # Clear the relevant bits in the input word (AND with an inverted mask)
-        # Then set the relevant bit values (value shifted up and OR'ed)
+    def get_field_value_into(self, words):
+        # Clear the relevant bits in the input word
+        # Then set self._value in the relevant part of the input word
+        # nb words is a list passed by reference
         if self._value is None:
             raise_with_traceback(ValueError("No value initialised for field: \'%s\'"%self._name))
         words[self._word_index] = (words[self._word_index] & (self.mask ^ 2**32-1)) | (self._value << self._bit_offset)
@@ -701,16 +708,16 @@ class ClockSettingsMap(RegisterMap):
                          }
         for number in [0, 1, 2, 3]:
             prefix = "HIGH_FREQ_ADJ_CLOCK<{}>".format(number)
-            address = number
-            self._mem_map[prefix + "_enable_clock"] = MapField(prefix + "_enable_clock",       address,  1, 24)
-            self._mem_map[prefix + "_clkout_divider"] = MapField(prefix + "_clkout_divider",   address,  8, 16)
-            self._mem_map[prefix + "_base_multiplier"] = MapField(prefix + "_base_multiplier", address,  8,  8)
-            self._mem_map[prefix + "_base_divider"] = MapField(prefix + "_base_divider",       address,  8,  0)
+            word_idx = number
+            self._mem_map[prefix + "_enable_clock"] = MapField(prefix + "_enable_clock",       word_idx,  1, 24)
+            self._mem_map[prefix + "_clkout_divider"] = MapField(prefix + "_clkout_divider",   word_idx,  8, 16)
+            self._mem_map[prefix + "_base_multiplier"] = MapField(prefix + "_base_multiplier", word_idx,  8,  8)
+            self._mem_map[prefix + "_base_divider"] = MapField(prefix + "_base_divider",       word_idx,  8,  0)
         for number in [0, 1]:
             prefix = "LOW_FREQ_ADJ_CLOCK<{}>".format(number)
-            address = number + 4
-            self._mem_map[prefix + "_enable_clock"] = MapField(prefix + "_enable_clock",       address,  1, 24)
-            self._mem_map[prefix + "_cycles_value"] = MapField(prefix + "_cycles_value",       address, 16,  0)
+            word_idx = number + 4
+            self._mem_map[prefix + "_enable_clock"] = MapField(prefix + "_enable_clock",       word_idx,  1, 24)
+            self._mem_map[prefix + "_cycles_value"] = MapField(prefix + "_cycles_value",       word_idx, 16,  0)
 
 
 class SensorDACMap(RegisterMap):
@@ -822,10 +829,10 @@ RegisterMapClasses = {
 
 BoardRegisters = {
     #                          header,                        control,                        monitoring
-    const.BoardTypes.left:    (const.HEADER_SETTINGS_LEFT,    const.CONTROL_SETTINGS_LEFT,    const.MONITORING_SETTINGS_LEFT),
-    const.BoardTypes.bottom:  (const.HEADER_SETTINGS_BOTTOM,  const.CONTROL_SETTINGS_BOTTOM,  const.MONITORING_SETTINGS_BOTTOM),
-    const.BoardTypes.carrier: (const.HEADER_SETTINGS_CARRIER, const.CONTROL_SETTINGS_CARRIER, const.MONITORING_SETTINGS_CARRIER),
-    const.BoardTypes.plugin:  (const.HEADER_SETTINGS_PLUGIN,  const.CONTROL_SETTINGS_PLUGIN,  const.MONITORING_SETTINGS_PLUGIN),
+    const.BoardTypes.left:    (const.HEADER_SETTINGS_LEFT,    const.CONTROL_CHANNELS_LEFT,    const.MONITORING_CHANNELS_LEFT),
+    const.BoardTypes.bottom:  (const.HEADER_SETTINGS_BOTTOM,  const.CONTROL_CHANNELS_BOTTOM,  const.MONITORING_CHANNELS_BOTTOM),
+    const.BoardTypes.carrier: (const.HEADER_SETTINGS_CARRIER, const.CONTROL_CHANNELS_CARRIER, const.MONITORING_CHANNELS_CARRIER),
+    const.BoardTypes.plugin:  (const.HEADER_SETTINGS_PLUGIN,  const.CONTROL_CHANNELS_PLUGIN,  const.MONITORING_CHANNELS_PLUGIN),
 }
 
 BoardValueRegisters = {
@@ -838,20 +845,20 @@ BoardValueRegisters = {
 # Each entry is a tuple of:     (description, readback_block=(read_addr, entries, words-per-entry), RegisterMap subclass)
 CarrierUARTRegisters = {
     const.HEADER_SETTINGS_LEFT:         ("Header settings left",        const.READBACK_HEADER_SETTINGS_LEFT,         HeaderInfoMap),
-    const.CONTROL_SETTINGS_LEFT:        ("Control settings left",       const.READBACK_CONTROL_SETTINGS_LEFT,        ControlChannelMap),
-    const.MONITORING_SETTINGS_LEFT:     ("Monitoring settings left",    const.READBACK_MONITORING_SETTINGS_LEFT,     MonitoringChannelMap),
+    const.CONTROL_CHANNELS_LEFT:        ("Control settings left",       const.READBACK_CONTROL_CHANNELS_LEFT,        ControlChannelMap),
+    const.MONITORING_CHANNELS_LEFT:     ("Monitoring settings left",    const.READBACK_MONITORING_CHANNELS_LEFT,     MonitoringChannelMap),
     const.READ_VALUES_PERIPHERY_LEFT:   ("Read monitor values left",    const.READBACK_READ_VALUES_PERIPHERY_LEFT,   ReadValueMap),
     const.HEADER_SETTINGS_BOTTOM:       ("Header settings bottom",      const.READBACK_HEADER_SETTINGS_BOTTOM,       HeaderInfoMap),
-    const.CONTROL_SETTINGS_BOTTOM:      ("Control settings bottom",     const.READBACK_CONTROL_SETTINGS_BOTTOM,      ControlChannelMap),
-    const.MONITORING_SETTINGS_BOTTOM:   ("Monitoring settings bottom",  const.READBACK_MONITORING_SETTINGS_BOTTOM,   MonitoringChannelMap),
+    const.CONTROL_CHANNELS_BOTTOM:      ("Control settings bottom",     const.READBACK_CONTROL_CHANNELS_BOTTOM,      ControlChannelMap),
+    const.MONITORING_CHANNELS_BOTTOM:   ("Monitoring settings bottom",  const.READBACK_MONITORING_CHANNELS_BOTTOM,   MonitoringChannelMap),
     const.READ_VALUES_PERIPHERY_BOTTOM: ("Read monitor values bottom",  const.READBACK_READ_VALUES_PERIPHERY_BOTTOM, ReadValueMap),
     const.HEADER_SETTINGS_CARRIER:      ("Header settings carrier",     const.READBACK_HEADER_SETTINGS_CARRIER,      HeaderInfoMap),
-    const.CONTROL_SETTINGS_CARRIER:     ("Control settings carrier",    const.READBACK_CONTROL_SETTINGS_CARRIER,     ControlChannelMap),
-    const.MONITORING_SETTINGS_CARRIER:  ("Monitoring settings carrier", const.READBACK_MONITORING_SETTINGS_CARRIER,  MonitoringChannelMap),
+    const.CONTROL_CHANNELS_CARRIER:     ("Control settings carrier",    const.READBACK_CONTROL_CHANNELS_CARRIER,     ControlChannelMap),
+    const.MONITORING_CHANNELS_CARRIER:  ("Monitoring settings carrier", const.READBACK_MONITORING_CHANNELS_CARRIER,  MonitoringChannelMap),
     const.READ_VALUES_CARRIER:          ("Read monitor values carrier", const.READBACK_READ_VALUES_CARRIER,          ReadValueMap),
     const.HEADER_SETTINGS_PLUGIN:       ("Header settings plugin",      const.READBACK_HEADER_SETTINGS_PLUGIN,       HeaderInfoMap),
-    const.CONTROL_SETTINGS_PLUGIN:      ("Control settings plugin",     const.READBACK_CONTROL_SETTINGS_PLUGIN,      ControlChannelMap),
-    const.MONITORING_SETTINGS_PLUGIN:   ("Monitoring settings plugin",  const.READBACK_MONITORING_SETTINGS_PLUGIN,   MonitoringChannelMap),
+    const.CONTROL_CHANNELS_PLUGIN:      ("Control settings plugin",     const.READBACK_CONTROL_CHANNELS_PLUGIN,      ControlChannelMap),
+    const.MONITORING_CHANNELS_PLUGIN:   ("Monitoring settings plugin",  const.READBACK_MONITORING_CHANNELS_PLUGIN,   MonitoringChannelMap),
     const.READ_VALUES_PLUGIN:           ("Read monitor values plugin",  const.READBACK_READ_VALUES_PLUGIN,           ReadValueMap),
     const.SYSTEM_SETTINGS:              ("System settings",             const.READBACK_SYSTEM_SETTINGS,              SystemSettingsMap),
     const.CHIP_READOUT_SETTINGS:        ("Chip readout settings",       const.READBACK_CHIP_READOUT_SETTINGS,        ChipReadoutSettingsMap),

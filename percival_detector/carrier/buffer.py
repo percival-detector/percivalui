@@ -40,8 +40,8 @@ class BufferCommand(object):
         self._log = logging.getLogger(".".join([__name__, self.__class__.__name__]))
         self._txrx = txrx
         self._target = target
-        self._reg_command = UARTRegister(const.COMMAND)
-        self._reg_command.initialize_map([0,0,0])
+        self._reg_uart = UARTRegister(const.COMMAND)
+        self._reg_uart.initialize_map([0,0,0])
 
     def _get_command_msg(self, cmd, words=None, address=None):
         """
@@ -64,23 +64,23 @@ class BufferCommand(object):
         self._log.debug("Cmd: %s  const.BufferCmd.no_operation: %s", cmd, const.BufferCmd.no_operation)
         if cmd is const.BufferCmd.no_operation:
             self._log.debug("No_op comparison True")
-            self._reg_command.fields.buffer_cmd = 0
-            self._reg_command.fields.buffer_cmd_destination = 0
-            self._reg_command.fields.buffer_cmd_words = 0
-            self._reg_command.fields.buffer_cmd_address = 0
+            self._reg_uart.fields.buffer_cmd = 0
+            self._reg_uart.fields.buffer_cmd_destination = 0
+            self._reg_uart.fields.buffer_cmd_words = 0
+            self._reg_uart.fields.buffer_cmd_address = 0
         else:
-            self._reg_command.fields.buffer_cmd_destination = self._target.value
-            self._reg_command.fields.buffer_cmd = const.BufferCommands[self._target][cmd]["command"]
+            self._reg_uart.fields.buffer_cmd_destination = self._target.value
+            self._reg_uart.fields.buffer_cmd = const.BufferCommands[self._target][cmd]["command"]
             if words:
-                self._reg_command.fields.buffer_cmd_words = words
+                self._reg_uart.fields.buffer_cmd_words = words
             else:
-                self._reg_command.fields.buffer_cmd_words = 0
+                self._reg_uart.fields.buffer_cmd_words = 0
             if address:
-                self._reg_command.fields.buffer_cmd_address = address
+                self._reg_uart.fields.buffer_cmd_address = address
             else:
-                self._reg_command.fields.buffer_cmd_address = 0
+                self._reg_uart.fields.buffer_cmd_address = 0
 
-        cmd_msg = self._reg_command.get_write_cmd_msg(eom=False)[1]
+        cmd_msg = self._reg_uart.get_write_cmd_msg(eom=False)[1]
         if cmd is const.BufferCmd.no_operation:
             cmd_msg.num_response_msg = 1
         else:

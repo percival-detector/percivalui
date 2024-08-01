@@ -9,8 +9,8 @@
 #using /asap3 files
 inFolder="/asap3/fs-ds-percival/gpfs/percival.sys.1/2020/data/11010234/processed/example_of_data_processing/input_scrmbld/"
 prefix_fl="2019.12.11.23.54.58_BSI04_7of7_3GPGABBB_120ms_0250eV_5um_1kpin_"
-suffix_fl0="000001.h5"
-suffix_fl1="000002.h5"
+suffix_fl0="000000.h5"
+suffix_fl1="000001.h5"
 #
 # note that 1st img is discarded so 248:499 will produce 249:499. 
 # MUST use EVEN PAIRS (always start from even, always have an even image number). DO NOT start from an odd number!. 
