@@ -130,7 +130,7 @@ class DAQClient(object):
 
         return result
 
-    def send_reset(self):
+    def send_reset_stats(self):
         try:
             url = self._url + 'command/reset_statistics'
             slogger.debug("Sending msg to: %s", url)
@@ -197,7 +197,7 @@ class DAQClient(object):
 
     def start_writing(self):
         # Reset the FPs
-        response = self.send_reset()
+        response = self.send_reset_stats()
         if 'error' in response:
             return response
 

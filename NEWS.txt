@@ -1,5 +1,5 @@
 
-2024-06-01 -- version 0.0.5 wnichols
+2024-06-01 -- version 0.5.0 -- wnichols
 
   * migrate to InfluxDB2
   * fix regular reading of monitor channels; need tornado>5.0

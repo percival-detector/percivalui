@@ -26,3 +26,5 @@ PyQt5-sip<=12.12 # 12.13 did not work
 PyQt5
 matplotlib
 pyqtgraph
+# tornado is installed by odin-control, but we need 5.0
+tornado>=5.0
